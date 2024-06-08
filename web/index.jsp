@@ -12,6 +12,6 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Mizi ni>
+        <h1>Mizi ni</h1>
     </body>
 </html>
