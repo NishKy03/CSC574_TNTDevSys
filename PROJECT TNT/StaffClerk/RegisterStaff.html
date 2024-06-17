@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	<meta charset="utf-8">
+  	<meta name="viewport" content="initial-scale=1, width=device-width">
+
+  	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" />
+  	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" />
+  	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap" />
+  	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  	<style>
+        
+body {
+  	margin: 0;
+  	line-height: normal;
+}
+
+
+.add-new-staff-child {
+  	position: absolute;
+  	top: 203px;
+  	left: 423px;
+  	border-radius: 20px;
+  	background-color: rgba(75, 6, 6, 0.5);
+  	width: 1336px;
+  	height: 781px;
+}
+.add-new-staff-item {
+  	position: absolute;
+  	top: 0px;
+  	left: 0px;
+  	background-color: #4b0606;
+  	width: 273px;
+  	height: 1080px;
+}
+.add-new-staff-inner {
+  	position: absolute;
+  	top: 232px;
+  	left: 35px;
+  	border-radius: 50%;
+  	width: 200px;
+  	height: 200px;
+  	object-fit: cover;
+}
+.hi {
+  	margin: 0;
+}
+.hi-lee-chin-container {
+  	position: absolute;
+  	top: 141px;
+  	left: 44px;
+  	display: inline-block;
+  	width: 191px;
+  	height: 84px;
+}
+.rectangle-div {
+  	position: absolute;
+  	top: 575px;
+  	left: 0px;
+  	background-color: #7a5961;
+  	width: 273px;
+  	height: 57px;
+}
+.profile {
+  	position: absolute;
+  	top: 466px;
+  	left: 44px;
+  	font-size: 32px;
+  	display: inline-block;
+  	width: 200px;
+  	height: 47px;
+}
+.staff {
+  	position: absolute;
+  	top: 580px;
+  	left: 44px;
+  	font-size: 32px;
+  	display: inline-block;
+  	width: 200px;
+  	height: 47px;
+}
+.orders {
+  	position: absolute;
+  	top: 523px;
+  	left: 44px;
+  	font-size: 32px;
+  	display: inline-block;
+  	width: 200px;
+  	height: 47px;
+}
+.navi {
+  	position: absolute;
+  	top: 0px;
+  	left: 0px;
+  	background-color: #4b0606;
+  	width: 1920px;
+  	height: 98px;
+}
+.company-logo {
+  	position: absolute;
+  	top: 0px;
+  	left: 98px;
+  	width: 196px;
+  	height: 98px;
+  	object-fit: cover;
+}
+.menubar-icon {
+  	position: absolute;
+  	top: 38px;
+  	left: 32px;
+  	width: 34px;
+  	height: 22px;
+}
+.new-staff {
+  	position: absolute;
+  	top: 227px;
+  	left: 420px;
+  	font-size: 64px;
+  	display: flex;
+  	text-align: center;
+  	align-items: center;
+  	justify-content: center;
+  	width: 1336px;
+  	height: 145px;
+}
+.add-new-staff-child1 {
+  	position: absolute;
+  	top: 401px;
+  	left: 530px;
+	font-size: 20px;
+  	font-weight: 300;
+  	border-radius: 20px;
+  	background-color: #fff;
+  	width: 1121px;
+  	height: 62px;
+}
+.name {
+  	position: absolute;
+  	top: 364px;
+  	left: 559px;
+  	display: flex;
+  	font-family: Roboto;
+  	align-items: center;
+  	width: 339px;
+  	height: 37px;
+}
+.add-new-staff-child2 {
+  	position: absolute;
+  	top: 515px;
+  	left: 530px;
+	font-size: 20px;
+  	font-weight: 300;
+  	border-radius: 20px;
+  	background-color: #fff;
+  	width: 1121px;
+  	height: 60px;
+	align-items: left;
+}
+.phone-number {
+  	position: absolute;
+  	top: 468px;
+  	left: 559px;
+  	display: flex;
+  	font-family: Roboto;
+  	align-items: center;
+  	width: 592px;
+  	height: 47px;
+}
+.add-new-staff-child3 {
+  	position: absolute;
+  	top: 621px;
+  	left: 530px;
+	font-size: 20px;
+  	font-weight: 300;
+  	border-radius: 20px;
+  	background-color: #fff;
+  	width: 1121px;
+  	height: 61px;
+}
+.add-new-staff-child4 {
+  	position: absolute;
+  	top: 734px;
+  	left: 530px;
+	font-size: 20px;
+  	font-weight: 300;
+  	border-radius: 20px;
+  	background-color: #fff;
+  	width: 520px;
+  	height: 62px;
+}
+.email {
+  	position: absolute;
+  	top: 580px;
+  	left: 559px;
+  	display: flex;
+  	font-family: Roboto;
+  	align-items: center;
+  	width: 339px;
+  	height: 37px;
+}
+.position {
+  	position: absolute;
+  	top: 690px;
+  	left: 559px;
+  	display: flex;
+  	font-family: Roboto;
+  	align-items: center;
+  	width: 339px;
+  	height: 37px;
+}
+.login-child {
+  	position: absolute;
+  	top: 0px;
+  	left: 6.79px;
+  	border-radius: 10px;
+  	background-color: #b45858;
+  	width: 308.3px;
+  	height: 90.8px;
+}
+.register {
+  	position: absolute;
+  	top: 12.62px;
+  	left: 0px;
+  	display: flex;
+  	align-items: center;
+  	justify-content: center;
+  	width: 320.5px;
+  	height: 66.9px;
+}
+.login {
+  	position: absolute;
+  	top: 840.16px;
+  	left: 1330.96px;
+  	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  	width: 320.5px;
+  	height: 90.8px;
+  	text-align: center;
+  	font-size: 48px;
+  	font-family: Roboto;
+}
+.list {
+  	position: absolute;
+  	top: 637px;
+  	left: 66px;
+  	font-size: 32px;
+  	color: rgba(255, 255, 255, 0.29);
+  	display: inline-block;
+  	width: 200px;
+  	height: 47px;
+}
+.register1 {
+  	position: absolute;
+  	top: 689px;
+  	left: 66px;
+  	font-size: 32px;
+  	display: inline-block;
+  	width: 200px;
+  	height: 47px;
+}
+.chevron-icon {
+  	position: absolute;
+  	height: 1.48%;
+  	width: 1.77%;
+  	top: 73.8%;
+  	right: 28.91%;
+  	bottom: 24.72%;
+  	left: 69.32%;
+  	max-width: 100%;
+  	overflow: hidden;
+  	max-height: 100%;
+}
+.home {
+  	position: absolute;
+  	top: 23px;
+  	left: 1520px;
+  	font-size: 40px;
+  	display: inline-block;
+  	font-family: Roboto;
+  	text-align: center;
+  	width: 144px;
+  	height: 51px;
+}
+.log-out {
+  	position: absolute;
+  	top: 23px;
+  	left: 1690px;
+  	font-size: 40px;
+  	display: inline-block;
+  	font-family: Roboto;
+  	text-align: center;
+  	width: 191px;
+  	height: 51px;
+}
+.choose-position {
+  	position: absolute;
+  	top: 747px;
+  	left: 530px;
+  	border-radius: 20px;
+  	font-size: 20px;
+  	font-weight: 300;
+  	font-family: Inter;
+  	color: black;
+  	display: flex;
+  	align-items: center;
+  	width: 520px;
+  	height: 62px;
+}
+.add-new-staff {
+  	width: 100%;
+  	position: relative;
+  	background-color: #ece0d1;
+  	height: 1080px;
+  	overflow: hidden;
+  	text-align: left;
+  	font-size: 24px;
+  	color: #fff;
+  	font-family: Poppins;
+}
+
+
+        .input-field {
+          position: absolute;
+          left: 560px;
+          width: 100%;
+          height: 100%;
+          border: none;
+          background: none;
+          outline: none;
+          padding-left: 15px;
+          font-size: 24px;
+          color: #000;
+          font-family: Roboto;
+        }
+
+    </style>
+  	
+</head>
+<body>
+  	
+  	<div class="add-new-staff">
+    		
+			<form>
+				<div class="add-new-staff-child">
+				</div>
+				<div class="add-new-staff-item">
+				</div>
+				<img class="add-new-staff-inner" alt="" src="Ellipse 5.png">
+				
+				<b class="hi-lee-chin-container">
+					  <p class="hi">Hi,</p>
+					  <p class="hi">LEE CHIN</p>
+				</b>
+				<div class="rectangle-div">
+				</div>
+				<div class="profile">
+					  <p class="hi">Profile</p>
+				</div>
+				<div class="staff">Staff</div>
+				<div class="orders">Orders</div>
+				<div class="navi">
+				</div>
+				<img class="company-logo" alt="" src="tnt.png">
+				
+				<img class="menubar-icon" alt="" src="menubar.png">
+				
+				<b class="new-staff">NEW STAFF</b>
+				
+				<!-- Name Field -->
+				<b class="name">Name</b>
+				<div>
+					  <input   class="add-new-staff-child1" type="text" id="name" name="name" placeholder="Enter name" required>
+				</div>
+	
+				<!-- Phone Number Field -->
+				<b class="phone-number">Phone Number</b>
+				<div >
+					  <input class="add-new-staff-child2" type="tel" id="phone-number" name="phone-number" placeholder="Enter phone number" required>
+				</div>
+		
+				<!-- Email Field -->
+				<b class="email">Email</b>
+				<div >
+					  <input class="add-new-staff-child3" type="email" id="email" name="email" placeholder="Enter email" required>
+				</div>
+				
+				<!-- Position Field -->
+				<b class="position">Position</b>
+				<div >
+					  <select class="choose-position" name="position" placeholder="choose-position" >
+						<option value="regular">Regular Staff</option>
+						<option value="delivery">Delivery Staff</option>
+					  </select>
+				</div>
+				
+				<div class="login">
+					  <div>
+					  </div>
+					  <button type="submit" class="login-child">REGISTER</button>
+				</div>
+			</form>
+    		<div class="list">&gt; List</div>
+    		<div class="register1">&gt; Register</div>
+    		<img class="chevron-icon" alt="" src="Chevron.svg">
+    		
+    		<b class="home">HOME</b>
+    		<b class="log-out">LOG OUT</b>
+  	</div>
+  	
+</body>
+</html>
