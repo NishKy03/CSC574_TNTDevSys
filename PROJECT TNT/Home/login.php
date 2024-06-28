@@ -118,7 +118,7 @@
 </div>
 <script>
     document.querySelector('.btn-close').addEventListener('click', function() {
-        window.location.href = 'homepage.html';
+        window.location.href = 'homepage.php';
     });
 </script>
 </body>
