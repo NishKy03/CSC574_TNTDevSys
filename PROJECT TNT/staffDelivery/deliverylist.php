@@ -27,8 +27,9 @@ switch ($filter) {
     case 'in_progress':
         $filterQuery = " AND ORDERS.status = 'In Progress'";
         break;
-    case 'Deliverd':
+    case 'delivered':
         $filterQuery = " AND ORDERS.status = 'Delivered'";
+        break;
     default:
         // 'all' filter includes all statuses, no additional filter query needed
         break;
@@ -36,6 +37,32 @@ switch ($filter) {
 
 $staffID = $_SESSION['staffID'];
 $staffName = $_SESSION['staffName'];
+
+// Fetch total orders and delivered orders count for progress bar
+$sqlTotalOrders = "SELECT COUNT(*) as total FROM ORDERS";
+$resultTotal = $dbCon->query($sqlTotalOrders);
+$totalOrders = $resultTotal->fetch_assoc()['total'];
+
+$sqlDeliveredOrders = "SELECT COUNT(*) as delivered FROM ORDERS WHERE status = 'Delivered'";
+$resultDelivered = $dbCon->query($sqlDeliveredOrders);
+$deliveredOrders = $resultDelivered->fetch_assoc()['delivered'];
+
+// Handle 'Done' button submission
+if (isset($_POST['done'])) {
+    $orderID = $_POST['orderID'];
+    
+    // Update order status to 'Delivered' in the database
+    $updateQuery = "UPDATE ORDERS SET status = 'Delivered' WHERE orderID = ?";
+    $stmt = $dbCon->prepare($updateQuery);
+    $stmt->bind_param('i', $orderID);
+    $stmt->execute();
+    $stmt->close();
+
+    // Redirect back to the same page to refresh the delivery list
+    header("Location: deliverylist.php");
+    exit();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -43,14 +70,14 @@ $staffName = $_SESSION['staffName'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../header.css">
-    <script src="../sidebar.js" defer></script>
     <title>Tracking - TNT</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f8f9fa;
         }
 
         .container {
@@ -60,9 +87,9 @@ $staffName = $_SESSION['staffName'];
         }
 
         .main-content {
-            width: 63%;
+            width: 80%;
+            margin-top: 20px;
         }
-
 
         table {
             border-collapse: collapse;
@@ -73,27 +100,15 @@ $staffName = $_SESSION['staffName'];
             overflow:hidden;
         }
 
-        td {
-            padding: 8px;
+        td, th {
             text-align: center;
             border: 1px solid #ddd;
+            padding: 12px;
         }
 
         th {
             background-color: #f2f2f2;
-            text-align: center;
-            padding: 8px;
-            border: 1px solid #ddd;
-        }
-
-        h1 {
-            background-color: rgba(75, 6, 6, 0.2); /* Background color with 70% opacity */
-            color: #38040E;
-            margin-left: -30%; 
-            padding: 10px;
-            padding-left: 20px; /* Adjust the left padding as needed */
-            margin-top: 0;
-            width: calc(200%); /* Adjust width to cover entire screen */
+            font-weight: bold;
         }
 
         .access-denied {
@@ -144,20 +159,35 @@ $staffName = $_SESSION['staffName'];
             font-weight: bold;
             margin-right: 10px;
         }
+
+        /* Progress bar styles */
+        .progress {
+            height: 20px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            background-color: #ddd;
+            border-radius: 10px;
+        }
+
+        .progress-bar {
+            background-color: #4B0606;
+            width: <?php echo ($deliveredOrders / $totalOrders) * 100; ?>%;
+            transition: width 0.6s ease;
+        }
         </style>
 </head>
 <body>
     <?php include 'headerStaffDelivery.php'; ?>
     <div class="container">
         <div class="main-content">
-            <div class="headerstaff">
+        <div class="headerstaff">
                 <h1>STAFF ID: <?php echo htmlspecialchars($staffID); ?></h1>
             </div>
             <!-- Filter Section -->
             <div class="filter">
                 <form method="get">
                     <label for="status">Filter by Status:</label>
-                    <select name="status" id="status" onchange="this.form.submit()">
+                    <select name="status" id="status" onchange="this.form.submit()" class="form-control">
                         <option value="all" <?php if ($filter === 'all') echo 'selected'; ?>>All</option>
                         <option value="out_for_delivery" <?php if ($filter === 'out_for_delivery') echo 'selected'; ?>>Out for Delivery</option>
                         <option value="shipped" <?php if ($filter === 'shipped') echo 'selected'; ?>>Shipped</option>
@@ -167,9 +197,14 @@ $staffName = $_SESSION['staffName'];
                 </form>
             </div>
 
-            <!-- Delivery List Table -->
-            <table>
-                <thead>
+            <!-- Progress Bar -->
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: <?php echo ($deliveredOrders / $totalOrders) * 100; ?>%;" aria-valuenow="<?php echo ($deliveredOrders / $totalOrders) * 100; ?>" aria-valuemin="0" aria-valuemax="100">
+                    <?php echo $deliveredOrders . " / " . $totalOrders . " Delivered"; ?>
+                </div>
+            </div>
+            <table class="table">
+                <thead class="thead-light">
                     <tr>
                         <th>Tracking ID</th>
                         <th>Recipient</th>
@@ -197,7 +232,7 @@ $staffName = $_SESSION['staffName'];
                             echo "<td>";
                             echo "<form method='post'>";
                             echo "<input type='hidden' name='orderID' value='" . $row['orderID'] . "'>";
-                            echo "<input type='submit' name='done' value='Done'>";
+                            echo "<input type='submit' name='done' value='Done' class='btn btn-sm btn-danger'>";
                             echo "</form>";
                             echo "</td>";
                             echo "</tr>";
