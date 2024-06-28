@@ -1,40 +1,47 @@
+<?php
+    include('nav.html');
+?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Navigation</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
-</head>
-<body>
-    <div class="nav_bar">
-        <nav class="top_nav">
-            <div class="logo">
-                <span id="menu-toggle" onclick="toggleSidebar()">&#9776;</span>
-                <img src="tnt_logo.png">
+    <head>
+        <title>Dashboard</title>
+        <style>
+            body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: linear-gradient(0deg, rgba(148, 148, 148, 0.61) 0%, rgba(148, 148, 148, 0.61) 20%), url('images/bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            }
+            .container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+            }
+            .chart-container {
+                background: rgba(255, 255, 255, 0.8);
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="chart-container">
+                <h2>Orders Delivered by Staff</h2>
+                <canvas id="ordersChart"></canvas>
             </div>
-            <ul>
-                <li><a href="home.php">Home</a></li>
-                <li><a href="logout.php">Log Out</a></li>
-            </ul>   
-        </nav>
-    </div>
-    <div class="sidebar" id="sidebar">
-        <div class="profile">
-            <img src="profile_pic.jpg" alt="Profile Picture">
-            <h2>LEE CHIN</h2>
         </div>
-        <nav>
-            <ul>
-                <li><a href="profile.php">Profile</a></li>
-                <li><a href="orders.php">Orders</a></li>
-                <li><a href="staff_list.php">Staff</a></li>
-            </ul>
-        </nav>
-    </div>
-    <div class="main-content" id="main-content">
-        <!-- Main content will go here -->
-    </div>
-</body>
+    </body>
 </html>
+
+<!--SELECT o.staffID, COUNT(o.staffID)
+FROM ORDERS o JOIN TRACKING_UPDATE t
+ON o.orderID = t.orderID JOIN STAFF s
+ON t.staffID = s.staffID
+WHERE category = 'Delivery'
+AND branchID = ?
+GROUP BY t.staffID;-->

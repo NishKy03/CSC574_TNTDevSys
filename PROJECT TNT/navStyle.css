@@ -5,7 +5,7 @@ body {
 }
 
 .nav_bar {
-    background-color: #800000; /* Dark red */
+    background-color: #6B7A40;
     color: white;
     padding: 10px 20px;
     display: flex;
@@ -68,7 +68,7 @@ body {
 
 .sidebar {
     width: 250px;
-    background-color: #800000; /* Dark red */
+    background-color: #6B7A40;
     color: white;
     position: fixed;
     top: 0;
