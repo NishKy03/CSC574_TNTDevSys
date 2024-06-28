@@ -1,3 +1,12 @@
+<?php
+    session_start();
+    if (!isset($_SESSION['staffID'])) {
+        echo '<div class="access-denied">Only Accessible by Staff</div>';
+        exit();
+    }
+    $staffID = $_SESSION['staffID'];
+    $staffName = $_SESSION['staffName'];
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -153,18 +162,23 @@
             margin-top: 0;
             width: calc(200%); /* Adjust width to cover entire screen */
         }
+
+        .access-denied {
+            background-color: #4B0606;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 100px auto;
+            width: 50%;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body>
-    <?php
-    session_start();
-    if (!isset($_SESSION['staffID'])) {
-        header("Location: login.php");
-        exit();
-    }
-    $staffID = $_SESSION['staffID'];
-    $staffName = $_SESSION['staffName'];
-    ?>
+
     <?php include 'headerStaffDelivery.html'; ?>
     <div class="container">
         <div class="sidebar">

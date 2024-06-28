@@ -1,4 +1,37 @@
+<?php
+// login.php
+session_start();
+include '../dbConnect.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $staffID = $_POST['userid'];
+    $password = $_POST['password'];
+
+    $sql = "SELECT staffID, staffName FROM STAFF WHERE staffID = ? AND password = ?";
+    $stmt = $dbCon->prepare($sql);
+    $stmt->bind_param("ss", $staffID, $password); // Changed to "ss" to bind both as strings
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows == 1) {
+        // Staff found, set session
+        $row = $result->fetch_assoc();
+        $_SESSION['staffID'] = $row['staffID'];
+        $_SESSION['staffName'] = $row['staffName'];
+        header("Location: ../StaffDelivery/deliverylist.php");
+        exit();
+    } else {
+        echo "Invalid credentials.";
+    }
+}
+?>
+
 <?php include 'universalHeader.php'; ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Form</title>
     <style>
         body {
@@ -84,7 +117,8 @@
             margin-top: 10px;
         }
     </style>
-    
+</head>
+<body>
 <div class="container">
     <div class="form-container">
         <div class="button-close">
@@ -114,31 +148,3 @@
 </script>
 </body>
 </html>
-
-<?php
-// login.php
-session_start();
-include '../dbConnect.php';
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $staffID = $_POST['userid'];
-    $password = $_POST['password'];
-
-    $sql = "SELECT staffID, staffName FROM STAFF WHERE staffID = ? AND password = ?";
-    $stmt = $dbCon->prepare($sql);
-    $stmt->bind_param("ss", $staffID, $password); // Changed to "ss" to bind both as strings
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows == 1) {
-        // Staff found, set session
-        $row = $result->fetch_assoc();
-        $_SESSION['staffID'] = $row['staffID'];
-        $_SESSION['staffName'] = $row['staffName'];
-        header("Location: deliverylist.php");
-        exit();
-    } else {
-        echo "Invalid credentials.";
-    }
-}
-?>
