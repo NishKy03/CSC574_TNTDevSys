@@ -1,18 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<?php include 'universalHeader.php'; ?>
     <title>Login Form</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             background-color: #ece0d1;
         }
         .container {
@@ -20,6 +10,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            margin-top:5%;
         }
         .button-close .btn-close {
             background-color: transparent;
@@ -91,10 +82,7 @@
         .form-container a:hover {
             text-decoration: underline;
         }
-    </style>
-</head>
-<body>
-    <?php include 'universalHeader.html'; ?>
+    </style> 
 <div class="container">
     <div class="form-container">
         <div class="button-close">
@@ -117,14 +105,14 @@
             </div>
             <br>
             <div class="account">
-                <a href="login.html">Already have an account?</a>           
+                <a href="login.php">Already have an account?</a>           
             </div>
         </div>
     </div>
 </div>
 <script>
     document.querySelector('.btn-close').addEventListener('click', function() {
-        window.location.href = 'homepage.html';
+        window.location.href = 'homepage.php';
     });
 </script>
 </body>

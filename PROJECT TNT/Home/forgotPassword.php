@@ -10,7 +10,17 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 10%;
+            margin-top:5%;
+        }
+        .button-close .btn-close {
+            background-color: transparent;
+            border: none;
+            font-size: 40px;
+            cursor: pointer;
+            position: absolute;
+            right: 15px;
+            top: 5px;
+            color: white;
         }
         .form-container {
             position: relative;
@@ -22,16 +32,6 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             color: white;
             text-align: center;
-        }
-        .button-close .btn-close {
-            position: absolute;
-            background-color: transparent;
-            border: none;
-            font-size: 40px;
-            cursor: pointer;
-            right: 4px;
-            top: 2px;
-            color: white;
         }
         .form-container h2 {
             color: white;
@@ -56,7 +56,7 @@
             box-sizing: border-box;
         }
         .button-confirm button {
-            width: 40%;
+            width: 50%;
             padding: 10px;
             margin-top: 10px;
             background-color: #b45858;
@@ -78,67 +78,24 @@
         .form-container a:hover {
             text-decoration: underline;
         }
-        .form-footer {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-        }
     </style>
-    
 <div class="container">
     <div class="form-container">
         <div class="button-close">
             <button class="btn-close">&times;</button>
         </div>
-        <h2>Welcome Back</h2>
-        <form action="login.php" method="post">
-            <label for="userid">User ID</label>
-            <input type="text" id="userid" name="userid">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password">
-            <div class="button-confirm">
-                <button type="submit">LOG IN</button>
-            </div>
-        </form>
-        <div class="form-footer">
-            <a href="signup.php">Don't have an account?</a>
-            <a href="forgotPassword.php">Forgot password</a>
+        <h2>Change Password</h2>
+        <label for="userid">User ID</label>
+        <input type="text" id="userid" name="userid">
+        <label for="newpassword">New Password</label>
+        <input type="password" id="newpassword" name="newpassword">
+        <label for="conpassword">Confirm Password</label>
+        <input type="password" id="conpassword" name="conpassword">
+        <div class="button-confirm">
+            <button type="submit">CONFIRM</button>
         </div>
     </div>
 </div>
 
-<script>
-    document.querySelector('.btn-close').addEventListener('click', function() {
-        window.location.href = 'homepage.php';
-    });
-</script>
 </body>
 </html>
-
-<?php
-// login.php
-session_start();
-include '../dbConnect.php';
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $staffID = $_POST['userid'];
-    $password = $_POST['password'];
-
-    $sql = "SELECT staffID, staffName FROM STAFF WHERE staffID = ? AND password = ?";
-    $stmt = $dbCon->prepare($sql);
-    $stmt->bind_param("ss", $staffID, $password); // Changed to "ss" to bind both as strings
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows == 1) {
-        // Staff found, set session
-        $row = $result->fetch_assoc();
-        $_SESSION['staffID'] = $row['staffID'];
-        $_SESSION['staffName'] = $row['staffName'];
-        header("Location: deliverylist.php");
-        exit();
-    } else {
-        echo "Invalid credentials.";
-    }
-}
-?>

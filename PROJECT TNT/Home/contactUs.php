@@ -1,52 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Form</title>
+<?php include 'universalHeader.php'; ?>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #ece0d1;
+            background-color: #563d3d;
         }
+        
         .container {
             width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding-top: 10%;
         }
-        .button-close .btn-close {
-            background-color: transparent;
-            border: none;
-            font-size: 40px;
-            cursor: pointer;
-            position: absolute;
-            right: 15px;
-            top: 5px;
-            color: white;
-        }
+        
         .form-container {
             position: relative;
             border: none;
             padding: 20px;
             border-radius: 10px;
-            background-color: #4b0606;
+            background-color: #d9d9d9;
             width: 350px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             color: white;
             text-align: center;
         }
         .form-container h2 {
-            color: white;
+            color: black;
             margin-bottom: 20px;
             text-align: center;
-            font-size: 30px;
+            font-weight: 800;
+            line-height: normal;
+            font-size: 26px;
+            font-family: Arial, sans-serif;
         }
         .form-container label {
             display: block;
@@ -64,19 +51,29 @@
             border-radius: 10px;
             box-sizing: border-box;
         }
-        .button-confirm button {
+        .form-container textarea {
+            width: 90%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-sizing: border-box;
+            resize: none;
+        }
+        .button-submit button {
             width: 50%;
             padding: 10px;
             margin-top: 10px;
             background-color: #b45858;
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 40px;
             cursor: pointer;
             font-size: 25px;
             font-weight: bold;
+            
         }
-        .button-confirm button:hover {
+        .button-submit button:hover {
             background-color: #45a049;
         }
         .form-container a {
@@ -89,25 +86,17 @@
         }
     </style>
 </head>
-<body>
-
-<div class="container">
-    <div class="form-container">
-        <div class="button-close">
-            <button class="btn-close">&times;</button>
-        </div>
-        <h2>Change Password</h2>
-        <label for="userid">User ID</label>
-        <input type="text" id="userid" name="userid">
-        <label for="newpassword">New Password</label>
-        <input type="password" id="newpassword" name="newpassword">
-        <label for="conpassword">Confirm Password</label>
-        <input type="password" id="conpassword" name="conpassword">
-        <div class="button-confirm">
-            <button type="submit">CONFIRM</button>
+<body>   
+    <div class="container">
+        <div class="form-container">
+            <h2>Contact Us</h2>
+            <input type="text" id="name" name="name" placeholder="Enter your name">
+            <input type="text" id="email" name="email" placeholder="Enter your email">
+            <textarea id="desc" name="desc" placeholder="Enter your description" rows="5"></textarea>
+            <div class="button-submit">
+                <button type="submit">SUBMIT</button>
+            </div>
         </div>
     </div>
-</div>
-
 </body>
 </html>
