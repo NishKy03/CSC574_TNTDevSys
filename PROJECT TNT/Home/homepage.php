@@ -46,17 +46,7 @@ p {
     </style>
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <img src="../images/tntlogo.png" alt="TNT Logo">
-        </div>
-        <nav>
-            <a href="dashboard.php">HOME</a>
-            <a href="#">CONTACT</a>
-            <a href="trackinglogin.php">TRACKING</a>
-            <a href="#">LOG OUT</a>
-        </nav>
-    </header>
+    <?php include 'universalHeader.html'; ?>
 
     <div class="about-container">
         <div class="about">
