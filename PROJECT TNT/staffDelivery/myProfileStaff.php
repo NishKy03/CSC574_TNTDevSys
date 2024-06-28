@@ -17,6 +17,12 @@ $staffName = "";
 $phone = "";
 $email = "";
 
+// Check if staff position is 'courier'
+if ($_SESSION['position'] !== 'courier') {
+    echo '<div class="access-denied">Access Denied. Only accessible by courier staff.</div>';
+    exit();
+}
+
 // Handle form submission to update profile
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get input values

@@ -21,7 +21,7 @@ if ($staffID) {
     $stmt->execute();
     $stmt->bind_result($profilePicture);
     $stmt->fetch();
-    $stmt->close();
+    $stmt->close(); // Close the statement after fetching results
 }
 ?>
 
