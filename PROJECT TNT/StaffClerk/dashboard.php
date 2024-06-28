@@ -1,5 +1,5 @@
 <?php
-    include('nav.html');
+    include('../nav.html');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,7 +10,7 @@
             margin: 0;
             padding: 0;
             height: 100%;
-            background: linear-gradient(0deg, rgba(148, 148, 148, 0.61) 0%, rgba(148, 148, 148, 0.61) 20%), url('images/bg.jpg') no-repeat center center fixed;
+            background: linear-gradient(0deg, rgba(148, 148, 148, 0.61) 0%, rgba(148, 148, 148, 0.61) 20%), url('../images/bg.jpg') no-repeat center center fixed;
             background-size: cover;
             font-family: Arial, sans-serif;
             }
@@ -27,20 +27,68 @@
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             }
         </style>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </head>
     <body>
         <div class="container">
             <div class="chart-container">
                 <h2>Orders Delivered by Staff</h2>
-                <canvas id="ordersChart"></canvas>
+                <?php
+                    require_once "../dbConnect.php";
+
+                    $sql = "SELECT t.staffID, COUNT(t.staffID) as total
+                            FROM TRACKING_UPDATE t JOIN STAFF s
+                            ON t.staffID = s.staffID
+                            WHERE category = 'Delivered'
+                            AND s.branchID = 'BR000008'
+                            GROUP BY t.staffID;";
+
+                    $labels = [];
+                    $data = [];
+
+                    if ($result = mysqli_query($dbCon, $sql)) {
+                        if (mysqli_num_rows($result) > 0) {
+                            while($row = mysqli_fetch_assoc($result)) {
+                                $labels[] = $row["staffID"];
+                                $data[] = $row["total"];
+                            }
+                        }
+                    }
+                    mysqli_free_result($result);
+                ?>
+                <canvas id="ordersChart" style="width:100%; max-width:800px; height:400px;"></canvas>
+                <script>
+                    const xValues = <?php echo json_encode($labels); ?>;
+                    const yValues = <?php echo json_encode($data); ?>;
+                    var chartType = "bar";
+
+                    new Chart("ordersChart", {
+                        type: chartType,
+                        data: {
+                            labels: xValues,
+                            datasets: [{
+                                backgroundColor: '#3B3B25',
+                                data: yValues
+                            }]
+                        },
+                        options: {
+                            plugins: {
+                                legend: {display: false},
+                                title: {
+                                    display: true,
+                                    text: "Orders Delivered by Staff"    
+                                }
+                            }
+                        }
+                    });
+                </script>
             </div>
         </div>
     </body>
 </html>
 
-<!--SELECT o.staffID, COUNT(o.staffID)
-FROM ORDERS o JOIN TRACKING_UPDATE t
-ON o.orderID = t.orderID JOIN STAFF s
+<!--SELECT t.staffID, COUNT(t.staffID)
+FROM TRACKING_UPDATE t JOIN STAFF s
 ON t.staffID = s.staffID
 WHERE category = 'Delivery'
 AND branchID = ?
