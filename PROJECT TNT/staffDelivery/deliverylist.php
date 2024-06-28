@@ -153,15 +153,23 @@
             margin-top: 0;
             width: calc(200%); /* Adjust width to cover entire screen */
         }
-
     </style>
 </head>
 <body>
+    <?php
+    session_start();
+    if (!isset($_SESSION['staffID'])) {
+        header("Location: login.php");
+        exit();
+    }
+    $staffID = $_SESSION['staffID'];
+    $staffName = $_SESSION['staffName'];
+    ?>
     <?php include 'headerStaffDelivery.html'; ?>
     <div class="container">
         <div class="sidebar">
             <div class="profile-header">
-                <div class="profile-name">Hi, LEE CHIN</div>
+                <div class="profile-name">Hi, <?php echo htmlspecialchars($staffName); ?></div>
                 <img src="../images/picture.png" alt="Profile Picture" class="profile-picture">
             </div>
             <ul class="menu">
@@ -171,7 +179,7 @@
         </div>
         <div class="main-content">
             <div class="headerstaff">
-                <h1>STAFF ID: xxxx</h1>
+                <h1>STAFF ID: <?php echo htmlspecialchars($staffID); ?></h1>
             </div>
             <table>
                 <tr>
@@ -182,14 +190,30 @@
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
-                <tr>
-                    <td>TRK2024FKL123</td>
-                    <td>Dolla</td>
-                    <td>Lot11, xxx , xxx ,xx</td>
-                    <td>Image(x)</td>
-                    <td>Out of delivery</td>
-                    <td></td>
-                </tr>
+                <?php
+                include '../dbConnect.php';
+
+                $sql = "SELECT ORDERS.orderID, RECIPIENT.name, RECIPIENT.addressLine1, RECIPIENT.city, RECIPIENT.state, RECIPIENT.postcode, ORDERS.status FROM ORDERS JOIN RECIPIENT ON ORDERS.recipientID = RECIPIENT.recipientID";
+                $result = $dbCon->query($sql);
+
+                if ($result->num_rows > 0) {
+                    // Output data of each row
+                    while($row = $result->fetch_assoc()) {
+                        echo "<tr>";
+                        echo "<td>" . htmlspecialchars($row["orderID"]) . "</td>";
+                        echo "<td>" . htmlspecialchars($row["name"]) . "</td>";
+                        echo "<td>" . htmlspecialchars($row["addressLine1"] . ", " . $row["city"] . ", " . $row["state"] . " " . $row["postcode"]) . "</td>";
+                        echo "<td>Image(x)</td>";
+                        echo "<td>" . htmlspecialchars($row["status"]) . "</td>";
+                        echo "<td></td>";
+                        echo "</tr>";
+                    }
+                } else {
+                    echo "<tr><td colspan='6'>No deliveries found</td></tr>";
+                }
+
+                $dbCon->close();
+                ?>
             </table>
         </div>
     </div>

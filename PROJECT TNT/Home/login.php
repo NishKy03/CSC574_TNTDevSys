@@ -31,7 +31,6 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             color: white;
             text-align: center;
-            
         }
         .button-close .btn-close {
             position: absolute;
@@ -103,19 +102,22 @@
             <button class="btn-close">&times;</button>
         </div>
         <h2>Welcome Back</h2>
-        <label for="userid">User ID</label>
-        <input type="text" id="userid" name="userid">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password">
-        <div class="button-confirm">
-            <button type="submit">LOG IN</button>
-        </div>
+        <form action="login.php" method="post">
+            <label for="userid">User ID</label>
+            <input type="text" id="userid" name="userid">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password">
+            <div class="button-confirm">
+                <button type="submit">LOG IN</button>
+            </div>
+        </form>
         <div class="form-footer">
             <a href="signup.html">Don't have an account?</a>
             <a href="#">Forgot password</a>
         </div>
     </div>
 </div>
+
 <script>
     document.querySelector('.btn-close').addEventListener('click', function() {
         window.location.href = 'homepage.php';
@@ -123,3 +125,31 @@
 </script>
 </body>
 </html>
+
+<?php
+// login.php
+session_start();
+include '../dbConnect.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $staffID = $_POST['userid'];
+    $password = $_POST['password'];
+
+    $sql = "SELECT staffID, staffName FROM STAFF WHERE staffID = ? AND password = ?";
+    $stmt = $dbCon->prepare($sql);
+    $stmt->bind_param("ss", $staffID, $password); // Changed to "ss" to bind both as strings
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows == 1) {
+        // Staff found, set session
+        $row = $result->fetch_assoc();
+        $_SESSION['staffID'] = $row['staffID'];
+        $_SESSION['staffName'] = $row['staffName'];
+        header("Location: deliverylist.php");
+        exit();
+    } else {
+        echo "Invalid credentials.";
+    }
+}
+?>
