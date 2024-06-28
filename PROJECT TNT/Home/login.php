@@ -3,6 +3,8 @@
 session_start();
 include '../dbConnect.php';
 
+$errorMessage = ''; // Initialize error message variable
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $staffID = $_POST['userid'];
     $password = $_POST['password'];
@@ -23,14 +25,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['position'] = $row['position'];
         $_SESSION['branchID'] = $row['branchID'];
 
-        // Add more fields as needed
-        // Example:
-        // $_SESSION['field_name'] = $row['field_name'];
-
-        header("Location: ../StaffDelivery/deliverylist.php");
-        exit();
+        // Check position for access control
+        if ($_SESSION['position'] == 'courier') {
+            header("Location: ../StaffDelivery/deliverylist.php");
+            exit();
+        } else {
+            // Redirect to appropriate page for other positions
+            // Example:
+            // header("Location: dashboard.php");
+            // exit();
+        }
     } else {
-        echo "Invalid credentials.";
+        $errorMessage = "Invalid credentials."; // Set error message
     }
 }
 ?>
@@ -125,6 +131,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             justify-content: space-between;
             margin-top: 10px;
         }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -134,6 +144,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <button class="btn-close">&times;</button>
         </div>
         <h2>Welcome Back</h2>
+        <?php if (!empty($errorMessage)): ?>
+            <p class="error-message"><?php echo $errorMessage; ?></p>
+        <?php endif; ?>
         <form action="login.php" method="post">
             <label for="userid">User ID</label>
             <input type="text" id="userid" name="userid">
