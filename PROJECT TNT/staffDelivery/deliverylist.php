@@ -1,18 +1,20 @@
 <?php
-    session_start();
-    if (!isset($_SESSION['staffID'])) {
-        echo '<div class="access-denied">Only Accessible by Staff</div>';
-        exit();
-    }
-    $staffID = $_SESSION['staffID'];
-    $staffName = $_SESSION['staffName'];
-    ?>
+session_start();
+if (!isset($_SESSION['staffID'])) {
+    echo '<div class="access-denied">Only Accessible by Staff</div>';
+    exit();
+}
+$staffID = $_SESSION['staffID'];
+$staffName = $_SESSION['staffName'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../header.css">
+    <script src="../sidebar.js" defer></script>
     <title>Tracking - TNT</title>
     <style>
         body {
@@ -21,115 +23,16 @@
             padding: 0;
         }
 
-        header {
-            background-color: #4B0606; /* dark red background */
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 20px;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-        }
-
-        header .logo {
-            display: flex;
-            align-items: center;
-        }
-
-        header .logo img {
-            height: 50px; /* Adjust height as needed */
-        }
-
-        header nav {
-            display: flex;
-        }
-
-        header nav a {
-            color: white;
-            text-decoration: none;
-            margin-left: 20px;
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        header nav a:hover {
-            text-decoration: underline;
-        }
-
         .container {
             display: flex;
-            margin-top: 70px; /* Space for fixed header */
             width: 100%;
             justify-content: center; /* Center content horizontally */
         }
 
-        .sidebar {
-            width: 250px;
-            background-color: #4B0606;
-            color: white;
-            height: 100vh;
-            padding-top: 20px;
-            position: fixed;
-            top: 70px; /* Space for fixed header */
-            left: 0;
-        }
-
-        .profile-header {
-            text-align: center;
-            padding: 20px;
-        }
-
-        .profile-picture {
-            width: 150px; /* Adjust size as needed */
-            height: 150px;
-            border-radius: 50%;
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-
-        .profile-name {
-            font-weight: bold;
-            color: #FFF;
-            font-family: 'Poppins', sans-serif;
-            font-size: 24px;
-        }
-
-        .menu {
-            list-style: none;
-            padding: 0;
-            text-align: center;
-        }
-
-        .menu li {
-            margin: 20px 0;
-        }
-
-        .menu a {
-            color: white;
-            text-decoration: none;
-            font-size: 20px; /* Adjusted font-size */
-            font-family: 'Poppins', sans-serif;
-            display: block;
-            padding: 10px 20px;
-        }
-
-        .menu a:hover {
-            background-color: #7a5961;
-            border-radius: 5px;
-        }
-
-        .headerstaff {
-            margin-left: 20%;
-        }
-        
         .main-content {
-            flex: 1;
-            margin-left: 10%;
-            max-width: 70%; /* Adjust the maximum width of the content */
+            width: 63%;
         }
+
 
         table {
             border-collapse: collapse;
@@ -178,19 +81,8 @@
     </style>
 </head>
 <body>
-
-    <?php include 'headerStaffDelivery.html'; ?>
+    <?php include 'headerStaffDelivery.php'; ?>
     <div class="container">
-        <div class="sidebar">
-            <div class="profile-header">
-                <div class="profile-name">Hi, <?php echo htmlspecialchars($staffName); ?></div>
-                <img src="../images/picture.png" alt="Profile Picture" class="profile-picture">
-            </div>
-            <ul class="menu">
-                <li><a href="myProfileStaff.php">Profile</a></li>
-                <li><a href="deliverylist.php">Delivery</a></li>
-            </ul>
-        </div>
         <div class="main-content">
             <div class="headerstaff">
                 <h1>STAFF ID: <?php echo htmlspecialchars($staffID); ?></h1>
@@ -205,8 +97,10 @@
                     <th>Action</th>
                 </tr>
                 <?php
+                // Include dbConnect.php for database connection
                 include '../dbConnect.php';
 
+                // Fetch data from database
                 $sql = "SELECT ORDERS.orderID, RECIPIENT.name, RECIPIENT.addressLine1, RECIPIENT.city, RECIPIENT.state, RECIPIENT.postcode, ORDERS.status FROM ORDERS JOIN RECIPIENT ON ORDERS.recipientID = RECIPIENT.recipientID";
                 $result = $dbCon->query($sql);
 
@@ -217,19 +111,20 @@
                         echo "<td>" . htmlspecialchars($row["orderID"]) . "</td>";
                         echo "<td>" . htmlspecialchars($row["name"]) . "</td>";
                         echo "<td>" . htmlspecialchars($row["addressLine1"] . ", " . $row["city"] . ", " . $row["state"] . " " . $row["postcode"]) . "</td>";
-                        echo "<td>Image(x)</td>";
+                        echo "<td>Image(x)</td>"; // Placeholder for proof of delivery image
                         echo "<td>" . htmlspecialchars($row["status"]) . "</td>";
-                        echo "<td></td>";
+                        echo "<td></td>"; // Placeholder for action
                         echo "</tr>";
                     }
                 } else {
                     echo "<tr><td colspan='6'>No deliveries found</td></tr>";
                 }
 
-                $dbCon->close();
+                $dbCon->close(); // Close the database connection
                 ?>
             </table>
         </div>
     </div>
 </body>
 </html>
+
