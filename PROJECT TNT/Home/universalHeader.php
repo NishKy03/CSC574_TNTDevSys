@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logo Example</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,13 +17,16 @@
             height: 60px;
             padding: 0 20px;
         }
+        .logo-link{
+            text-decoration: none;
+        }
         .logo-container {
             display: flex;
             align-items: center;
             margin-left: 15px;
         }
         .circle {
-           width: 30px;
+            width: 30px;
             height: 30px;
             border-radius: 50%;
             background-color: #4b0606;
@@ -54,21 +56,20 @@
     </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar">
+    <nav class="navbar">
+        <a href="homepage.php" class="logo-link">
             <div class="logo-container">
                 <div class="circle">T</div>
                 <div class="circle">N</div>
                 <div class="circle">T</div>
             </div>
-            <div class="navbar-links">
-                <a href="homepage.php">HOME</a>
-                <a href="contactUs.php">CONTACT</a>
-                <a href="tracking.php">TRACKING</a>
-                <a href="login.php">LOGIN</a>
-            </div>
-        </nav>
-    </header>
-    
+        </a>
+        <div class="navbar-links">
+            <a href="homepage.php">HOME</a>
+            <a href="contactUs.php">CONTACT</a>
+            <a href="tracking.php">TRACKING</a>
+            <a href="login.php">LOGIN</a>
+        </div>
+    </nav>
 </body>
 </html>

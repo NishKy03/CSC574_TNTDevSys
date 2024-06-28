@@ -1,12 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="header.css">
-    <title>Homepage</title>
-    <style>
-        
+ <?php include 'universalHeader.php'; ?>
+    <style>     
 .about-container {
     padding: 50px;
     text-align: center;
@@ -46,8 +39,7 @@ p {
     </style>
 </head>
 <body>
-    <?php include 'universalHeader.html'; ?>
-
+   
     <div class="about-container">
         <div class="about">
             <h2>About Us</h2>
