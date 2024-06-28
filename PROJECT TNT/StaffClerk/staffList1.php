@@ -1,3 +1,33 @@
+<?php
+include("../dbConfig.php");
+// session_start();
+
+// if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION["userlevel"] !== '1') {
+//     header("location: login.php");
+//     exit;
+// }
+
+// $username = $_SESSION["username"];
+
+$page = isset($_GET['page']) ? $_GET['page'] : 1;
+$limit = 10;
+$offset = ($page - 1) * $limit;
+
+// Query to get total number of records
+$countQuery = "SELECT COUNT(*) AS total FROM staff";
+$countResult = $conn->query($countQuery);
+$countRow = $countResult->fetch_assoc();
+$totalRecords = $countRow['total'];
+
+// Calculate total pages
+$totalPages = ceil($totalRecords / $limit);
+
+// Retrieve staff data for the current page
+$sql = "SELECT * FROM staff LIMIT $limit OFFSET $offset";
+$result = $conn->query($sql);
+
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,12 +36,21 @@
   	
   	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" />
   	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" />
-  	
+  	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
   	<style>
         
     body {
-    margin: 0;
+    margin: 0%;
+	padding: 0%;
     line-height: normal;
+	background-color: #ECE0D1;
     }
 
         .images2-1-icon {
@@ -281,71 +320,151 @@
   	font-family: Poppins;
 }
 
+.tntlogo{
+	width: 100px;
+	height: 50px;
 
+}
+
+.profile-image{
+	width:200px;
+	height:250px;
+}
+
+.container-fluid{
+    
+	background: #4B0606;
+}
+.navbar {
+    padding: 0; /* Ensure navbar itself has no padding */
+}
+
+.navbar-button{
+	background-color: transparent;
+	border:none;
+	color: white;
+}
+
+.table table-striped{
+	background:#CEA66080;
+	height: 600px;
+	width:1200px;
+	padding: 2%;
+	margin:6%;
+	border-radius: 6%;
+}
     </style>
   	
 </head>
 <body>
-    <!-- <div class="staff">
-        <img class="images2-1-icon" alt="" src="images2 1.png">
-        <div class="staff-child">
-        </div>
-        <img class="staff-item" alt="" src="Ellipse 5.png">
-        <b class="hi-lee-chin-container">
-        <p class="hi">Hi,</p>
-        <p class="hi">LEE CHIN</p>
-        </b>
-        <div class="staff-inner">
-        </div>
-        <div class="profile">
-        <p class="hi">Profile</p>
-        </div>
-        <div class="staff1">Staff</div>
-        <div class="register">&gt; Register</div>
-        <div class="orders">Orders</div>
-        <div class="navi">
-        </div>
-        <img class="company-logo" alt="" src="tnt.png">
-        <img class="menubar-icon" alt="" src="menubar.png">
-        <div class="staff2">STAFF</div>
-        <div class="group-parent">
-        <img class="group-child" alt="" src="Group 11.svg">
-        <img class="group-item" alt="" src="Group 12.svg">
-        </div>
-        <div class="group-container">
-        <img class="group-child" alt="" src="Group 11.svg">
-        <img class="group-item" alt="" src="Group 12.svg">
-        </div>
-        <div class="rectangle-parent">
-        <div class="rectangle-div">
-        </div>
-        <img class="rectangle-icon" alt="" src="Rectangle 23.png">
-        <div class="name-abdullah-phone-container">
-        <p class="hi">Name: Abdullah</p>
-        <p class="hi">Phone Number: 012-3456789</p>
-        <p class="hi">Email: abdullah03@gmail.com</p>
-        <p class="hi">Position: Clerk</p>
-        </div>
-        <b class="id-t00187546">ID: T00187546</b>
-        <img class="image-1-icon" alt="" src="image 1.png">
-        </div>
-        <div class="rectangle-group">
-        <div class="rectangle-div">
-        </div>
-        <img class="rectangle-icon" alt="" src="Rectangle 23.png">
-        <div class="name-danish-phone-container">
-        <p class="hi">Name: Danish</p>
-        <p class="hi">Phone Number: 011-9873456</p>
-        <p class="hi">Email: danish03@gmail.com</p>
-        <p class="hi">Position: Delivery Staff</p>
-        </div>
-        <b class="id-t00187546">ID: T00172657</b>
-        <img class="image-1-icon1" alt="" src="image 1.png">
-        </div>
-        <div class="list">&gt; List</div>
-        <b class="home">HOME</b>
-        <b class="log-out">LOG OUT</b>
-        </div>
-         -->
+
+<nav class="navbar bg-body-tertiary sticky-top">
+		<div class="container-fluid">
+			<div class="collapse" id="navbarToggleExternalContent" data-bs-theme="dark">
+				<div class="bg-dark p-4">
+					<h5 class="text-body-emphasis h4">Collapsed content</h5>
+					<span class="text-body-secondary" Toggleable via the brand.></span>
+				</div>
+			</div>
+			<div class="btn-group" role="group" aria-label="Basic outlined example">
+				<button class="navbar-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+					<span class="navbar-toggler"><img style="height:20px; width:30px; dark" src="menubar.png"></span>
+				</button>
+				<a class="btn btn-tertiary" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
+					<img class="tntlogo" src="../images/tntlogo.png">
+				</a>
+			</div>
+			
+			
+			<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+				<div class="offcanvas-header">
+					<h5 class="offcanvas-title" id="offcanvasNavbarLabel">Welcome <?php echo $staffName?></h5>
+					<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+				</div>
+				<div class="offcanvas-body">
+					<ul class="navbar-nav justify-content-start flex-grow-1 pe-3">
+						<li class="nav-item">
+							<a class="nav-link" aria-current="page" href="#">Profile</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#">Orders</a>
+						</li>
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle active" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							Staff
+							</a>
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item" href="RegisterStaff.php">Register Staff</a></li>
+								<hr class="dropdown-divider">
+								<li><a class="dropdown-item active" href="#">Staff List</a></li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<ul class="nav justify-content-end">
+				<li class="nav-item">
+					<a class="nav-link disabled" aria-disabled="true">Welcome <?php echo isset($row['staffName']) ? $row['staffName'] : "" ; ?></a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link active" aria-current="page" href="#">Home</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#"><img style="height:30px; width:40px; dark" src="https://s3-alpha-sig.figma.com/img/7474/d914/25d81f8e0ad6f9ab3656fb0111aa2227?Expires=1720396800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=WOR-xsWA5ji0F~GkaPHW2Ti5VJ6ki56A1w2a-UD3ZEWVjnOovapEDuotwuhn5c9~QJLbGJWLTOTfTg~gx2isNuWX3WejRw5q4sC4NAQK-FbOd6QZGaznXBwj6Fds0G7BmgzWhS4PYR4mtsfI1DbOmGTVv5WIGZjlfP0UPXFEiPNYXYAja2PvcjvBQIgmHF15G-PwMqDqKvUOCipy8K45ak1w93K36REzQ6t-TGmA5tKQ-of8JQAv1iySwrRBl1fY9F-mc6S8I035NljJ~ZKg8qWU6NlricBJEpTvP3ccBUllD4V1xD5mr~cuNQRkWDeAUOyZ9iegsNmoKfER4g1oCw__"></a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<br><br>
+
+	<div class="container mt-5">
+    <h2>Staff Lists</h2>
+    <button class="btn btn-warning" onclick="location.href='RegisterStaff.php'">Register Staff</button><br><br>
+
+    <?php
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            echo '<table class="table table-striped">';
+            echo '<tbody>';
+            echo '<tr>';
+            echo '<td style="vertical-align: top;"><img class="profile-image" src="../images/picture.png"></td>';
+            echo '<td style="vertical-align: middle; ">';
+            echo '<table>';
+            echo '<tr><td>ID:</td><td>' . $row["staffID"] . '</td></tr>';
+            echo '<tr><td>Name:</td><td>' . $row["staffName"] . '</td></tr>';
+            echo '<tr><td>Phone Number:</td><td>' . $row["staffPhoneNo"] . '</td></tr>';
+            echo '<tr><td>Email:</td><td>' . $row["staffEmail"] . '</td></tr>';
+            echo '<tr><td>Position:</td><td>' . $row["position"] . '</td></tr>';
+            echo '</table>';
+            echo '</td>';
+            echo '<td style="vertical-align: middle;">';
+            echo '<button class="btn btn-tertiary me-2" onclick="location.href=\'updateStaffInfo1.php?id=' . $row["staffID"] . '\'">Update</button>';
+            echo '<button class="btn btn-tertiary me-2" onclick="location.href=\'deleteStaff.php?id=' . $row["staffID"] . '\'">Delete</button>';
+            echo '</td>';
+            echo '</tr>';
+            echo '</tbody>';
+            echo '</table>';
+        }
+    } else {
+        echo "0 results";
+    }
+    ?>
+
+    <nav aria-label="Page navigation middle">
+        <ul class="pagination justify-content-center">
+            <?php if ($page > 1) : ?>
+                <li class="page-item"><a class="page-link" href="?page=<?php echo ($page - 1); ?>">Previous</a></li>
+            <?php endif; ?>
+
+            <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
+                <li class="page-item <?php if ($i == $page) echo 'active'; ?>"><a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a></li>
+            <?php endfor; ?>
+
+            <?php if ($page < $totalPages) : ?>
+                <li class="page-item"><a class="page-link" href="?page=<?php echo ($page + 1); ?>">Next</a></li>
+            <?php endif; ?>
+        </ul>
+    </nav>
+</div>
 </body>
 </html>
