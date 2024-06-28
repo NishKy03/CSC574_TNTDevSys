@@ -7,17 +7,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $staffID = $_POST['userid'];
     $password = $_POST['password'];
 
-    $sql = "SELECT staffID, staffName FROM STAFF WHERE staffID = ? AND password = ?";
+    $sql = "SELECT * FROM STAFF WHERE staffID = ? AND password = ?";
     $stmt = $dbCon->prepare($sql);
-    $stmt->bind_param("ss", $staffID, $password); // Changed to "ss" to bind both as strings
+    $stmt->bind_param("ss", $staffID, $password);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows == 1) {
-        // Staff found, set session
+        // Staff found, set session with all staff details
         $row = $result->fetch_assoc();
         $_SESSION['staffID'] = $row['staffID'];
         $_SESSION['staffName'] = $row['staffName'];
+        $_SESSION['staffPhone'] = $row['staffPhone'];
+        $_SESSION['staffEmail'] = $row['staffEmail'];
+        $_SESSION['position'] = $row['position'];
+        $_SESSION['branchID'] = $row['branchID'];
+
+        // Add more fields as needed
+        // Example:
+        // $_SESSION['field_name'] = $row['field_name'];
+
         header("Location: ../StaffDelivery/deliverylist.php");
         exit();
     } else {

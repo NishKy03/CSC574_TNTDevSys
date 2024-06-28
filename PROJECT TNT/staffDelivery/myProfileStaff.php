@@ -1,3 +1,50 @@
+<?php
+// Start PHP session
+session_start();
+
+// Check if staffID is set in session
+if (!isset($_SESSION['staffID'])) {
+    // Redirect to login page if not logged in
+    header("Location: login.php");
+    exit();
+}
+
+// Include header file
+include 'headerStaffDelivery.html';
+
+// Database connection
+include '../dbConnect.php';
+
+// Initialize variables to avoid null warnings
+$staffName = "";
+$phone = "";
+$email = "";
+
+// Fetch staff information from database based on staffID in session
+$staffID = $_SESSION['staffID'];
+$sql = "SELECT * FROM Staff WHERE staffID = ?";
+$stmt = $dbCon->prepare($sql);
+$stmt->bind_param("s", $staffID);
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Check if staff data exists
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $staffName = $row['staffName'];
+    $phone = isset($row['staffPhone']) ? $row['staffPhone'] : ""; // Check if phone is set in database result
+    $email = isset($row['staffEmail']) ? $row['staffEmail'] : ""; // Check if email is set in database result
+    // You can fetch other fields as needed
+} else {
+    // Handle case where staff data is not found
+    echo "Staff data not found.";
+}
+
+// Close database connection
+$stmt->close();
+$dbCon->close();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +53,6 @@
     <link rel="stylesheet" href="../header.css">
     <title>Profile - TNT</title>
     <style>
-
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -199,41 +245,41 @@
         .profile-info button:hover {
             background-color: #4B0606;
         }
-    </style>
+        </style>
 </head>
 <body>
-    <?php include 'headerStaffDelivery.html'; ?>
-
     <div class="container">
-            <div class="sidebar">
-                <div class="profile-header">
-                    <div class="profile-name">Hi, LEE CHIN</div>
-                    <img src="../images/picture.png" alt="Profile Picture" class="profile-picture"> 
-                </div>
-                <ul class="menu">
+        <div class="sidebar">
+            <div class="profile-header">
+                <div class="profile-name">Hi, <?php echo htmlspecialchars($staffName); ?></div>
+                <img src="../images/picture.png" alt="Profile Picture" class="profile-picture">
+            </div>
+            <ul class="menu">
                 <li><a href="#">Profile</a></li>
                 <li><a href="deliverylist.php">Delivery</a></li>
             </ul>
-            </div>
- 
+        </div>
+
         <div class="profile-content">
             <div class="profile-details">
                 <h1>PROFILE</h1>
-                <div class="profile-info">
-                    <label for="id">ID</label>
-                    <input type="text" id="id">
+                <form action="updateProfile.php" method="post">
+                    <div class="profile-info">
+                        <label for="id">ID</label>
+                        <input type="text" id="id" name="staffID" value="<?php echo htmlspecialchars($staffID); ?>" readonly>
 
-                    <label for="name">Name</label>
-                    <input type="text" id="name">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="staffName" value="<?php echo htmlspecialchars($staffName); ?>">
 
-                    <label for="phone">Phone Number</label>
-                    <input type="text" id="phone">
+                        <label for="phone">Phone Number</label>
+                        <input type="text" id="phone" name="phone" value="<?php echo htmlspecialchars($phone); ?>">
 
-                    <label for="email">Email</label>
-                    <input type="email" id="email"`>
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>">
 
-                    <button type="button">UPDATE</button>
-                </div>
+                        <button type="submit">UPDATE</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
