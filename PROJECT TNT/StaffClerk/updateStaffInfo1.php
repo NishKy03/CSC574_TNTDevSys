@@ -1,6 +1,53 @@
 <?php
 $staffName = "DANISH";
-	
+// include("dbConfig.php");
+
+
+// session_start();
+
+
+// if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
+// 	header("location: ../home/login.html");
+// 	exit;
+// }
+
+// $username = $_SESSION["staffID"];
+// if($_SERVER["REQUEST_METHOD"] == "POST"){
+// 	$staffID = $_POST['staffID'];
+// 	$staffName = $_POST['staffName'];
+// 	$staffPhoneNo = $_POST['staffPhoneNo'];
+// 	$staffEmail = $_POST['staffEmail'];
+// 	$position = $_POST['position'];
+// 	$branchID = $_POST['branchID'];
+
+// 	$sql = "UPDATE staff SET
+// 			staffName = $staffName, staffPhoneNo = $staffPhoneNo, staffEmail = $staffEmail, position=$position, branchID = $branchID
+// 			WHERE staffID = $staffID";
+
+// 			if($conn->query($sql) === TRUE){
+// 				echo "<div class='alert alert-success'>Record upated successfully</div>";
+// 			} else{
+// 				echo "<div class='alert alert-danger'>Error updating reocrd: " . $conn->error > "</div>";
+// 			}
+
+// 			$conn->close();
+// } else{
+// 	if(isset($_GET['id'])){
+// 		$staffID = $_GET['id'];
+// 		$sql = "SELECT * FROM staff WHERE staffID = '$staffID'";
+// 		$result = $conn->query($sql);
+
+// 		if($result->num_rows>0){
+// 			$row = $result->fetch_assoc();
+// 		} else{
+// 			echo "<div class='alert alert-danger'>Staff did not found.</div>";
+// 			exit;
+// 		} 
+// 	} else {
+// 		echo "<div class='alert alert-danger'>Staff ID not provided. </div>";
+// 		exit;
+// 	}
+// }
 ?>
 
 <!DOCTYPE html>
@@ -21,7 +68,9 @@ $staffName = "DANISH";
  
 body {
   	margin: 0;
-  	line-height: normal;
+	padding:0;
+	background-color: #ECE0D1;
+
 }
 
         .update-staff-info-child {
@@ -406,11 +455,34 @@ font-family: Poppins;
 	height: 50px;
 
 }
+
+.container-fluid{
+    
+	background: #4B0606;
+}
+.navbar {
+    padding: 0; /* Ensure navbar itself has no padding */
+}
+
+.navbar-button{
+	background-color: transparent;
+	border:none;
+	color: white;
+}
+
+.update-form-container{
+	background:#CEA66080;
+	height: 600px;
+	width:1200px;
+	padding: 2%;
+	margin:6%;
+	border-radius: 6%;
+}
 </style>
 </head>
 <body>
 
-	<nav class="navbar bg-body-tertiary">
+	<nav class="navbar bg-body-tertiary sticky-top">
 		<div class="container-fluid">
 			<div class="collapse" id="navbarToggleExternalContent" data-bs-theme="dark">
 				<div class="bg-dark p-4">
@@ -419,8 +491,8 @@ font-family: Poppins;
 				</div>
 			</div>
 			<div class="btn-group" role="group" aria-label="Basic outlined example">
-				<button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
+				<button class="navbar-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+					<span class="navbar-toggler"><img style="height:20px; width:30px; dark" src="menubar.png"></span>
 				</button>
 				<a class="btn btn-tertiary" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
 					<img class="tntlogo" src="../images/tntlogo.png">
@@ -454,14 +526,22 @@ font-family: Poppins;
 					</ul>
 				</div>
 			</div>
-			<span class="navbar-text">
-				<a href="#">Home</a>
-				<a href="#">Logout</a>
-			</span>
+			<ul class="nav justify-content-end">
+				<li class="nav-item">
+					<a class="nav-link disabled" aria-disabled="true">Welcome <?php echo isset($row['staffName']) ? $row['staffName'] : "" ; ?></a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link active" aria-current="page" href="#">Home</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#"><img style="height:30px; width:40px; dark" src="https://s3-alpha-sig.figma.com/img/7474/d914/25d81f8e0ad6f9ab3656fb0111aa2227?Expires=1720396800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=WOR-xsWA5ji0F~GkaPHW2Ti5VJ6ki56A1w2a-UD3ZEWVjnOovapEDuotwuhn5c9~QJLbGJWLTOTfTg~gx2isNuWX3WejRw5q4sC4NAQK-FbOd6QZGaznXBwj6Fds0G7BmgzWhS4PYR4mtsfI1DbOmGTVv5WIGZjlfP0UPXFEiPNYXYAja2PvcjvBQIgmHF15G-PwMqDqKvUOCipy8K45ak1w93K36REzQ6t-TGmA5tKQ-of8JQAv1iySwrRBl1fY9F-mc6S8I035NljJ~ZKg8qWU6NlricBJEpTvP3ccBUllD4V1xD5mr~cuNQRkWDeAUOyZ9iegsNmoKfER4g1oCw__"></a>
+				</li>
+			</ul>
 		</div>
 	</nav>
-
+	<br><br>
 	<div class="container">
+		<div class="update-form-container">
 		<h2>Update Staff Information</h2>
 		<form method="POST" action="upateStaffInfo1.php">
 			<input type="hidden" name="staffID" value="<?php echo isset($row['staffID']) ? $row['staffID']: ""; ?>">
@@ -481,22 +561,8 @@ font-family: Poppins;
 			<div class="mb-3">
 				<label for="position" class="form-label">Position: </label>
 				<select class="form-control" id="position" name="position" required>
-					<?php	
-						$conn = new mysqli("localhost","root","","tntdb");
-						if($conn->connect_error){
-							die("Connection Failed: " . $conn->connect_error);
-						}
-
-						$sql = "SELECT position FROM staff";
-						$result = $conn -> query($sql);
-						
-						while($staff = $result->fetch_assoc()){
-							$selected = (isset($row['position']) && $row['poisition'] == $staff['position']) ? 'selected' : '';
-							echo "<option value = '" .htmlspecialchars($staff['position']) . "' $selected>" . htmlspecialchars($staff['position']) . "</option>";
-						}
-
-						$conn->close();
-					?>
+					<option value="Regular Staff">Regular Staff</option>
+					<option value="Delivery Staff">Delivery Staff</option>
 				</select>
 			</div>
 			<div class="mb-3">
@@ -520,81 +586,10 @@ font-family: Poppins;
 					?>
 				</select>
 			</div>
+			<br>
 			<button type="submit" class="btn btn-primary">Update Staff</button>
 		</form>
+		</div>	
 	</div>
-	
-    <!-- <div class="update-staff-info">
-		<div class="update-staff-info-child">
-		</div>
-		<img class="update-staff-info-item" alt="" src="Ellipse 5.png">
-		
-		<b class="hi-lee-chin-container">
-  			<p class="hi">Hi,</p>
-  			<p class="hi">LEE CHIN</p>
-		</b>
-		<div class="update-staff-info-inner">
-		</div>
-		<div class="profile">
-  			<p class="hi">Profile</p>
-		</div>
-		<div class="staff">Staff</div>
-		<div class="orders">Orders</div>
-		<div class="navi">
-		</div>
-		<img class="company-logo" alt="" src="tnt.png">
-		
-		<img class="menubar-icon" alt="" src="menubar.png">
-		
-		<form action="staff.html" method="POST">
-			<div class="rectangle-div">
-			</div>
-			<b class="staff-info">STAFF INFO</b>
-			<b class="id">ID</b>
-			<div class="update-staff-info-child5">
-				<select  class="id-val" type="text" placeholder="Enter ID" name="staffid">
-					<option>10001</option>
-					<option>10002</option>
-					<option>10003</option>
-					<option>10004</option>
-					<option>10005</option>
-				</select>
-			</div>
-			<div class="mb-3">
-			<span class="input-group-text" id="inputGroup-sizing-default">Default</span>
-			<input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
-			</div>
-
-			<b class="name">Name</b>
-			<div>
-				<input class="name-field" type="text" placeholder="Enter Name">
-			</div>
-			<b class="phone-number">Phone Number</b>
-			<div>
-				<input class="phone-field" type="text" placeholder="Enter Phone Number">
-			</div>
-			<b class="email">Email</b>
-			<div>
-				<input class="email-field" type="text" placeholder="Enter Email">
-			</div>
-			<b class="position">Position</b>
-			<div>
-				<select class="position-field" type="text" placeholder="Enter Position" name="position">
-					<option value="regular">Regular Staff</option>
-					<option value="delivery">Delivery Staff</option>
-				</select>
-			</div>
-			<div class="login">
-				  <input type="submit" class="login-child" class="update" value="UPDATE">
-			</div>
-		</form>
-		
-		<div class="list"><a href="staff.html">&gt; List</a></div>
-		<div class="register"><a href="RegisterStaff.html">&gt; Register</a></div>
-		<img class="chevron-icon" alt="" src="Chevron.svg">
-        <b class="home"><a href="">HOME</a></b>
-		<b class="log-out"><a href=""></a>LOG OUT</b>
-		<img class="vector-icon" alt="" src="Vector.svg">
-</div> -->
 </body>
 </html>
