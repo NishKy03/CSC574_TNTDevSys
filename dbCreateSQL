@@ -1,0 +1,104 @@
+-- Create BRANCH table
+CREATE TABLE BRANCH (
+    branchID VARCHAR(8) PRIMARY KEY,
+    name VARCHAR(100),
+    addressLine1 VARCHAR(255),
+    city VARCHAR(100),
+    state VARCHAR(50),
+    postcode VARCHAR(5)
+);
+
+-- Create STAFF table
+CREATE TABLE STAFF (
+    staffID INT PRIMARY KEY AUTO_INCREMENT,
+    password VARCHAR(255) NOT NULL,
+    staffName VARCHAR(100) NOT NULL,
+    staffPhone VARCHAR(12),
+    staffEmail VARCHAR(100) NOT NULL,
+    position VARCHAR(50) NOT NULL,
+    branchID VARCHAR(8),
+    FOREIGN KEY (branchID) REFERENCES BRANCH(branchID)
+);
+
+ALTER TABLE STAFF AUTO_INCREMENT = 2000001;
+
+
+-- Create SENDER table
+CREATE TABLE SENDER (
+    senderID INT PRIMARY KEY AUTO_INCREMENT,
+    senderName VARCHAR(100),
+    addressLine1 VARCHAR(255),
+    city VARCHAR(100),
+    state VARCHAR(50),
+    postcode VARCHAR(5),
+    senderPhoneNo VARCHAR(12)
+);
+
+
+ALTER TABLE SENDER AUTO_INCREMENT = 3000001;
+
+
+-- Create RECIPIENT table
+CREATE TABLE RECIPIENT (
+    recipientID INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100),
+    addressLine1 VARCHAR(255),
+    city VARCHAR(100),
+    state VARCHAR(50),
+    postcode VARCHAR(5),
+    phoneNo VARCHAR(12)
+);
+
+ALTER TABLE RECIPIENT AUTO_INCREMENT = 1000001;
+
+-- Create SHIPPING_RATE table
+CREATE TABLE SHIPPING_RATE (
+    shipRateID INT PRIMARY KEY,
+    shipRateName VARCHAR(100),
+    baseFee DECIMAL(10, 2),
+    addFee DECIMAL(10, 2)
+);
+ALTER TABLE SHIPPING_RATE AUTO_INCREMENT = 4000001;
+
+
+-- Create ORDER table
+CREATE TABLE ORDERS (
+    orderID INT PRIMARY KEY AUTO_INCREMENT,
+    orderDate DATE,
+    totalAmount DECIMAL(10, 2),
+    parcelWeight DECIMAL(10, 2),
+    insurance DECIMAL(10, 2),
+    status VARCHAR(50),
+    recipientID INT,
+    senderID INT,
+    shipRateID INT,
+    FOREIGN KEY (recipientID) REFERENCES RECIPIENT(recipientID),
+    FOREIGN KEY (senderID) REFERENCES SENDER(senderID),
+    FOREIGN KEY (shipRateID) REFERENCES SHIPPING_RATE(shipRateID)
+);
+ALTER TABLE ORDERS AUTO_INCREMENT = 5000001;
+
+-- Create PAYMENT table
+CREATE TABLE PAYMENT (
+    paymentID INT PRIMARY KEY AUTO_INCREMENT,
+    paymentMethod VARCHAR(50),
+    orderID INT,
+    FOREIGN KEY (orderID) REFERENCES ORDERS(orderID)
+);
+
+ALTER TABLE PAYMENT AUTO_INCREMENT = 6000001;
+
+
+-- Create TRACKING_UPDATE table
+CREATE TABLE TRACKING_UPDATE (
+    updateID INT PRIMARY KEY,
+    date DATETIME,
+    category VARCHAR(50),
+    staffID INT,
+    branchID VARCHAR(8),
+    orderID INT,
+    FOREIGN KEY (staffID) REFERENCES STAFF(staffID),
+    FOREIGN KEY (branchID) REFERENCES BRANCH(branchID),
+    FOREIGN KEY (orderID) REFERENCES ORDERS(orderID)
+);
+ALTER TABLE TRACKING_UPDATE AUTO_INCREMENT = 7000001;
