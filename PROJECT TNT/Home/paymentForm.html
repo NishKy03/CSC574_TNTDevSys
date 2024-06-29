@@ -25,7 +25,7 @@
             margin-left: 15px;
         }
         .circle {
-           width: 30px;
+            width: 30px;
             height: 30px;
             border-radius: 50%;
             background-color: #4b0a05;
@@ -52,14 +52,13 @@
             background-color: #ddd;
             color: black;
         }
-        
         .container {
             width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
             margin-top: 100px;
-            position:fixed;
+            position: fixed;
         }
         .form-container {
             position: relative;
@@ -71,7 +70,6 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             color: white;
             text-align: center;
-            
         }
         .button-close .btn-close {
             position: absolute;
@@ -104,6 +102,16 @@
             border: 1px solid #ccc;
             border-radius: 10px;
             box-sizing: border-box;
+        }
+        .form-container select {
+            width: 90%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-sizing: border-box;
+            background-color: white;
+            color: black;
         }
         .button-confirm button {
             width: 30%;
@@ -152,13 +160,16 @@
             </div>
             <h2>PAYMENT</h2>
             <label for="totalAmount">Total Amount</label>
-            <input type="text" id="totalAmount" name="totalAmount" >
+            <input type="text" id="totalAmount" name="totalAmount">
             <label for="methodPay">Payment Method</label>
-            <input type="text" id="methodPay" name="methodPay" placeholder="Choose Payment Method">
+            <select id="methodPay" name="methodPay">
+                <option value="onlineBanking">Online Banking</option>
+                <option value="creditDebitCard">Credit / Debit Card</option>
+                <option value="maybank2u">Maybank2u</option>
+            </select>
             <div class="button-confirm">
                 <button type="submit">SUBMIT</button>
             </div>
-            
         </div>
     </div>
 </body>
