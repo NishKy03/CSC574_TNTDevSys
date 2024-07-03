@@ -9,6 +9,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            z-index: 1;
         }
         .navbar {
             background-color: #4b0a05;
@@ -17,10 +18,11 @@
             align-items: center;
             height: 60px;
             padding: 0 20px;
+            position: relative; /* Ensure z-index works */
+            z-index: 100; /* High z-index to ensure it stays on top */
         }
         .logo-link {
             text-decoration: none;
-            
         }
         .logo-container {
             display: flex;
@@ -78,7 +80,7 @@
 </head>
 <body>
     <nav class="navbar">
-        <a href="homepage.php" class="logo-link">
+        <a href="../index.php" class="logo-link">
             <div class="logo-container">
                 <div class="circle">T</div>
                 <div class="circle">N</div>
@@ -86,10 +88,10 @@
             </div>
         </a>
         <div class="navbar-links">
-            <a href="../Project TNT/index.php">HOME</a>
-            <a href="../Project TNT/Home/contactUs.php">CONTACT</a>
-            <a href="../Home/tracking.php">TRACKING</a>
-            <a href="../Home/login.php">LOGIN</a>
+            <a href="../index.php">HOME</a>
+            <a href="Home/contactUs.php">CONTACT</a>
+            <a href="Home/tracking.php">TRACKING</a>
+            <a href="login.php">LOGIN</a>
         </div>
     </nav>
 

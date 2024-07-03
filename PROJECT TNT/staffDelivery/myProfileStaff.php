@@ -1,16 +1,19 @@
 <?php
 // Start PHP session
 session_start();
+
 // Check if staffID is set in session
 if (!isset($_SESSION['staffID'])) {
     // Redirect to login page if not logged in
     header("Location: login.php");
     exit();
 }
+
 // Include header
 include 'headerStaffDelivery.php';
+
 // Database connection
-include '../dbConnect.php';
+require_once '../dbConnect.php';
 
 // Initialize variables to avoid null warnings
 $staffName = "";
@@ -34,12 +37,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Update the staff information in the database
     $sql = "UPDATE Staff SET staffName = ?, staffPhone = ?, staffEmail = ? WHERE staffID = ?";
     $stmt = $dbCon->prepare($sql);
-    $stmt->bind_param("ssss", $staffName, $phone, $email, $staffID);
+    $stmt->bind_param("sssi", $staffName, $phone, $email, $staffID);
 
     if ($stmt->execute()) {
         // Update session variable
         $_SESSION['staffName'] = $staffName;
-        
+
         // Redirect to profile page with success message
         header("Location: myProfileStaff.php?update=success");
         exit();
@@ -48,36 +51,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         header("Location: myProfileStaff.php?update=error");
         exit();
     }
-
-    // Close statement and connection
-    $stmt->close();
-    $dbCon->close();
-} else {
-    // Fetch staff information from database based on staffID in session
-    $staffID = $_SESSION['staffID'];
-    $sql = "SELECT * FROM Staff WHERE staffID = ?";
-    $stmt = $dbCon->prepare($sql);
-    $stmt->bind_param("s", $staffID);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    // Check if staff data exists
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $staffName = $row['staffName'];
-        $phone = isset($row['staffPhone']) ? $row['staffPhone'] : ""; // Check if phone is set in database result
-        $email = isset($row['staffEmail']) ? $row['staffEmail'] : ""; // Check if email is set in database result
-    } else {
-        // Handle case where staff data is not found
-        echo "Staff data not found.";
-    }
-
-    // Close database connection
-    $stmt->close();
-    $dbCon->close();
 }
-?>
 
+// Fetch staff information from database based on staffID in session
+$staffID = $_SESSION['staffID'];
+$sql = "SELECT * FROM Staff WHERE staffID = ?";
+$stmt = $dbCon->prepare($sql);
+$stmt->bind_param("i", $staffID);
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Check if staff data exists
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $staffName = $row['staffName'];
+    $phone = isset($row['staffPhone']) ? $row['staffPhone'] : ""; // Check if phone is set in database result
+    $email = isset($row['staffEmail']) ? $row['staffEmail'] : ""; // Check if email is set in database result
+} else {
+    // Handle case where staff data is not found
+    echo "Staff data not found.";
+}
+
+// Close statement and connection
+$stmt->close();
+$dbCon->close();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -90,7 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f0f0;
+            background-color: #ECE0D1;
         }
 
         .container {

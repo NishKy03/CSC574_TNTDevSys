@@ -11,12 +11,21 @@ include 'universalHeader.php';
     <title>Track & Trace</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        html{
+            background-image: url('../images/bg.jpg'); /* Add the path to your background image */
+            background-size: cover; /* Ensures the background image covers the entire body */
+            background-position: 0px 50px; /* Centers the background image horizontally and vertically */
+            background-repeat: no-repeat;
+        }
         body {
+            height: 100vh;
             font-family: 'Arial', sans-serif;
-            background-color: #f8f9fa;
+            background-color: rgba(248, 249, 250, 0.35);
             margin: 0;
             padding: 0;
+            
         }
+
         h1 {
             color: #000;
             text-align: center;

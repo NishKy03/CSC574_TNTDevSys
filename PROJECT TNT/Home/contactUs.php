@@ -6,46 +6,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        body, html {
+            height: 100%;
             margin: 0;
             padding: 0;
-            background: linear-gradient(110deg, #9c5e5e 0%, #cf8c8c 50%); /* Gradient background */
+            background-image: url('../images/bg.jpg'); /* Add the path to your background image */
+            background-size: cover; /* Ensures the background image covers the entire body */
+            background-position: 0px 50px;
+            background-repeat: no-repeat;
+            font-family: Arial, sans-serif;
+            overflow: hidden; /* Prevent scrolling */
         }
-        
+
         .container {
-            min-height: 100vh; /* Ensure container fills the viewport height */
+            height: 100vh; /* Ensure container fills the viewport height */
             display: flex;
-            justify-content: center;
+            justify-content: flex-end; /* Align the contact form to the right */
             align-items: center;
-            padding-top: 10vh;
+            padding-right: 10vh;
+            position: relative;
+            z-index: 2; /* Ensure container content stays above the diagonal divider */
         }
-        
+
         .form-container {
             position: relative;
             border: none;
             padding: 20px;
             border-radius: 10px;
-            background-color: #d9d9d9;
+            background-color: rgba(217, 217, 217, 0.9); /* Slight transparency */
             width: 350px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
+            z-index: 3; /* Ensure form-container stays above the diagonal divider */
         }
+
         .form-container h2 {
             color: black;
             margin-bottom: 20px;
             margin-top: 0; /* Remove top margin */
             font-weight: 800;
             font-size: 26px;
-            font-family: Arial, sans-serif;
         }
+
         .form-container label {
             display: block;
             margin-bottom: 5px;
             text-align: left;
-            color: white;
+            color: black;
             margin-left: 20px;
         }
+
         .form-container input[type="text"],
         .form-container input[type="email"],
         .form-container textarea {
@@ -56,9 +66,11 @@
             border-radius: 10px;
             box-sizing: border-box;
         }
+
         .form-container textarea {
             resize: none;
         }
+
         .button-submit button {
             width: 50%;
             padding: 10px;
@@ -72,23 +84,54 @@
             font-weight: bold;
             transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth background color and transform transition */
         }
+
         .button-submit button:hover {
             background-color: #45a049;
             transform: scale(1.1); /* Scale up effect on hover */
         }
+
         .form-container a {
             text-decoration: none;
             color: #cccccc;
             font-size: 14px;
         }
+
         .form-container a:hover {
             text-decoration: none; /* Remove underline on hover */
             color: white;
+        }
+
+        .diagonal-divider {
+            position: absolute;
+            top: -10%;
+            left: -20%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 0, 0, 0.3); /* Red color with transparency */
+            clip-path: polygon(0 90%, 0 0, 100% 75%);
+            z-index: 1; /* Send it behind other content */
+        }
+
+        .icon-container {
+            position: absolute;
+            top: 30%;
+            left: 10%;
+            width: 300px;
+            height: 300px;
+            background: url('../images/mail.png') no-repeat center center; /* Local PNG icon */
+            background-size: contain;
+            z-index: 3; /* Ensure icon-container stays above the diagonal divider */
+        }
+
+        header {
+            z-index: 4; /* Ensure the header stays above everything */
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="diagonal-divider"></div>
+        <div class="icon-container"></div>
         <div class="form-container shadow-lg p-4">
             <h2>Contact Us</h2>
             <form>
@@ -111,19 +154,5 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        // Handle close button click
-        document.querySelector('.close-btn').addEventListener('click', function() {
-            window.location.href = 'homepage.php';
-        });
-
-        // Add bounce effect to submit button on hover
-        document.querySelector('.button-submit button').addEventListener('mouseenter', function() {
-            this.style.transform = 'scale(1.1)';
-        });
-        document.querySelector('.button-submit button').addEventListener('mouseleave', function() {
-            this.style.transform = 'scale(1)';
-        });
-    </script>
 </body>
 </html>

@@ -50,7 +50,7 @@ $deliveredOrders = $resultDelivered->fetch_assoc()['delivered'];
 // Handle 'Done' button submission
 if (isset($_POST['done'])) {
     $orderID = $_POST['orderID'];
-    
+
     // Update order status to 'Delivered' in the database
     $updateQuery = "UPDATE ORDERS SET status = 'Delivered' WHERE orderID = ?";
     $stmt = $dbCon->prepare($updateQuery);
@@ -67,6 +67,7 @@ if (isset($_POST['done'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -77,13 +78,19 @@ if (isset($_POST['done'])) {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f8f9fa;
+            background-image: url('../images/bg.jpg');
+            /* Add the path to your background image */
+            background-size: cover;
+            /* Ensures the background image covers the entire body */
+            background-position: 0px 0px;
+            background-repeat: no-repeat;
         }
 
         .container {
             display: flex;
             width: 100%;
-            justify-content: center; /* Center content horizontally */
+            justify-content: center;
+            /* Center content horizontally */
         }
 
         .main-content {
@@ -93,22 +100,30 @@ if (isset($_POST['done'])) {
 
         table {
             border-collapse: collapse;
+            text-align: center;
             width: 100%;
-            margin: 0 auto; /* Center the table horizontally */
+            margin: 0 auto;
+            /* Center the table horizontally */
             outline: 1px solid black;
             border-radius: 10px;
-            overflow:hidden;
+            overflow: hidden;
         }
 
-        td, th {
+        td,
+        th {
             text-align: center;
             border: 1px solid #ddd;
             padding: 12px;
+            background-color: #ECE0D1;
+            /* Background color for table cells */
         }
 
         th {
-            background-color: #f2f2f2;
+            background-color: #7A5961;
+            /* Header background color */
             font-weight: bold;
+            color: white;
+            /* Text color for header */
         }
 
         .access-denied {
@@ -126,7 +141,7 @@ if (isset($_POST['done'])) {
 
         /* Style for the "Done" button */
         input[type="submit"][name="done"] {
-            background-color: #4B0606;
+            background-color: #B45858;
             color: white;
             border: none;
             padding: 8px 16px;
@@ -171,16 +186,19 @@ if (isset($_POST['done'])) {
 
         .progress-bar {
             background-color: #4B0606;
-            width: <?php echo ($deliveredOrders / $totalOrders) * 100; ?>%;
+            width:
+                <?php echo ($deliveredOrders / $totalOrders) * 100; ?>
+                %;
             transition: width 0.6s ease;
         }
-        </style>
+    </style>
 </head>
+
 <body>
     <?php include 'headerStaffDelivery.php'; ?>
     <div class="container">
         <div class="main-content">
-        <div class="headerstaff">
+            <div class="headerstaff">
                 <h1>STAFF ID: <?php echo htmlspecialchars($staffID); ?></h1>
             </div>
             <!-- Filter Section -->
@@ -188,18 +206,29 @@ if (isset($_POST['done'])) {
                 <form method="get">
                     <label for="status">Filter by Status:</label>
                     <select name="status" id="status" onchange="this.form.submit()" class="form-control">
-                        <option value="all" <?php if ($filter === 'all') echo 'selected'; ?>>All</option>
-                        <option value="out_for_delivery" <?php if ($filter === 'out_for_delivery') echo 'selected'; ?>>Out for Delivery</option>
-                        <option value="shipped" <?php if ($filter === 'shipped') echo 'selected'; ?>>Shipped</option>
-                        <option value="in_progress" <?php if ($filter === 'in_progress') echo 'selected'; ?>>In Progress</option>
-                        <option value="delivered" <?php if ($filter === 'delivered') echo 'selected'; ?>>Delivered</option>
+                        <option value="all" <?php if ($filter === 'all')
+                            echo 'selected'; ?>>All</option>
+                        <option value="out_for_delivery" <?php if ($filter === 'out_for_delivery')
+                            echo 'selected'; ?>>Out
+                            for Delivery</option>
+                        <option value="shipped" <?php if ($filter === 'shipped')
+                            echo 'selected'; ?>>Shipped</option>
+                        <option value="in_progress" <?php if ($filter === 'in_progress')
+                            echo 'selected'; ?>>In Progress
+                        </option>
+                        <option value="delivered" <?php if ($filter === 'delivered')
+                            echo 'selected'; ?>>Delivered
+                        </option>
                     </select>
                 </form>
             </div>
 
             <!-- Progress Bar -->
             <div class="progress">
-                <div class="progress-bar" role="progressbar" style="width: <?php echo ($deliveredOrders / $totalOrders) * 100; ?>%;" aria-valuenow="<?php echo ($deliveredOrders / $totalOrders) * 100; ?>" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar" role="progressbar"
+                    style="width: <?php echo ($deliveredOrders / $totalOrders) * 100; ?>%;"
+                    aria-valuenow="<?php echo ($deliveredOrders / $totalOrders) * 100; ?>" aria-valuemin="0"
+                    aria-valuemax="100">
                     <?php echo $deliveredOrders . " / " . $totalOrders . " Delivered"; ?>
                 </div>
             </div>
@@ -222,8 +251,8 @@ if (isset($_POST['done'])) {
 
                     if ($result->num_rows > 0) {
                         // Output data of each row
-                        while($row = $result->fetch_assoc()) {
-                            echo "<tr>";
+                        while ($row = $result->fetch_assoc()) {
+                            echo "<tr style='background-color: #7A5961;'>"; // Adjust the background color here
                             echo "<td>" . htmlspecialchars($row["orderID"]) . "</td>";
                             echo "<td>" . htmlspecialchars($row["name"]) . "</td>";
                             echo "<td>" . htmlspecialchars($row["addressLine1"] . ", " . $row["city"] . ", " . $row["state"] . " " . $row["postcode"]) . "</td>";
@@ -240,7 +269,6 @@ if (isset($_POST['done'])) {
                     } else {
                         echo "<tr><td colspan='6'>No deliveries found</td></tr>";
                     }
-
                     $dbCon->close(); // Close the database connection
                     ?>
                 </tbody>
@@ -248,4 +276,5 @@ if (isset($_POST['done'])) {
         </div>
     </div>
 </body>
+
 </html>

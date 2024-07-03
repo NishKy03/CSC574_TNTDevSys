@@ -1,40 +1,51 @@
 <?php include 'Home/universalHeader.php'; ?>
-<style>     
+<style>   
+body {
+    overflow:hidden;
+}  
 .about-container {
-padding: 50px;
-text-align: center;
+    min-height: 100vh; /* Ensures the container covers the full height of the viewport */
+    padding: 50px;
+    text-align: center;
+    background-image: url('images/bg.jpg'); /* Add the path to your background image */
+    background-size: cover; /* Ensures the background image covers the entire body */
+    background-position: 0px 0px;
+    background-repeat: no-repeat;
+    color: white; /* Ensure text color is white for better contrast */
+
 }
 
 .about {
-background-color: #6c5050;
-padding: 20px;
-border-radius: 10px;
-margin-bottom: 30px;
-color: white;
+    background-color: rgba(108, 80, 80, 0.8); /* Adding transparency */
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    color: white;
+    
 }
 
 .vision-mission {
-display: flex;
-justify-content: space-between;
-gap: 20px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
 }
 
 .vision, .mission {
-background-color: #6c5050;
-padding: 20px;
-border-radius: 10px;
-width: 48%;
-color: white;
+    background-color: rgba(108, 80, 80, 0.8); /* Adding transparency */
+    padding: 20px;
+    border-radius: 10px;
+    width: 48%;
+    color: white;
 }
 
 h2 {
-font-size: 30px;
-margin-bottom: 10px;
+    font-size: 30px;
+    margin-bottom: 10px;
 }
 
 p {
-font-size: 16px;
-line-height: 1.5;
+    font-size: 16px;
+    line-height: 1.5;
 }
 </style>
 </head>

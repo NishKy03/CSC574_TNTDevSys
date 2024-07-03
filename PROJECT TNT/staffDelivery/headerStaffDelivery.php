@@ -30,28 +30,6 @@ if ($_SESSION['position'] !== 'courier') {
     exit();
 }
 
-// Handle status filter selection
-$filter = isset($_GET['status']) ? $_GET['status'] : 'all';
-$filterQuery = '';
-
-switch ($filter) {
-    case 'out_for_delivery':
-        $filterQuery = " AND ORDERS.status = 'Out for Delivery'";
-        break;
-    case 'shipped':
-        $filterQuery = " AND ORDERS.status = 'Shipped'";
-        break;
-    case 'in_progress':
-        $filterQuery = " AND ORDERS.status = 'In Progress'";
-        break;
-    case 'delivered':
-        $filterQuery = " AND ORDERS.status = 'Delivered'";
-        break;
-    default:
-        // 'all' filter includes all statuses, no additional filter query needed
-        break;
-}
-
 // Fetch total orders and delivered orders count for progress bar
 $sqlTotalOrders = "SELECT COUNT(*) as total FROM ORDERS";
 $resultTotal = $dbCon->query($sqlTotalOrders);
@@ -89,7 +67,13 @@ $deliveredOrders = $resultDelivered->fetch_assoc()['delivered'];
         }
 
         .logo img {
-            height: 50px;
+            height: 50px; 
+            transition: transform 0.3s, filter 0.3s; /* Add transition for transform and filter */
+        }
+
+        .logo img:hover {
+            transform: scale(1.1); /* Scale up on hover */
+            filter: brightness(1.2); /* Slightly brighten on hover */
         }
 
         .logo span {
@@ -102,8 +86,9 @@ $deliveredOrders = $resultDelivered->fetch_assoc()['delivered'];
         }
 
         .logo span:hover {
-            transform: scale(1.1); /* Enlarge icon on hover */
+            transform: scale(2); /* Enlarge icon on hover */
             font-size: 270%; /* Increase font size on hover */
+            color: goldenrod;
         }
 
         nav {
@@ -125,6 +110,21 @@ $deliveredOrders = $resultDelivered->fetch_assoc()['delivered'];
             color: #ffcc00;
             transform: translateY(-3px); /* Bounce effect on hover */
             text-decoration: none; /* Remove underline on hover */
+        }
+
+        .logout img {
+            height: 40px;
+            transition: transform 0.3s, filter 0.3s; /* Add transition for transform and filter */
+        }
+
+        .logout img:hover {
+            transform: scale(1.1); /* Scale up on hover */
+            filter: brightness(2); /* Slightly brighten on hover */
+        }
+
+        .logout img:active {
+            transform: scale(0.9); /* Scale down on click */
+            filter: brightness(0.9); /* Slightly darken on click */
         }
 
         .sidebar {
@@ -207,11 +207,16 @@ $deliveredOrders = $resultDelivered->fetch_assoc()['delivered'];
             <span id="menu-toggle" onclick="toggleSidebar()">&#9776;</span>
         </div>
         <div class="logo">
-        <img src="../images/tntlogo.png" alt="TNT Logo">
+        <a href="deliverylist.php">
+            <img src="../images/tntlogo.png" alt="TNT Logo">
+        </a>
         </div>
         <nav>
-            <a href="deliverylist.php">HOME</a>
-            <a href="../logout.php">Log Out</a>
+            <div class="logout">
+            <a href="../logout.php">
+                <img src="../images/logout.png" alt="Logout Icon">
+            </a>
+            </div>
         </nav>
     </header>
 
