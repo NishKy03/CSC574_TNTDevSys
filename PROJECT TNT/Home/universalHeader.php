@@ -18,11 +18,11 @@
             align-items: center;
             height: 60px;
             padding: 0 20px;
-            position: relative; /* Ensure z-index works */
-            z-index: 100; /* High z-index to ensure it stays on top */
+            z-index: 1000;
         }
         .logo-link {
             text-decoration: none;
+            
         }
         .logo-container {
             display: flex;
