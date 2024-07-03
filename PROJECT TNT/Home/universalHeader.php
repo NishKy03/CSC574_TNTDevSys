@@ -86,10 +86,10 @@
             </div>
         </a>
         <div class="navbar-links">
-            <a href="homepage.php">HOME</a>
-            <a href="contactUs.php">CONTACT</a>
-            <a href="tracking.php">TRACKING</a>
-            <a href="login.php">LOGIN</a>
+            <a href="../Project TNT/index.php">HOME</a>
+            <a href="../Project TNT/Home/contactUs.php">CONTACT</a>
+            <a href="../Home/tracking.php">TRACKING</a>
+            <a href="../Home/login.php">LOGIN</a>
         </div>
     </nav>
 
