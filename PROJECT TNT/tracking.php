@@ -1,5 +1,5 @@
 <?php 
-include '../dbConnect.php';
+include 'dbConnect.php';
 include 'universalHeader.php';
 ?>
 
@@ -12,7 +12,7 @@ include 'universalHeader.php';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         html{
-            background-image: url('../images/bg.jpg'); /* Add the path to your background image */
+            background-image: url('images/bg.jpg'); /* Add the path to your background image */
             background-size: cover; /* Ensures the background image covers the entire body */
             background-position: 0px 50px; /* Centers the background image horizontally and vertically */
             background-repeat: no-repeat;

@@ -13,7 +13,7 @@ if (!isset($_SESSION['staffID'])) {
 include 'headerStaffDelivery.php';
 
 // Database connection
-require_once '../dbConnect.php';
+require_once 'dbConnect.php';
 
 // Initialize variables to avoid null warnings
 $staffName = "";

@@ -1,5 +1,5 @@
 <?php
-include '../dbConnect.php';
+include 'dbConnect.php';
 
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

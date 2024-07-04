@@ -10,7 +10,7 @@
             height: 100%;
             margin: 0;
             padding: 0;
-            background-image: url('../images/bg.jpg'); /* Add the path to your background image */
+            background-image: url('images/bg.jpg'); /* Add the path to your background image */
             background-size: cover; /* Ensures the background image covers the entire body */
             background-position: 0px 50px;
             background-repeat: no-repeat;
@@ -118,7 +118,7 @@
             left: 10%;
             width: 300px;
             height: 300px;
-            background: url('../images/mail.png') no-repeat center center; /* Local PNG icon */
+            background: url('images/mail.png') no-repeat center center; /* Local PNG icon */
             background-size: contain;
             z-index: 3; /* Ensure icon-container stays above the diagonal divider */
         }

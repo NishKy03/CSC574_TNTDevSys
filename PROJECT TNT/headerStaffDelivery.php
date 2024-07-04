@@ -8,7 +8,7 @@ if (session_status() === PHP_SESSION_NONE) {
 $staffName = isset($_SESSION['staffName']) ? $_SESSION['staffName'] : 'Guest';
 
 // Database connection
-require_once '../dbConnect.php'; // Adjust the path as per your project structure
+require_once 'dbConnect.php'; // Adjust the path as per your project structure
 
 // Retrieve staffID from session or set a default value
 $staffID = isset($_SESSION['staffID']) ? $_SESSION['staffID'] : null;
@@ -208,13 +208,13 @@ $deliveredOrders = $resultDelivered->fetch_assoc()['delivered'];
         </div>
         <div class="logo">
         <a href="deliverylist.php">
-            <img src="../images/tntlogo.png" alt="TNT Logo">
+            <img src="images/tntlogo.png" alt="TNT Logo">
         </a>
         </div>
         <nav>
             <div class="logout">
-            <a href="../logout.php">
-                <img src="../images/logout.png" alt="Logout Icon">
+            <a href="logout.php">
+                <img src="images/logout.png" alt="Logout Icon">
             </a>
             </div>
         </nav>
@@ -229,7 +229,7 @@ $deliveredOrders = $resultDelivered->fetch_assoc()['delivered'];
                     <?php if ($profilePicture): ?>
                         <img id="profile-picture-preview" src="<?php echo $profilePicture; ?>" alt="Profile Picture" class="profile-picture">
                     <?php else: ?>
-                        <img id="profile-picture-preview" src="../images/default_profile.png" alt="Profile Picture" class="profile-picture"> <!-- Default image if no profile picture found -->
+                        <img id="profile-picture-preview" src="images/default_profile.png" alt="Profile Picture" class="profile-picture"> <!-- Default image if no profile picture found -->
                     <?php endif; ?>
                 </label>
                 <input type="file" id="profile-picture-upload" name="profile_picture" accept="image/*" style="display: none;">

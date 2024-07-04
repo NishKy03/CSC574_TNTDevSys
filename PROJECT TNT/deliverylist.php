@@ -5,7 +5,7 @@ if (!isset($_SESSION['staffID'])) {
     exit();
 }
 
-require_once '../dbConnect.php'; // Adjust the path as per your project structure
+require_once 'dbConnect.php'; // Adjust the path as per your project structure
 
 // Check if staff position is 'courier'
 if ($_SESSION['position'] !== 'courier') {
@@ -78,7 +78,7 @@ if (isset($_POST['done'])) {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-image: url('../images/bg.jpg');
+            background-image: url('images/bg.jpg');
             /* Add the path to your background image */
             background-size: cover;
             /* Ensures the background image covers the entire body */
