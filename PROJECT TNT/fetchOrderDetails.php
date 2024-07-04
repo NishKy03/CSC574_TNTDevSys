@@ -11,30 +11,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         FROM tracking_update tu
         JOIN orders o ON tu.orderID = o.orderID
         JOIN sender s ON o.senderID = s.senderID
-        WHERE o.orderID=?";
+        WHERE o.orderID = ?";
 
-    $stmt = $dbCon->prepare($sql);
-    $stmt->bind_param("s", $orderID);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    if ($stmt = $dbCon->prepare($sql)) {
+        $stmt->bind_param("s", $orderID);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-    if ($result->num_rows > 0) {
-        // Fetch the data
-        $row = $result->fetch_assoc();
-        $orderID = $row['orderID'];
-        $date = $row['date'];
-        $status = $row['status'];
-        $senderName = $row['senderName'];
+        if ($result->num_rows > 0) {
+            // Redirect to tracking.php with orderID as a parameter
+            header("Location: tracking.php?orderID=$orderID");
+            exit();
+        } else {
+            echo "<script>alert('No records found for the provided order ID.'); window.location='tracking.php';</script>";
+        }
 
-        // Redirect to tracking.php with orderID as a parameter
-        header("Location: tracking.php?orderID=$orderID");
-        exit();
+        $stmt->close();
     } else {
-        echo "<script>alert('No Records " . $stmt->error . "'); window.location='tracking.php';</script>";
+        echo "<script>alert('Error preparing the statement.'); window.location='tracking.php';</script>";
     }
-
-    $stmt->close();
 }
 
 $dbCon->close();
-?>
