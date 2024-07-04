@@ -9,10 +9,10 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #563d3d;
+            background-color: #ece0d1;
         }
         .navbar {
-            background-color: #4b0606;
+            background-color: #4b0a05;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -25,10 +25,10 @@
             margin-left: 15px;
         }
         .circle {
-           width: 30px;
+            width: 30px;
             height: 30px;
             border-radius: 50%;
-            background-color: #4b0606;
+            background-color: #4b0a05;
             color: #ff6600;
             display: inline-flex;
             align-items: center;
@@ -57,35 +57,42 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding-top: 10%;
+            margin-top: 100px;
+            position: fixed;
         }
-        
         .form-container {
             position: relative;
             border: none;
             padding: 20px;
             border-radius: 10px;
-            background-color: #d9d9d9;
-            width: 350px;
+            background-color: #4b0606;
+            width: 600px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             color: white;
             text-align: center;
         }
+        .button-close .btn-close {
+            position: absolute;
+            background-color: transparent;
+            border: none;
+            font-size: 40px;
+            cursor: pointer;
+            right: 4px;
+            top: 2px;
+            color: white;
+        }
         .form-container h2 {
-            color: black;
+            color: white;
             margin-bottom: 20px;
             text-align: center;
-            font-weight: 800;
-            line-height: normal;
-            font-size: 26px;
-            font-family: Arial, sans-serif;
+            font-size: 30px;
         }
         .form-container label {
             display: block;
             margin-bottom: 5px;
             text-align: left;
             color: white;
-            margin-left: 20px;
+            margin-left: 40px;
         }
         .form-container input[type="text"],
         .form-container input[type="password"] {
@@ -96,29 +103,29 @@
             border-radius: 10px;
             box-sizing: border-box;
         }
-        .form-container textarea {
+        .form-container select {
             width: 90%;
             padding: 10px;
             margin-bottom: 10px;
             border: 1px solid #ccc;
             border-radius: 10px;
             box-sizing: border-box;
-            resize: none;
+            background-color: white;
+            color: black;
         }
-        .button-submit button {
-            width: 50%;
+        .button-confirm button {
+            width: 30%;
             padding: 10px;
             margin-top: 10px;
             background-color: #b45858;
             color: white;
             border: none;
-            border-radius: 40px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 25px;
             font-weight: bold;
-            
         }
-        .button-submit button:hover {
+        .button-confirm button:hover {
             background-color: #45a049;
         }
         .form-container a {
@@ -148,11 +155,19 @@
 
     <div class="container">
         <div class="form-container">
-            <h2>Contact Us</h2>
-            <input type="text" id="name" name="name" placeholder="Enter your name">
-            <input type="text" id="email" name="email" placeholder="Enter your email">
-            <textarea id="desc" name="desc" placeholder="Enter your description" rows="5"></textarea>
-            <div class="button-submit">
+            <div class="button-close">
+                <button class="btn-close">&times;</button>
+            </div>
+            <h2>PAYMENT</h2>
+            <label for="totalAmount">Total Amount</label>
+            <input type="text" id="totalAmount" name="totalAmount">
+            <label for="methodPay">Payment Method</label>
+            <select id="methodPay" name="methodPay">
+                <option value="onlineBanking">Online Banking</option>
+                <option value="creditDebitCard">Credit / Debit Card</option>
+                <option value="maybank2u">Maybank2u</option>
+            </select>
+            <div class="button-confirm">
                 <button type="submit">SUBMIT</button>
             </div>
         </div>

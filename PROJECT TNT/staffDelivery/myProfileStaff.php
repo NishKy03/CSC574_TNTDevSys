@@ -1,3 +1,81 @@
+<?php
+// Start PHP session
+session_start();
+
+// Check if staffID is set in session
+if (!isset($_SESSION['staffID'])) {
+    // Redirect to login page if not logged in
+    header("Location: login.php");
+    exit();
+}
+
+// Include header
+include 'headerStaffDelivery.php';
+
+// Database connection
+require_once '../dbConnect.php';
+
+// Initialize variables to avoid null warnings
+$staffName = "";
+$phone = "";
+$email = "";
+
+// Check if staff position is 'courier'
+if ($_SESSION['position'] !== 'courier') {
+    echo '<div class="access-denied">Access Denied. Only accessible by courier staff.</div>';
+    exit();
+}
+
+// Handle form submission to update profile
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Get input values
+    $staffID = $_SESSION['staffID'];
+    $staffName = $_POST['staffName'];
+    $phone = $_POST['phone'];
+    $email = $_POST['email'];
+
+    // Update the staff information in the database
+    $sql = "UPDATE Staff SET staffName = ?, staffPhone = ?, staffEmail = ? WHERE staffID = ?";
+    $stmt = $dbCon->prepare($sql);
+    $stmt->bind_param("sssi", $staffName, $phone, $email, $staffID);
+
+    if ($stmt->execute()) {
+        // Update session variable
+        $_SESSION['staffName'] = $staffName;
+
+        // Redirect to profile page with success message
+        header("Location: myProfileStaff.php?update=success");
+        exit();
+    } else {
+        // Redirect to profile page with error message
+        header("Location: myProfileStaff.php?update=error");
+        exit();
+    }
+}
+
+// Fetch staff information from database based on staffID in session
+$staffID = $_SESSION['staffID'];
+$sql = "SELECT * FROM Staff WHERE staffID = ?";
+$stmt = $dbCon->prepare($sql);
+$stmt->bind_param("i", $staffID);
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Check if staff data exists
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $staffName = $row['staffName'];
+    $phone = isset($row['staffPhone']) ? $row['staffPhone'] : ""; // Check if phone is set in database result
+    $email = isset($row['staffEmail']) ? $row['staffEmail'] : ""; // Check if email is set in database result
+} else {
+    // Handle case where staff data is not found
+    echo "Staff data not found.";
+}
+
+// Close statement and connection
+$stmt->close();
+$dbCon->close();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,234 +84,117 @@
     <link rel="stylesheet" href="../header.css">
     <title>Profile - TNT</title>
     <style>
-
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-        }
-
-        header {
-            background-color: #4B0606; /* dark red background */
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 20px;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-        }
-
-        header .logo {
-            display: flex;
-            align-items: center;
-        }
-
-        header .logo img {
-            height: 50px; /* Adjust height as needed */
-        }
-
-        header nav {
-            display: flex;
-        }
-
-        header nav a {
-            color: white;
-            text-decoration: none;
-            margin-left: 20px;
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        header nav a:hover {
-            text-decoration: underline;
+            background-color: #ECE0D1;
         }
 
         .container {
             display: flex;
-            margin-top: 70px; /* Space for fixed header */
-            width: 100%;
-        }
-
-        .sidebar {
-            width: 250px;
-            background-color: #4B0606;
-            color: white;
-            height: 100vh;
-            padding-top: 20px;
-            position: fixed;
-            top: 70px; /* Space for fixed header */
-            left: 0;
-        }
-
-        .profile-header {
-            text-align: center;
+            justify-content: center;
+            align-items: center;
+            margin-top: 2%;
             padding: 20px;
-        }
-
-        .profile-picture {
-            width: 150px; /* Adjust size as needed */
-            height: 150px;
-            border-radius: 50%;
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-
-        .profile-name {
-            font-weight: bold;
-            color: #FFF;
-            font-family: 'Poppins', sans-serif;
-            font-size: 24px;
-        }
-
-        .menu {
-            list-style: none;
-            padding: 0;
-            text-align: center;
-        }
-
-        .menu li {
-            margin: 20px 0;
-        }
-
-        .menu a {
-            color: white;
-            text-decoration: none;
-            font-size: 20px; /* Adjusted font-size */
-            font-family: 'Poppins', sans-serif;
-            display: block;
-            padding: 10px 20px;
-        }
-
-        .menu a:hover {
-            background-color: #7a5961;
-            border-radius: 5px;
         }
 
         .profile-content {
-            flex: 1;
-            padding: 20px;
-            margin-left: 15%;
-        }
-
-        .profile-details {
-        background-color: rgba(75, 6, 6, 0.5);
-        padding: 20px;
-        border-radius: 20px;
-        width: 90%;
-        height: 80%;
-        flex-shrink: 0;
-        margin: auto;
+            background-color: #4b0606;
+            padding: 30px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            color: white;
         }
 
         .profile-details h1 {
-            display: flex;
-            width: 105%;
-            flex-direction: column;
-            justify-content: center;
-            flex-shrink: 0;
-            color: #FFF;
             text-align: center;
-            font-family: Poppins;
-            font-size: 64px;
-            font-style: normal;
-            font-weight: 700;
-            line-height: normal;
+            font-size: 36px;
+            margin-bottom: 30px;
         }
 
         .profile-info {
             display: flex;
-            flex-direction: column;   
+            flex-direction: column;
+        }
+
+        .profile-info .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
         .profile-info label {
-            display: flex;
-            width: 174px;
-            height: 29px;
-            flex-direction: column;
-            justify-content: center;
-            flex-shrink: 0;
-            color: #FFF;
-            font-family: Roboto;
-            font-size: 18px;
-            font-style: normal;
-            font-weight: 700;
-            line-height: normal;
-            margin-left: 50px;
+            width: 100px;
+            font-size: 16px;
+            font-weight: bold;
         }
 
         .profile-info input {
-            display: flex;
-            justify-content: center;
-            width: 90%;
-            height: 30px;
-            background:  #FFF;
-            border-radius: 20px;
-            margin-left:3%;
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        .profile-info .editable {
+            background-color: #fff;
+        }
+
+        .profile-info .non-editable {
+            background-color: transparent;
+            color: #fff;
         }
 
         .profile-info button {
+            padding: 15px;
+            background-color: #b45858;
+            border: none;
             border-radius: 10px;
-            background-color: #B45858;
-            width: 245px;
-            height: 70px;
-            flex-shrink: 0;
-            margin-top: 3%;
-            margin-left: 70%;
-            /*text*/
-            display: flex;
-            justify-content: center;
-            flex-shrink: 0;
-            color: #FFF;
-            text-align: center;
-            font-family: Roboto;
-            font-size: 48px;
-            font-style: normal;
-            font-weight: 700;
-            line-height: normal;
-
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+            width: 100%;
         }
 
         .profile-info button:hover {
-            background-color: #4B0606;
+            background-color: #4b0606;
         }
+        
     </style>
 </head>
 <body>
-    <?php include 'headerStaffDelivery.html'; ?>
-
     <div class="container">
-            <div class="sidebar">
-                <div class="profile-header">
-                    <div class="profile-name">Hi, LEE CHIN</div>
-                    <img src="../images/picture.png" alt="Profile Picture" class="profile-picture"> 
-                </div>
-                <ul class="menu">
-                <li><a href="#">Profile</a></li>
-                <li><a href="deliverylist.php">Delivery</a></li>
-            </ul>
-            </div>
- 
         <div class="profile-content">
             <div class="profile-details">
                 <h1>PROFILE</h1>
-                <div class="profile-info">
-                    <label for="id">ID</label>
-                    <input type="text" id="id">
-
-                    <label for="name">Name</label>
-                    <input type="text" id="name">
-
-                    <label for="phone">Phone Number</label>
-                    <input type="text" id="phone">
-
-                    <label for="email">Email</label>
-                    <input type="email" id="email"`>
-
-                    <button type="button">UPDATE</button>
-                </div>
+                <form action="updateProfile.php" method="post">
+                    <div class="profile-info">
+                        <div class="form-group">
+                            <label for="id">ID</label>
+                            <input type="text" id="id" name="staffID" value="<?php echo htmlspecialchars($staffID); ?>" class="non-editable" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="staffName" value="<?php echo htmlspecialchars($staffName); ?>" class="editable">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="text" id="phone" name="phone" value="<?php echo htmlspecialchars($phone); ?>" class="editable">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" class="editable">
+                        </div>
+                        <button type="submit">UPDATE</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
