@@ -1,4 +1,4 @@
- <?php include '../universalHeader.php'; ?>
+ <?php include 'universalHeader.php'; ?>
     <style>     
 .about-container {
     padding: 50px;

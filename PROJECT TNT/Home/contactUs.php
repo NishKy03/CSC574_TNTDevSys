@@ -1,4 +1,4 @@
-<?php include '../universalHeader.php'; ?>
+<?php include 'universalHeader.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

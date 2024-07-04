@@ -1,4 +1,4 @@
-<?php include '../universalHeader.php'; ?>
+<?php include 'universalHeader.php'; ?>
     <title>Login Form</title>
     <style>
         body {
