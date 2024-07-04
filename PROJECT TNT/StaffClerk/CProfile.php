@@ -1,18 +1,19 @@
 <?php
-    include('nav.html');
+    include('CnavIn.html');
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <title>Profile Page</title>
     <style>
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
-            font-family: Arial, sans-serif;
+            font-family: "Poppins", sans-serif;
             background: #F3EDE0;
         }
         .container {
@@ -54,6 +55,7 @@
             border-radius: 5px;
             width: 100%;
             box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
         }
         .profile-form button {
             margin-top: 20px;

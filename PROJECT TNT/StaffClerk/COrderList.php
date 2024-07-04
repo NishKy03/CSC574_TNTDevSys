@@ -1,5 +1,5 @@
 <?php
-    include('nav.html');
+    include('CnavIn.html');
 ?>
 <!DOCTYPE html>
 <html>
@@ -18,6 +18,7 @@
             .content {
             flex: 1;
             padding: 20px;
+            padding-top: 100px;
             box-sizing: border-box;
             }
             .content h1 {

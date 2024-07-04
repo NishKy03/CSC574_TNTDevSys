@@ -1,10 +1,11 @@
 <?php
-    include('../nav.html');
+    include('CnavIn.html');
 ?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <title>Dashboard</title>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
         <style>
             body, html {
             margin: 0;
@@ -34,7 +35,7 @@
             <div class="chart-container">
                 <h2>Orders Delivered by Staff</h2>
                 <?php
-                    require_once "../dbConnect.php";
+                    require_once "../dbConfig.php";
 
                     $sql = "SELECT t.staffID, COUNT(t.staffID) as total
                             FROM TRACKING_UPDATE t JOIN STAFF s
@@ -46,7 +47,7 @@
                     $labels = [];
                     $data = [];
 
-                    if ($result = mysqli_query($dbCon, $sql)) {
+                    if ($result = mysqli_query($conn, $sql)) {
                         if (mysqli_num_rows($result) > 0) {
                             while($row = mysqli_fetch_assoc($result)) {
                                 $labels[] = $row["staffID"];
@@ -75,8 +76,7 @@
                             plugins: {
                                 legend: {display: false},
                                 title: {
-                                    display: true,
-                                    text: "Orders Delivered by Staff"    
+                                    display: true
                                 }
                             }
                         }
