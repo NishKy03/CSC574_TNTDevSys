@@ -1,6 +1,6 @@
 <?php 
 include '../dbConnect.php';
-include 'universalHeader.php';
+include '../universalHeader.php';
 ?>
 
 <!DOCTYPE html>
