@@ -1,4 +1,4 @@
-<?php include 'Home/universalHeader.php'; ?>
+<?php include 'universalHeader.php'; ?>
 <style>   
 body {
     overflow:hidden;
