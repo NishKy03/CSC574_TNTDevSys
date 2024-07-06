@@ -210,7 +210,7 @@
     </head>
     <body>
         <div class="header">
-            <a href="#default"><img src="../images/tntlogo.png"></a>
+            <a href="#default"><img src="images/tntlogo.png"></a>
             <div class="header-right">
                 <a class="opt" href="#about">Logout</a>
             </div>
@@ -221,12 +221,12 @@
         <aside class="sidebar">
             <div class="profile">
                 <h3>Hi,</h3>
-                <h3>Lee Chin</h3>
-                <img src="../images/picture.png" alt="Profile Picture">
+                <h3><?php echo $_SESSION['staffID']; ?></h3>
+                <img src="images/picture.png" alt="Profile Picture">
             </div>
             <nav>
                 <ul>
-                    <li><a href="profile.php">Profile</a></li>
+                    <li><a href="CProfile.php">Profile</a></li>
                     <li><a href="orders.php">Orders</a></li>
                     <li><a href="staff_list.php">Staff</a></li>
                 </ul>
