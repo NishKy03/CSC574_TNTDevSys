@@ -1,52 +1,53 @@
 <?php
-include("dbConfig.php");
+include("../dbConnect.php");
 
 
 session_start();
 
 
-if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-	header("location: ../home/login.html");
-	exit;
-}
+// if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
+// 	header("location: ../Home/login.php");
+// 	exit;
+// }
 
-$username = $_SESSION["staffID"];
-if($_SERVER["REQUEST_METHOD"] == "POST"){
-	$staffID = $_POST['staffID'];
-	$staffName = $_POST['staffName'];
-	$staffPhoneNo = $_POST['staffPhoneNo'];
-	$staffEmail = $_POST['staffEmail'];
-	$position = $_POST['position'];
-	$branchID = $_POST['branchID'];
+// $username = $_SESSION["staffID"];
+// if($_SERVER["REQUEST_METHOD"] == "POST"){
+// 	$staffID = $_POST['staffID'];
+// 	$staffName = $_POST['staffName'];
+$staffName = "Danish";
+// 	$staffPhoneNo = $_POST['staffPhoneNo'];
+// 	$staffEmail = $_POST['staffEmail'];
+// 	$position = $_POST['position'];
+// 	$branchID = $_POST['branchID'];
 
-	$sql = "UPDATE staff SET
-			staffName = $staffName, staffPhoneNo = $staffPhoneNo, staffEmail = $staffEmail, position=$position, branchID = $branchID
-			WHERE staffID = $staffID";
+// 	$sql = "UPDATE staff SET
+// 			staffName = $staffName, staffPhoneNo = $staffPhoneNo, staffEmail = $staffEmail, position=$position, branchID = $branchID
+// 			WHERE staffID = $staffID";
 
-			if($conn->query($sql) === TRUE){
-				echo "<div class='alert alert-success'>Record upated successfully</div>";
-			} else{
-				echo "<div class='alert alert-danger'>Error updating reocrd: " . $conn->error > "</div>";
-			}
+// 			if($conn->query($sql) === TRUE){
+// 				echo "<div class='alert alert-success'>Record upated successfully</div>";
+// 			} else{
+// 				echo "<div class='alert alert-danger'>Error updating reocrd: " . $conn->error > "</div>";
+// 			}
 
-			$conn->close();
-} else{
-	if(isset($_GET['id'])){
-		$staffID = $_GET['id'];
-		$sql = "SELECT * FROM staff WHERE staffID = '$staffID'";
-		$result = $conn->query($sql);
+// 			$conn->close();
+// } else{
+// 	if(isset($_GET['id'])){
+// 		$staffID = $_GET['id'];
+// 		$sql = "SELECT * FROM staff WHERE staffID = '$staffID'";
+// 		$result = $conn->query($sql);
 
-		if($result->num_rows>0){
-			$row = $result->fetch_assoc();
-		} else{
-			echo "<div class='alert alert-danger'>Staff did not found.</div>";
-			exit;
-		} 
-	} else {
-		echo "<div class='alert alert-danger'>Staff ID not provided. </div>";
-		exit;
-	}
-}
+// 		if($result->num_rows>0){
+// 			$row = $result->fetch_assoc();
+// 		} else{
+// 			echo "<div class='alert alert-danger'>Staff did not found.</div>";
+// 			exit;
+// 		} 
+// 	} else {
+// 		echo "<div class='alert alert-danger'>Staff ID not provided. </div>";
+// 		exit;
+// 	}
+// }
 ?>
 
 <!DOCTYPE html>

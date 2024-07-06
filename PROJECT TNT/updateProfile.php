@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../dbConnect.php';
+include 'dbConnect.php';
 
 // Check if staffID is set in session
 if (!isset($_SESSION['staffID'])) {

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../dbConnect.php';
+include 'dbConnect.php';
 
 $errorMessage = ''; // Initialize error message variable
 
@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Check position for access control
         if ($_SESSION['position'] == 'courier') {
-            header("Location: ../StaffDelivery/deliverylist.php");
+            header("Location: deliverylist.php");
             exit();
         } else {
             // Redirect to appropriate page for other positions

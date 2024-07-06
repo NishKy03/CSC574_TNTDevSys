@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Database connection
-require_once '../dbConnect.php'; // Adjust the path as per your project structure
+require_once 'dbConnect.php'; // Adjust the path as per your project structure
 
 // Retrieve staffID from session or set a default value
 $staffID = isset($_SESSION['staffID']) ? $_SESSION['staffID'] : null;
@@ -34,7 +34,7 @@ if ($staffID) {
             $newFileName = 'profile_' . $staffID . '.' . $fileExt;
 
             // File destination path
-            $uploadPath = '../uploads/profile/' . $newFileName;
+            $uploadPath = 'uploads/profile/' . $newFileName;
 
             // Move uploaded file to destination
             if (move_uploaded_file($fileTempName, $uploadPath)) {

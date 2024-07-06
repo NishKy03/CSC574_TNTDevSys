@@ -88,9 +88,9 @@
             </div>
         </a>
         <div class="navbar-links">
-            <a href="../index.php">HOME</a>
-            <a href="Home/contactUs.php">CONTACT</a>
-            <a href="Home/tracking.php">TRACKING</a>
+            <a href="index.php">HOME</a>
+            <a href="contactUs.php">CONTACT</a>
+            <a href="tracking.php">TRACKING</a>
             <a href="login.php">LOGIN</a>
         </div>
     </nav>
