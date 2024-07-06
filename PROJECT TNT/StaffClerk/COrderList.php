@@ -5,6 +5,7 @@
 <html>
     <head>
         <title>Orders List</title>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
         <style>
             body, html {
             margin: 0;
@@ -12,7 +13,7 @@
             height: 100%;
             background: linear-gradient(0deg, rgba(148, 148, 148, 0.61) 0%, rgba(148, 148, 148, 0.61) 20%), url('images/bg.jpg') no-repeat center center fixed;
             background-size: cover;
-            font-family: Arial, sans-serif;
+            font-family: "Poppins", sans-serif;
             }
 
             .content {

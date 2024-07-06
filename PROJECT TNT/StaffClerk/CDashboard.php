@@ -13,7 +13,7 @@
             height: 100%;
             background: linear-gradient(0deg, rgba(148, 148, 148, 0.61) 0%, rgba(148, 148, 148, 0.61) 20%), url('../images/bg.jpg') no-repeat center center fixed;
             background-size: cover;
-            font-family: Arial, sans-serif;
+            font-family: "Poppins", sans-serif;
             }
             .container {
                 display: flex;
@@ -41,7 +41,7 @@
                             FROM TRACKING_UPDATE t JOIN STAFF s
                             ON t.staffID = s.staffID
                             WHERE category = 'Delivered'
-                            AND s.branchID = 'BR000008'
+                            AND s.branchID = 'KTN01'
                             GROUP BY t.staffID;";
 
                     $labels = [];
@@ -86,10 +86,3 @@
         </div>
     </body>
 </html>
-
-<!--SELECT t.staffID, COUNT(t.staffID)
-FROM TRACKING_UPDATE t JOIN STAFF s
-ON t.staffID = s.staffID
-WHERE category = 'Delivery'
-AND branchID = ?
-GROUP BY t.staffID;-->
