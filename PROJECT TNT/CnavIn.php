@@ -228,7 +228,7 @@
                 <ul>
                     <li><a href="CProfile.php">Profile</a></li>
                     <li><a href="orders.php">Orders</a></li>
-                    <li><a href="staff_list.php">Staff</a></li>
+                    <li><a href="StaffClerk/staffList.php">Staff</a></li>
                 </ul>
             </nav>
         </aside>
