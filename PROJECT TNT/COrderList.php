@@ -1,5 +1,7 @@
 <?php
-    include('CnavIn.html');
+    include('CnavIn.php');
+    //session_start();
+    //$_SESSION['branchID'] = 'KTN01';
 ?>
 <!DOCTYPE html>
 <html>
@@ -58,7 +60,7 @@
     <body>
         <div class="container">
             <div class="content">
-                <h1>ORDERS (Branch ID: B0009)</h1>
+                <h1>ORDERS (Branch ID: <?php echo $_SESSION['branchID']?>)</h1>
                 <table class="order-table">
                     <tr>
                         <th>Order ID</th>
@@ -68,19 +70,58 @@
                         <th>Delivery Staff ID</th>
                         <th>Action</th>
                     </tr>
-                    <!--
-                    include 'orders.php';
-                    foreach ($orders as $order) {
-                        echo "<tr>";
-                        echo "<td>{$order['order_id']}</td>";
-                        echo "<td>{$order['order_date']}</td>";
-                        echo "<td>{$order['state']}</td>";
-                        echo "<td>{$order['status']}</td>";
-                        echo "<td>{$order['delivery_staff_id']}</td>";
-                        echo "<td><button class='update-button'>Update</button></td>";
-                        echo "</tr>";
-                    }
-                    -->
+                    <?php
+                        // Include dbConnect file
+                        require_once "dbConfig.php";
+                        // Attempt select query execution
+                        $sql = "SELECT o.orderID, o.orderDate, r.state, t.category, t.staffID
+                                FROM recipient r, orders o, tracking_update t, staff s
+                                WHERE o.orderID = t.orderID
+                                AND t.staffID = s.staffID
+                                AND r.recipientID = o.recipientID
+                                AND updateID IN (SELECT MAX(updateID)
+                                                FROM tracking_update
+                                                GROUP BY orderID)
+                                AND s.position = 'Delivery Staff'
+                                AND t.branchID = ?;";
+                        if ($stmt = mysqli_prepare($conn, $sql)) {
+                            // Bind variables to the prepared statement as parameters
+                            mysqli_stmt_bind_param($stmt, "s", $param_bID);
+                            
+                            // Set parameters
+                            $param_bID = $_SESSION['branchID'];
+                            
+                            // Attempt to execute the prepared statement
+                            if (mysqli_stmt_execute($stmt)) {
+                                $result = mysqli_stmt_get_result($stmt);
+                                if (mysqli_num_rows($result) > 0) {
+                                    while ($row = mysqli_fetch_array($result)) {
+                                        echo "<tr>";
+                                        $orderID = $row['orderID'];
+                                        echo "<td>" . $orderID . "</td>";
+                                        echo "<td>" . $row['orderDate'] . "</td>";
+                                        echo "<td>" . $row['state'] . "</td>";
+                                        echo "<td>" . $row['category'] . "</td>\n";
+                                        echo "<td>" . $row['staffID'] . "</td>\n";
+                                        echo "<td>";
+                                        echo "<a href='updateForm.php?orderID=" . $orderID . "' title='Update'>Update</a>";;
+                                        echo "</td>";
+                                        echo "</tr>";
+                                    };
+
+                                    // Free result set
+                                    mysqli_free_result($result);
+                                } else {
+                                    echo "<p><em>No records were found.</em></p>";
+                                }
+                            } else {
+                                echo "ERROR: Could not able to execute $sql. " . mysqli_error($conn);
+                            }
+
+                            // Close connection
+                            mysqli_close($conn);
+                        }
+                    ?>
                 </table>
             </div>
         </div>
