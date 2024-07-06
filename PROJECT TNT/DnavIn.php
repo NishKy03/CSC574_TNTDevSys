@@ -212,7 +212,6 @@
         <div class="header">
             <a href="#default"><img src="../images/tntlogo.png"></a>
             <div class="header-right">
-                <a class="opt active" href="#home">Home</a>
                 <a class="opt" href="#about">Logout</a>
             </div>
         </div>
@@ -228,8 +227,7 @@
             <nav>
                 <ul>
                     <li><a href="profile.php">Profile</a></li>
-                    <li><a href="orders.php">Orders</a></li>
-                    <li><a href="staff_list.php">Staff</a></li>
+                    <li><a href="orders.php">Delivery</a></li>
                 </ul>
             </nav>
         </aside>
