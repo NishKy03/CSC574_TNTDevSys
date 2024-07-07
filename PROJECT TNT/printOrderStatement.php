@@ -2,10 +2,11 @@
 <html>
     <head>
         <?php
-            require_once('orderStatementDetails.php');
+            require_once('orderDetailsPrint.php');
         ?>
         <script >
-            alert("Please click Ctrl + P to print the order statement");
+            //alert("Please click Ctrl + P to print the order statement");
+            window.print();
         </script>
         <title>Print Order Statement</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">

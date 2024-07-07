@@ -1,6 +1,6 @@
 <?php
     require_once "dbConfig.php";
-    $sql = "SELECT o.orderID, r.name AS rName, r.phoneNo AS rPhoneNo, r.addressLine1 AS rAddress, r.postcode AS rPostcode, r.city AS rCity, r.state AS rState, s.senderName, s.senderPhoneNo, s.addressLine1 AS sAddress, s.postcode As sPostcode, s.city AS sCity, s.state AS sState, o.orderDate, o.parcelWeight, o.totalAmount
+    $sql = "SELECT o.orderID, r.name AS rName, r.phoneNo AS rPhoneNo, r.addressLine1 AS rAddress, r.postcode AS rPostcode, r.city AS rCity, r.state AS rState, s.senderName, s.senderPhoneNo, s.addressLine1 AS sAddress, s.postcode As sPostcode, s.city AS sCity, s.state AS sState, o.orderDate, o.parcelWeight, o.totalAmount, o.insurance
             FROM orders o, recipient r, sender s
             WHERE o.senderID = s.senderID
             AND o.recipientID = r.recipientID
@@ -29,6 +29,7 @@
             $orderDate = $row['orderDate'];
             $weight = $row['parcelWeight'];
             $amount = $row['totalAmount'];
+            $insurance = $row['insurance'];
         } else {
             exit();
         }

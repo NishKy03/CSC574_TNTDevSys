@@ -145,7 +145,7 @@
             text-align: center;
             margin-top: 20px;
         }
-        .actions button {
+        .actions a {
             background-color: #d9534f;
             color: #fff;
             padding: 10px 20px;
@@ -154,8 +154,9 @@
             cursor: pointer;
             margin: 0 10px;
             font-size: 1em;
+            text-decoration: none;
         }
-        .actions button:hover {
+        .actions a:hover {
             background-color: #c9302c;
         }
     </style>
@@ -179,7 +180,7 @@
 </div>
 <div>
 <?php
-    require_once('orderStatementDetails.php');
+    require_once('orderDetailsPrint.php');
 ?>
 <div class="container">
     <div class="section">
@@ -208,15 +209,9 @@
 
     <div class="actions">
         <a href='printOrderStatement.php' target="popup" onclick="window.open('printOrderStatement.php', '_blank', 'width=600,height=400'); return false;">Print</a>
-        <button onclick="generateWaybill()">Generate Waybill</button>
+        <a href='printOrderWaybill.php' target="popup" onclick="window.open('printOrderWaybill.php', '_blank', 'width=600,height=400'); return false;">Generate Waybill</a>
     </div>
 </div>
 </div>
-<script>
-    function generateWaybill() {
-        alert('Waybill generated!');
-    }
-</script>
-
 </body>
 </html>
