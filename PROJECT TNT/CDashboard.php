@@ -1,5 +1,5 @@
 <?php
-    include('CnavIn.html');
+    include('CnavIn.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">
