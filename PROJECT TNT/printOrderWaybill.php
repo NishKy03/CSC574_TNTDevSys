@@ -2,7 +2,7 @@
 <html>
     <head>
         <?php
-            require_once('orderDetailsPrint.php');
+            require_once('SWOrderDetails.php');
         ?>
         <script >
             window.print();

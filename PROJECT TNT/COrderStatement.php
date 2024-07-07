@@ -180,7 +180,7 @@
 </div>
 <div>
 <?php
-    require_once('orderDetailsPrint.php');
+    require_once('SWOrderDetails.php');
 ?>
 <div class="container">
     <div class="section">
