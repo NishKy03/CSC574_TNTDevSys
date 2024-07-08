@@ -525,32 +525,32 @@
                     <div class="input-group">
                         <label for="SName">Name</label>
                         <input name="SName" id="SName" type="text" value="<?php echo isset($SName) ? $SName : ''?>" required>
-                        <span id="nameError" class="error"><?php echo $SName_err?></span>
+                        <span id="SNameError" class="error"><?php echo $SName_err?></span>
                     </div>
                     <div class="input-group">
                         <label for="phoneno">Phone Number</label>
                         <input type="text" name="SPhone" id="SPhone" value="<?php echo isset($SPhone) ? $SPhone : ''?>" required>
-                        <span id="phoneNumberError" class="error"><?php echo $SPhone_err?></span>
+                        <span id="SPhoneError" class="error"><?php echo $SPhone_err?></span>
                     </div>
                     <div class="input-group">
                         <label for="SAddress">Address</label>
                         <input type="text" name="SAddress" id="SAddress" value="<?php echo isset($SAddress) ? $SAddress : ''?>" required>
-                        <span id="stateError" class="error"><?php echo $SAddress_err?></span>
+                        <span id="SAddressError" class="error"><?php echo $SAddress_err?></span>
                     </div>
                     <div class="input-group2">
                         <label for="SCity">City</label>
                         <input type="text" name="SCity" id="SCity"  value="<?php echo isset($SCity) ? $SCity : ''?>" required>
-                        <span id="cityError" class="error"><?php echo $SCity_err?></span>
+                        <span id="SCityError" class="error"><?php echo $SCity_err?></span>
                     </div>
                     <div class="input-group3">
                         <label for="state">State</label>
                         <input name="SState" id="SState" type="text" value="<?php echo isset($SState) ? $SState : ''?>" required>
-                        <span id="stateError" class="error"><?php echo $SState_err?></span>
+                        <span id="SStateError" class="error"><?php echo $SState_err?></span>
                     </div>
                     <div class="input-group">
                         <label for="SPostcode">Postcode</label>
                         <input type="text" name="SPostcode" id="SPostcode"  value="<?php echo isset($SPostcode) ? $SPostcode : ''?>" required>
-                        <span id="postcodeError" class="error"><?php echo $SPostcode_err?></span>
+                        <span id="SPostcodeError" class="error"><?php echo $SPostcode_err?></span>
                     </div>
                     <hr>
                 </div>
@@ -564,17 +564,17 @@
                     <div class="input-group">
                         <label for="phoneno">Phone Number</label>
                         <input type="text" name="RPhone" id="RPhone" value="<?php echo isset($RPhone) ? $RPhone : ''?>" required>
-                        <span id="RPhoneError" class="error"> <?php echo $RPhone_err ?></span>
+                        <span id="RPhoneError" class="error"><?php echo $RPhone_err?></span>
                     </div>
                     <div class="input-group">
                         <label for="address">Address</label>
                         <input type="text" name="RAddress" id="RAddress" value="<?php echo isset($RAddress) ? $RAddress : ''?>" required>
-                        <span id="RAddress_error" class="error"><?php echo $RAddress_err?></span>
+                        <span id="RAddressError" class="error"><?php echo $RAddress_err?></span>
                     </div>
                     <div class="input-group2">
                         <label for="city">City</label>
                         <input type="text" name="RCity" id="RCity" value="<?php echo isset($RCity) ? $RCity : ''?>" required>
-                         <span id="RCityError" class="error"><?php echo $RCity_err?></span>
+                        <span id="RCityError" class="error"><?php echo $RCity_err?></span>
                     </div>
                     <div class="input-group3">
                         <label for="state">State</label>
@@ -614,6 +614,7 @@
 							}
 						?>
                         </select>
+                        <span id="shipRateIDError" class="error"><?php echo $rateID_err?></span>
                     </div>
                     <div class="input-group4">
                         <b>Insurance</b>
@@ -626,7 +627,290 @@
                 </div>
             </form>
         </div>
-    </div>    
+    </div> 
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Function to validate form fields on submit
+        function validateForm() {
+            var isValid = true;
+
+            // Validate Sender Name
+            var SName = document.getElementById('SName').value.trim();
+            if (!SName.match(/^[A-Za-z\s]{1,255}$/)) {
+                document.getElementById('SNameError').innerHTML = 'Please enter a valid name (only letters and spaces, max 50 characters).';
+                isValid = false;
+            } else {
+                document.getElementById('SNameError').innerHTML = '';
+            }
+
+            // Validate Sender Phone
+            var SPhone = document.getElementById('SPhone').value.trim();
+            if (!SPhone.match(/^\d{3}-\d{7}|\d{3}-\d{6}$/)) {
+                document.getElementById('SPhoneError').innerHTML = 'Please enter a valid phone number (format: XXX-XXXXXXX or XXX-XXXXXXXX).';
+                isValid = false;
+            } else {
+                document.getElementById('SPhoneError').innerHTML = '';
+            }
+
+            // Validate Sender Address
+            var SAddress = document.getElementById('SAddress').value.trim();
+            if (SAddress === '') {
+                document.getElementById('SAddressError').innerHTML = 'Please enter the sender\'s address.';
+                isValid = false;
+            } else {
+                document.getElementById('SAddressError').innerHTML = '';
+            }
+
+            // Validate Sender City
+            var SCity = document.getElementById('SCity').value.trim();
+            if (!SCity.match(/^[a-zA-Z\s]+$/)) {
+                document.getElementById('SCityError').innerHTML = 'City must contain only letters and spaces.';
+                isValid = false;
+            } else {
+                document.getElementById('SCityError').innerHTML = '';
+            }
+
+            // Validate Sender State
+            var SState = document.getElementById('SState').value.trim();
+            if (!SState.match(/^[a-zA-Z\s]+$/)) {
+                document.getElementById('SStateError').innerHTML = 'State must contain only letters and spaces.';
+                isValid = false;
+            } else {
+                document.getElementById('SStateError').innerHTML = '';
+            }
+
+            // Validate Sender Postcode
+            var SPostcode = document.getElementById('SPostcode').value.trim();
+            if (!SPostcode.match(/^\d{5}$/)) {
+                document.getElementById('SPostcodeError').innerHTML = 'Postcode must contain exactly 5 digits.';
+                isValid = false;
+            } else {
+                document.getElementById('SPostcodeError').innerHTML = '';
+            }
+
+            // Validate Recipient Name
+            var RName = document.getElementById('RName').value.trim();
+            if (!RName.match(/^[A-Za-z\s]{1,255}$/)) {
+                document.getElementById('RNameError').innerHTML = 'Please enter a valid name (only letters and spaces, max 50 characters).';
+                isValid = false;
+            } else {
+                document.getElementById('RNameError').innerHTML = '';
+            }
+
+            // Validate Recipient Phone
+            var RPhone = document.getElementById('RPhone').value.trim();
+            if (!RPhone.match(/^\d{3}-\d{7}|\d{3}-\d{6}$/)) {
+                document.getElementById('RPhoneError').innerHTML = 'Please enter a valid phone number (format: XXX-XXXXXXX or XXX-XXXXXXXX).';
+                isValid = false;
+            } else {
+                document.getElementById('RPhoneError').innerHTML = '';
+            }
+
+            // Validate Recipient Address
+            var RAddress = document.getElementById('RAddress').value.trim();
+            if (RAddress === '') {
+                document.getElementById('RAddressError').innerHTML = 'Please enter the recipient\'s address.';
+                isValid = false;
+            } else {
+                document.getElementById('RAddressError').innerHTML = '';
+            }
+
+            // Validate Recipient City
+            var RCity = document.getElementById('RCity').value.trim();
+            if (!RCity.match(/^[a-zA-Z\s]+$/)) {
+                document.getElementById('RCityError').innerHTML = 'City must contain only letters and spaces.';
+                isValid = false;
+            } else {
+                document.getElementById('RCityError').innerHTML = '';
+            }
+
+            // Validate Recipient State
+            var RState = document.getElementById('RState').value.trim();
+            if (!RState.match(/^[a-zA-Z\s]+$/)) {
+                document.getElementById('RStateError').innerHTML = 'State must contain only letters and spaces.';
+                isValid = false;
+            } else {
+                document.getElementById('RStateError').innerHTML = '';
+            }
+
+            // Validate Recipient Postcode
+            var RPostcode = document.getElementById('RPostcode').value.trim();
+            if (!RPostcode.match(/^\d{5}$/)) {
+                document.getElementById('RPostcodeError').innerHTML = 'Postcode must contain exactly 5 digits.';
+                isValid = false;
+            } else {
+                document.getElementById('RPostcodeError').innerHTML = '';
+            }
+
+            // Validate Weight
+            var weight = document.getElementById('weight').value.trim();
+            if (!RState.match(/^\d+$/) || weight <= 0) {
+                document.getElementById('weightError').innerHTML = 'Please enter a valid weight (> 0).';
+                isValid = false;
+            } else {
+                document.getElementById('weightError').innerHTML = '';
+            }
+
+            // Validate Description
+            var description = document.getElementById('description').value.trim();
+            if (description === '') {
+                document.getElementById('descriptionError').innerHTML = 'Please enter a description.';
+                isValid = false;
+            } else {
+                document.getElementById('descriptionError').innerHTML = '';
+            }
+
+            // Validate Shipping Rate
+            var shipRateID = document.getElementById('shipRateID').value.trim();
+            if (shipRateID === '') {
+                document.getElementById('shipRateIDError').innerHTML = 'Please select a shipping rate.';
+                isValid = false;
+            } else {
+                document.getElementById('shipRateIDError').innerHTML = '';
+            }
+
+            return isValid;
+        }
+
+        // Real-time validation on input change
+        document.getElementById('SName').addEventListener('input', function() {
+            var SName = this.value.trim();
+            if (!SName.match(/^[A-Za-z\s]{1,255}$/)) {
+                document.getElementById('SNameError').innerHTML = 'Please enter a valid name (only letters and spaces).';
+            } else {
+                document.getElementById('SNameError').innerHTML = '';
+            }
+        });
+
+        document.getElementById('SPhone').addEventListener('input', function() {
+            var SPhone = this.value.trim();
+            if (!SPhone.match(/^\d{3}-\d{7}|\d{3}-\d{6}$/)) {
+                document.getElementById('SPhoneError').innerHTML = 'Please enter a valid phone number (format: XXX-XXXXXXX or XXX-XXXXXXXX).';
+            } else {
+                document.getElementById('SPhoneError').innerHTML = '';
+            }
+        });
+
+        document.getElementById('SAddress').addEventListener('input', function() {
+            var SAddress = this.value.trim();
+            if (SAddress === '') {
+                document.getElementById('SAddressError').innerHTML = 'Please enter the sender\'s address.';
+            } else {
+                document.getElementById('SAddressError').innerHTML = '';
+            }
+        });
+
+        document.getElementById('SCity').addEventListener('input', function() {
+            var SCity = this.value.trim();
+            if (!SCity.match(/^[a-zA-Z\s]+$/)) {
+                document.getElementById('SCityError').innerHTML = 'City must contain only letters and spaces.';
+            } else {
+                document.getElementById('SCityError').innerHTML = '';
+            }
+        });
+
+        document.getElementById('SState').addEventListener('input', function() {
+            var SState = this.value.trim();
+            if (!SState.match(/^[a-zA-Z\s]+$/)) {
+                document.getElementById('SStateError').innerHTML = 'State must contain only letters and spaces.';
+            } else {
+                document.getElementById('SStateError').innerHTML = '';
+            }
+        });
+
+        document.getElementById('SPostcode').addEventListener('input', function() {
+            var SPostcode = this.value.trim();
+            if (!SPostcode.match(/^\d{5}$/)) {
+                document.getElementById('SPostcodeError').innerHTML = 'Postcode must contain exactly 5 digits.';
+            } else {
+                document.getElementById('SPostcodeError').innerHTML = '';
+            }
+        });
+
+        document.getElementById('RName').addEventListener('input', function() {
+            var RName = this.value.trim();
+            if (!RName.match(/^[A-Za-z\s]{1,255}$/)) {
+                document.getElementById('RNameError').innerHTML = 'Please enter a valid name (only letters and spaces).';
+            } else {
+                document.getElementById('RNameError').innerHTML = '';
+            }
+        });
+
+        document.getElementById('RPhone').addEventListener('input', function() {
+            var RPhone = this.value.trim();
+            if (!RPhone.match(/^\d{3}-\d{7}|\d{3}-\d{6}$/)) {
+                document.getElementById('RPhoneError').innerHTML = 'Please enter a valid phone number (format: XXX-XXXXXXX or XXX-XXXXXXXX).';
+            } else {
+                document.getElementById('RPhoneError').innerHTML = '';
+            }
+        });
+
+        document.getElementById('RAddress').addEventListener('input', function() {
+            var RAddress = this.value.trim();
+            if (RAddress === '') {
+                document.getElementById('RAddressError').innerHTML = 'Please enter the recipient\'s address.';
+            } else {
+                document.getElementById('RAddressError').innerHTML = '';
+            }
+        });
+
+        document.getElementById('RCity').addEventListener('input', function() {
+            var RCity = this.value.trim();
+            if (!RCity.match(/^[a-zA-Z\s]+$/)) {
+                document.getElementById('RCityError').innerHTML = 'City must contain only letters and spaces.';
+            } else {
+                document.getElementById('RCityError').innerHTML = '';
+            }
+        });
+
+        document.getElementById('RState').addEventListener('input', function() {
+            var RState = this.value.trim();
+            if (!RState.match(/^[a-zA-Z\s]+$/)) {
+                document.getElementById('RStateError').innerHTML = 'State must contain only letters and spaces.';
+            } else {
+                document.getElementById('RStateError').innerHTML = '';
+            }
+        });
+
+        document.getElementById('RPostcode').addEventListener('input', function() {
+            var RPostcode = this.value.trim();
+            if (!RPostcode.match(/^\d{5}$/)) {
+                document.getElementById('RPostcodeError').innerHTML = 'Postcode must contain exactly 5 digits.';
+            } else {
+                document.getElementById('RPostcodeError').innerHTML = '';
+            }
+        });
+
+        document.getElementById('weight').addEventListener('input', function() {
+            var weight = this.value.trim();
+            if (!weight.match(/^\d+$/)|| weight <= 0) {
+                document.getElementById('weightError').innerHTML = 'Please enter a valid weight (> 0).';
+            } else {
+                document.getElementById('weightError').innerHTML = '';
+            }
+        });
+
+        document.getElementById('description').addEventListener('input', function() {
+            var description = this.value.trim();
+            if (description === '') {
+                document.getElementById('descriptionError').innerHTML = 'Please enter a description.';
+            } else {
+                document.getElementById('descriptionError').innerHTML = '';
+            }
+        });
+
+        document.getElementById('shipRateID').addEventListener('change', function() {
+            var shipRateID = this.value.trim();
+            if (shipRateID === '') {
+                document.getElementById('shipRateIDError').innerHTML = 'Please select a shipping rate.';
+            } else {
+                document.getElementById('shipRateIDError').innerHTML = '';
+            }
+        });
+
+    </script>   
     </body>
 </html>
                         <!--untuk dollah-->
