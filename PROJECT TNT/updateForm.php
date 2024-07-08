@@ -1,79 +1,93 @@
 <?php
-    include('CHeader.php');
-    require_once "dbConnect.php";
+include('CHeader.php');
+require_once "dbConnect.php";
 
-    // Initialize variables
-    $orderID = $category = $branchID = $staffID = "";
+// Initialize variables
+$orderID = $category = $branchID = $staffID = "";
 
-    // Processing form data when form is submitted
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // Validate orderID (you may need additional validation here)
-        $orderID = trim($_POST["orderID"]);
-        $category = $_POST["category"];
-        $branchID = $_POST["branchID"];
-        $staffID = isset($_POST["staffID"]) ? $_POST["staffID"] : null;
+// Processing form data when form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Validate orderID (you may need additional validation here)
+    $orderID = trim($_POST["orderID"]);
+    $category = $_POST["category"];
+    $branchID = $_POST["branchID"];
+    $staffID = isset($_POST["staffID"]) ? $_POST["staffID"] : null;
 
-        // Prepare the appropriate SQL update statement
+    // Prepare the appropriate SQL update statement
+    if ($category === "Delivery" && !empty($staffID)) {
+        $sql = "UPDATE tracking_update SET category = ?, branchID = ?, staffID = ? WHERE orderID = ?";
+        $orderStatusUpdate = "UPDATE orders SET status = 'Out for Delivery' WHERE orderID = ?";
+    } elseif ($category === "Departure") {
+        $sql = "UPDATE tracking_update SET category = ?, branchID = ? WHERE orderID = ?";
+        $orderStatusUpdate = "UPDATE orders SET status = 'In Transit' WHERE orderID = ?";
+    } else {
+        $sql = "UPDATE tracking_update SET category = ?, branchID = ? WHERE orderID = ?";
+        $orderStatusUpdate = null; // No status update for other categories
+    }
+
+    if ($stmt = mysqli_prepare($dbCon, $sql)) {
+        // Bind variables to the prepared statement as parameters
         if ($category === "Delivery" && !empty($staffID)) {
-            $sql = "UPDATE tracking_update SET category = ?, branchID = ?, staffID = ? WHERE orderID = ?";
+            mysqli_stmt_bind_param($stmt, "ssss", $category, $branchID, $staffID, $orderID);
         } else {
-            $sql = "UPDATE tracking_update SET category = ?, branchID = ? WHERE orderID = ?";
+            mysqli_stmt_bind_param($stmt, "sss", $category, $branchID, $orderID);
         }
 
-        if ($stmt = mysqli_prepare($dbCon, $sql)) {
-            // Bind variables to the prepared statement as parameters
-            if ($category === "Delivery" && !empty($staffID)) {
-                mysqli_stmt_bind_param($stmt, "ssss", $category, $branchID, $staffID, $orderID);
-            } else {
-                mysqli_stmt_bind_param($stmt, "sss", $category, $branchID, $orderID);
+        // Attempt to execute the prepared statement
+        if (mysqli_stmt_execute($stmt)) {
+            // Update the order status if required
+            if ($orderStatusUpdate) {
+                if ($statusStmt = mysqli_prepare($dbCon, $orderStatusUpdate)) {
+                    mysqli_stmt_bind_param($statusStmt, "s", $orderID);
+                    mysqli_stmt_execute($statusStmt);
+                    mysqli_stmt_close($statusStmt);
+                }
             }
 
-            // Attempt to execute the prepared statement
-            if (mysqli_stmt_execute($stmt)) {
-                // Set session variable to indicate success
-                $_SESSION['update_success'] = true;
+            // Set session variable to indicate success
+            $_SESSION['update_success'] = true;
 
-                // Redirect to the orders list page after successful update
-                header("location: COrderList.php");
-                exit();
-            } else {
-                echo "Oops! Something went wrong. Please try again later.";
-            }
+            // Redirect to the orders list page after successful update
+            header("location: COrderList.php");
+            exit();
+        } else {
+            echo "Oops! Something went wrong. Please try again later.";
         }
 
         // Close statement
         mysqli_stmt_close($stmt);
-    } else {
-        // Fetch existing order details for display
-        if (isset($_GET["orderID"]) && !empty(trim($_GET["orderID"]))) {
-            $orderID = trim($_GET["orderID"]);
-
-            // Prepare a select statement to fetch staff based on branch
-            $sql1 = "SELECT branchID, CONCAT(branchID, ' - ', name) as branchName FROM branch ORDER BY branchID";
-            $rsBranch = mysqli_query($dbCon, $sql1);
-
-            // Prepare a select statement to fetch staff for delivery category
-            $sql2 = "SELECT staffID, CONCAT(staffID, ' - ', staffName) as staffName FROM staff WHERE position = 'courier' AND branchID = ?";
-            if ($stmt = mysqli_prepare($dbCon, $sql2)) {
-                // Bind variables to the prepared statement as parameters
-                mysqli_stmt_bind_param($stmt, "s", $branchID);
-
-                // Set parameter
-                $branchID = $_SESSION['branchID'];
-
-                // Attempt to execute the prepared statement
-                if (mysqli_stmt_execute($stmt)) {
-                    $rsStaff = mysqli_stmt_get_result($stmt);
-                } else {
-                    echo "Oops! Something went wrong. Please try again later.";
-                }
-            }
-        } else {
-            // Redirect to error page if orderID is not provided
-            header("location: error.php");
-            exit();
-        }
     }
+} else {
+    // Fetch existing order details for display
+    if (isset($_GET["orderID"]) && !empty(trim($_GET["orderID"]))) {
+        $orderID = trim($_GET["orderID"]);
+
+        // Prepare a select statement to fetch staff based on branch
+        $sql1 = "SELECT branchID, CONCAT(branchID, ' - ', name) as branchName FROM branch ORDER BY branchID";
+        $rsBranch = mysqli_query($dbCon, $sql1);
+
+        // Prepare a select statement to fetch staff for delivery category
+        $sql2 = "SELECT staffID, CONCAT(staffID, ' - ', staffName) as staffName FROM staff WHERE position = 'courier' AND branchID = ?";
+        if ($stmt = mysqli_prepare($dbCon, $sql2)) {
+            // Bind variables to the prepared statement as parameters
+            mysqli_stmt_bind_param($stmt, "s", $branchID);
+
+            // Set parameter
+            $branchID = $_SESSION['branchID'];
+
+            // Attempt to execute the prepared statement
+            if (mysqli_stmt_execute($stmt)) {
+                $rsStaff = mysqli_stmt_get_result($stmt);
+            } else {
+                echo "Oops! Something went wrong. Please try again later.";
+            }
+        }
+    } else {
+        // Redirect to error page if orderID is not provided
+        header("location: error.php");
+        exit();
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
