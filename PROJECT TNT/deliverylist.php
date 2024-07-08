@@ -21,12 +21,6 @@ switch ($filter) {
     case 'out_for_delivery':
         $filterQuery = " AND ORDERS.status = 'Out for Delivery'";
         break;
-    case 'shipped':
-        $filterQuery = " AND ORDERS.status = 'Shipped'";
-        break;
-    case 'in_progress':
-        $filterQuery = " AND ORDERS.status = 'In Progress'";
-        break;
     case 'delivered':
         $filterQuery = " AND ORDERS.status = 'Delivered'";
         break;
@@ -188,11 +182,6 @@ if (isset($_POST['done'])) {
                         <option value="out_for_delivery" <?php if ($filter === 'out_for_delivery')
                             echo 'selected'; ?>>Out
                             for Delivery</option>
-                        <option value="shipped" <?php if ($filter === 'shipped')
-                            echo 'selected'; ?>>Shipped</option>
-                        <option value="in_progress" <?php if ($filter === 'in_progress')
-                            echo 'selected'; ?>>In Progress
-                        </option>
                         <option value="delivered" <?php if ($filter === 'delivered')
                             echo 'selected'; ?>>Delivered
                         </option>
