@@ -79,7 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if (mysqli_stmt_execute($stmt)) {
                 echo "<script>alert('Successfully created a new staff');</script>";
-                echo "<script>location.href='login.php';</script>";
+                echo "<script>location.href='staffList.php';</script>";
             } else {
                 echo "Something went wrong. Please try again later.";
             }
@@ -218,7 +218,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <div class="form-group">
                     <label for="phone-number" class="text-white">Phone Number:</label>
-                    <input type="tel" class="form-control <?php echo (!empty($phone_err)) ? 'is-invalid' : ''; ?>" id="phoneNumber" name="phoneNumber" value="<?php echo $phone; ?>" required maxlength="12">
+                    <input type="tel" class="form-control <?php echo (!empty($phone_err)) ? 'is-invalid' : ''; ?>" id="phoneNumber" name="phoneNumber" value="<?php echo $phone; ?>" required>
                     <span class="invalid-feedback"><?php echo $phone_err; ?></span>
                 </div>
                 <div class="form-group">
@@ -252,3 +252,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     </body>
 </html>
+
+
+
+
+
