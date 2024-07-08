@@ -710,29 +710,7 @@
 </script>
     </head>
     <body>
-        <div class="header">
-            <a href="#default"><img src="images/tntlogo.png"></a>
-            <div class="header-right">
-                <a class="opt" href="logout.php">Logout</a>
-            </div>
-        </div>
-        <label class="hamburger-menu">
-            <input type="checkbox" />
-        </label>
-        <aside class="sidebar">
-            <div class="profile">
-                <h3>Hi,</h3>
-                <h3><?php echo $_SESSION['staffID']; ?></h3>
-                <img src="images/picture.png" alt="Profile Picture">
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="CProfile.php">Profile</a></li>
-                    <li><a href="orders.php">Orders</a></li>
-                    <li><a href="staffList.php">Staff</a></li>
-                </ul>
-            </nav>
-        </aside>
+        <?php include("CHeader.php")?>
         <div class="container">
         <div class="section">
             <div class="progressbar-wrap">
