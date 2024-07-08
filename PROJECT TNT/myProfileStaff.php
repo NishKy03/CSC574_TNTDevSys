@@ -104,109 +104,117 @@ $securityQuestions = [
     <link rel="stylesheet" href="header.css">
     <title>Profile - TNT</title>
     <style>
-    html{
-        overflow:hidden;
-    }
-    body {
-        font-family: 'Poppins', sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #ECE0D1;
-    }
+        html {
+            overflow: hidden;
+        }
 
-    .container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 2%;
-        padding: 20px;
-    }
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ECE0D1;
+        }
 
-    .profile-content {
-        background-color: #4b0606;
-        padding: 30px;
-        border-radius: 20px;
-        width: 100%;
-        max-width: 600px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        color: white;
-    }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 2%;
+            padding: 20px;
+        }
 
-    .profile-details h1 {
-        text-align: center;
-        font-size: 36px;
-        margin-bottom: 30px;
-    }
+        .profile-content {
+            background-color: #4b0606;
+            padding: 30px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            color: white;
+        }
 
-    .profile-info {
-        display: flex;
-        flex-direction: column;
-    }
+        .profile-details h1 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 30px;
+        }
 
-    .profile-info .form-group {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px;
-    }
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+        }
 
-    .profile-info label {
-        width: 200px; /* Increased width to accommodate longer labels */
-        font-size: 16px;
-        font-weight: bold;
-    }
+        .profile-info .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-    .profile-info input,
-    .profile-info select { /* Added styling for select elements */
-        flex: 1;
-        padding: 10px;
-        border: none;
-        border-radius: 10px;
-        font-size: 16px;
-        width: 100%; /* Ensures inputs and selects take full width */
-    }
+        .profile-info label {
+            width: 200px;
+            font-size: 16px;
+            font-weight: bold;
+        }
 
-    .profile-info .editable {
-        background-color: #fff;
-    }
+        .profile-info input,
+        .profile-info select {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            width: 100%;
+        }
 
-    .profile-info .non-editable {
-        background-color: transparent;
-        color: #fff;
-    }
+        .profile-info .editable {
+            background-color: #fff;
+        }
 
-    .profile-info button {
-        padding: 15px;
-        background-color: #b45858;
-        border: none;
-        border-radius: 10px;
-        font-size: 18px;
-        font-weight: bold;
-        color: white;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        margin-top: 20px;
-        width: 100%;
-    }
+        .profile-info .non-editable {
+            background-color: transparent;
+            color: #fff;
+        }
 
-    .profile-info button:hover {
-        background-color: #4b0606;
-    }
+        .profile-info button {
+            padding: 15px;
+            background-color: #b45858;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+            width: 100%;
+        }
 
-    /* Adjustments for select dropdown */
-    .profile-info select {
-        width: 100%; /* Full width */
-        max-width: 100%; /* Ensure no overflow */
-        box-sizing: border-box; /* Include padding in width */
-    }
-</style>
+        .profile-info button:hover {
+            background-color: #4b0606;
+        }
 
+        .profile-info select {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        function validateForm() {
+        function validateForm(event) {
+            event.preventDefault();
+
             // Validate name: only letters allowed
             var name = document.getElementById("name").value;
             var namePattern = /^[A-Za-z\s]+$/;
             if (!namePattern.test(name)) {
-                alert("Name can only contain letters and spaces.");
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Name can only contain letters and spaces.',
+                    icon: 'error',
+                    confirmButtonColor: '#d33'
+                });
                 return false;
             }
 
@@ -214,11 +222,22 @@ $securityQuestions = [
             var phone = document.getElementById("phone").value;
             var phonePattern = /^\d{3}-\d{3} \d{4}$/;
             if (!phonePattern.test(phone)) {
-                alert("Phone number must be in the format ###-### #### (e.g., 017-970 3786).");
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Phone number must be in the format ###-### #### (e.g., 017-970 3786).',
+                    icon: 'error',
+                    confirmButtonColor: '#d33'
+                });
                 return false;
             }
 
-            return true;
+            // Await confirmation from the alert
+            drawAlert().then((confirmed) => {
+                if (confirmed) {
+                    // If confirmed, submit the form
+                    document.getElementById("profileForm").submit();
+                }
+            });
         }
 
         function formatPhoneNumber(input) {
@@ -233,11 +252,12 @@ $securityQuestions = [
         }
 
         window.onload = function() {
-            // Check if the URL contains the 'update=success' parameter
+            // Check if the URL contains the 'update=success' or 'update=error' parameter
             var urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('update') === 'success') {
-                // Display the alert
-                alert("Successfully Updated");
+                showSuccessMessage("Successfully Updated");
+            } else if (urlParams.get('update') === 'error') {
+                showErrorMessage("Update Failed. Please try again.");
             }
         }
 
@@ -254,6 +274,38 @@ $securityQuestions = [
                 event.preventDefault();
             }
         }
+
+        function drawAlert() {
+            return Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to update this record?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, update it!'
+            }).then((result) => {
+                return result.isConfirmed;
+            });
+        }
+
+        function showSuccessMessage(message) {
+            Swal.fire({
+                title: 'Success!',
+                text: message,
+                icon: 'success',
+                confirmButtonColor: '#3085d6'
+            });
+        }
+
+        function showErrorMessage(message) {
+            Swal.fire({
+                title: 'Error!',
+                text: message,
+                icon: 'error',
+                confirmButtonColor: '#d33'
+            });
+        }
     </script>
 </head>
 <body>
@@ -261,7 +313,7 @@ $securityQuestions = [
         <div class="profile-content">
             <div class="profile-details">
                 <h1>PROFILE</h1>
-                <form action="updateProfile.php" method="post" onsubmit="return validateForm()">
+                <form id="profileForm" action="updateProfile.php" method="post" onsubmit="validateForm(event)">
                     <div class="profile-info">
                         <div class="form-group">
                             <label for="id">ID</label>

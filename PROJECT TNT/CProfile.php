@@ -245,7 +245,7 @@ mysqli_close($dbCon);
                     <span class="error"><?php echo $name_err; ?><br></span>
 
                     <label for="phone">Phone Number</label>
-                    <input type="text" id="phone" name="phone" value="<?php echo htmlspecialchars($c_hpno); ?>">
+                    <input type="text" id="phone" name="phone" value="<?php echo htmlspecialchars($c_hpno); ?>" maxlength="12">
                     <span class="error"><?php echo $hpno_err; ?><br></span>
 
                     <label for="email">Email</label>
