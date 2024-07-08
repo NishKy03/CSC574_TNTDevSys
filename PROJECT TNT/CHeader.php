@@ -260,7 +260,7 @@ if ($_SESSION['position'] !== 'staff') {
         </a>
         </div>
         <nav>
-            <a href="message.php" class="navbar-links">Messages</a>
+            <a href="message.php" class="navbar-links">MESSAGES</a>
             <div class="logout">
             <a href="logout.php">
                 <img src="images/logout.png" alt="Logout Icon">
