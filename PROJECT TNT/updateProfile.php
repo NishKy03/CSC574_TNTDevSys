@@ -14,16 +14,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $staffName = $_POST['staffName'];
     $phone = $_POST['phone'];
     $email = $_POST['email'];
+    $question = $_POST['question']; // Ensure this matches the name attribute in the <select>
+    $answer = $_POST['answer'];
 
     // Update query
-    $sql = "UPDATE Staff SET staffName = ?, staffPhone = ?, staffEmail = ? WHERE staffID = ?";
+    $sql = "UPDATE Staff SET staffName = ?, staffPhone = ?, staffEmail = ?, staffQuestion = ?, staffAnswer = ? WHERE staffID = ?";
     $stmt = $dbCon->prepare($sql);
-    $stmt->bind_param("ssss", $staffName, $phone, $email, $staffID);
+    $stmt->bind_param("sssssi", $staffName, $phone, $email, $question, $answer, $staffID);
 
     // Execute the update query
     if ($stmt->execute()) {
-        // Update successful, redirect back to profile page
-        header("Location: myProfileStaff.php");
+        // Update successful, redirect back to profile page with success parameter
+        header("Location: myProfileStaff.php?update=success");
         exit();
     } else {
         // Handle update failure
