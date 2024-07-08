@@ -198,6 +198,29 @@ $dbCon->close();
                 input.value = match[1] + '-' + match[2] + ' ' + match[3];
             }
         }
+
+        window.onload = function() {
+            // Check if the URL contains the 'update=success' parameter
+            var urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('update') === 'success') {
+                // Display the alert
+                alert("Successfully Updated");
+            }
+        }
+
+        function preventNumbers(event) {
+            var charCode = event.which ? event.which : event.keyCode;
+            if (charCode >= 48 && charCode <= 57) {
+                event.preventDefault();
+            }
+        }
+
+        function preventAlphabets(event) {
+            var charCode = event.which ? event.which : event.keyCode;
+            if (charCode < 48 || charCode > 57) {
+                event.preventDefault();
+            }
+        }
     </script>
 </head>
 <body>
@@ -213,11 +236,11 @@ $dbCon->close();
                         </div>
                         <div class="form-group">
                             <label for="name">Name</label>
-                            <input type="text" id="name" name="staffName" value="<?php echo htmlspecialchars($staffName); ?>" class="editable">
+                            <input type="text" id="name" name="staffName" value="<?php echo htmlspecialchars($staffName); ?>" class="editable" onkeypress="preventNumbers(event)">
                         </div>
                         <div class="form-group">
                             <label for="phone">Phone Number</label>
-                            <input type="text" id="phone" name="phone" value="<?php echo htmlspecialchars($phone); ?>" class="editable" oninput="formatPhoneNumber(this)" maxlength="12">
+                            <input type="text" id="phone" name="phone" value="<?php echo htmlspecialchars($phone); ?>" class="editable" onkeypress="preventAlphabets(event)" oninput="formatPhoneNumber(this)" maxlength="12">
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>

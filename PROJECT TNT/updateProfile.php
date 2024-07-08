@@ -22,8 +22,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Execute the update query
     if ($stmt->execute()) {
-        // Update successful, redirect back to profile page
-        header("Location: myProfileStaff.php");
+        // Update successful, redirect back to profile page with success parameter
+        header("Location: myProfileStaff.php?update=success");
         exit();
     } else {
         // Handle update failure
