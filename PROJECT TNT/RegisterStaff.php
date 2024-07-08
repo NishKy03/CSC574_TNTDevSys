@@ -218,7 +218,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <div class="form-group">
                     <label for="phone-number" class="text-white">Phone Number:</label>
-                    <input type="tel" class="form-control <?php echo (!empty($phone_err)) ? 'is-invalid' : ''; ?>" id="phoneNumber" name="phoneNumber" value="<?php echo $phone; ?>" required>
+                    <input type="tel" class="form-control <?php echo (!empty($phone_err)) ? 'is-invalid' : ''; ?>" id="phoneNumber" name="phoneNumber" value="<?php echo $phone; ?>" required maxlength="12">
                     <span class="invalid-feedback"><?php echo $phone_err; ?></span>
                 </div>
                 <div class="form-group">
