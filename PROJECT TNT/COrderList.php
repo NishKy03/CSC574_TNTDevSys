@@ -80,7 +80,6 @@
                                 AND updateID IN (SELECT MAX(updateID)
                                                 FROM tracking_update
                                                 GROUP BY orderID)
-                                AND s.position = 'Delivery Staff'
                                 AND t.branchID = ?;";
                         if ($stmt = mysqli_prepare($dbCon, $sql)) {
                             // Bind variables to the prepared statement as parameters
@@ -102,7 +101,9 @@
                                         echo "<td>" . $row['category'] . "</td>\n";
                                         echo "<td>" . $row['staffID'] . "</td>\n";
                                         echo "<td>";
-                                        echo "<a href='updateForm.php?orderID=" . $orderID . "' title='Update'>Update</a>";;
+                                        echo "<a href='printOrderStatement.php?orderID=" . $orderID . "' target=\"popup\" onclick=\"window.open('printOrderStatement.php?orderID=" . $orderID . "', '_blank', 'width=600,height=400'); return false;\">Order Statement</a>";
+                                        echo "<a href='printOrderWaybill.php?orderID=" . $orderID . "' target=\"popup\" onclick=\"window.open('printOrderWaybill.php?orderID=" . $orderID . "', '_blank', 'width=600,height=400'); return false;\">Waybill</a>";
+                                        echo "<a href='updateForm.php?orderID=" . $orderID . "' title='Update'>Update</a>";
                                         echo "</td>";
                                         echo "</tr>";
                                     };
@@ -113,7 +114,7 @@
                                     echo "<p><em>No records were found.</em></p>";
                                 }
                             } else {
-                                echo "ERROR: Could not able to execute $sql. " . mysqli_error($conn);
+                                echo "ERROR: Could not able to execute $sql. " . mysqli_error($dbCon);
                             }
 
                             // Close connection

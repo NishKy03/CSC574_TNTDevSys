@@ -1,12 +1,12 @@
 <?php
-    require_once "dbConfig.php";
+    require_once "dbConnect.php";
     $sql = "SELECT o.orderID, r.name AS rName, r.phoneNo AS rPhoneNo, r.addressLine1 AS rAddress, r.postcode AS rPostcode, r.city AS rCity, r.state AS rState, s.senderName, s.senderPhoneNo, s.addressLine1 AS sAddress, s.postcode As sPostcode, s.city AS sCity, s.state AS sState, o.orderDate, o.parcelWeight, o.totalAmount, o.insurance
             FROM orders o, recipient r, sender s
             WHERE o.senderID = s.senderID
             AND o.recipientID = r.recipientID
             ORDER BY o.orderID DESC LIMIT 1";
     
-    if ($result = mysqli_query($conn, $sql)) {
+    if ($result = mysqli_query($dbCon, $sql)) {
         if (mysqli_num_rows($result) == 1) {
             /* Fetch result row as an associative array. Since the result set
             contains only one row, we don't need to use while loop */
@@ -34,3 +34,5 @@
             exit();
         }
     }
+    mysqli_free_result($result);
+    mysqli_close($dbCon);
