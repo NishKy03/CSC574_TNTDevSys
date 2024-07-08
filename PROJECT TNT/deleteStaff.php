@@ -3,10 +3,10 @@ session_start();
 
 require_once 'dbConnect.php';
 
-if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION["position"] !== 'staff') {
+if (!isset($_SESSION["staffID"]) || $_SESSION["position"] !== 'staff') {
     echo "<script>alert(You are not authorized to view this page. Please log in as staff.)</script>";
     header("location: login.php");
-    exit;
+    exit();
 }
 
 $staffID = $_GET['id'];
@@ -19,6 +19,6 @@ if ($dbCon->query($sql) === TRUE) {
     echo "<script>Error: " . $sql . "<br>" . $dbCon->error . "</script>";
 }
 
-$conn->close();
+$dbCon->close();
 header("Location: staffList.php");
 ?>

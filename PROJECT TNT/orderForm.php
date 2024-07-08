@@ -139,9 +139,9 @@
 
                     $orderID = mysqli_insert_id($dbCon);
 
-                    $sql4 = "INSERT INTO tracking_update (staffID, branchID, orderID, date, category) VALUES (?, ? , ?, CURDATE(), 'Order placed')";
+                    $sql4 = "INSERT INTO tracking_update (orderID, date, category) VALUES ( ?, CURDATE(), 'Order placed')";
                     if($stmt4 = mysqli_prepare($dbCon, $sql4)){
-                        mysqli_stmt_bind_param($stmt4, "isi", $staffIncharge, $staffBranch, $orderID);
+                        mysqli_stmt_bind_param($stmt4, "i", $orderID);
                         if(mysqli_stmt_execute($stmt4)){
                             $message = "Order placed successfully.";
                         }else{
