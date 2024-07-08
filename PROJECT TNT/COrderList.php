@@ -103,7 +103,7 @@
                                         echo "<td>";
                                         echo "<a href='printOrderStatement.php?orderID=" . $orderID . "' target=\"popup\" onclick=\"window.open('printOrderStatement.php?orderID=" . $orderID . "', '_blank', 'width=600,height=400'); return false;\">Print Statement</a>&nbsp;&nbsp;";
                                         echo "<a href='printOrderWaybill.php?orderID=" . $orderID . "' target=\"popup\" onclick=\"window.open('printOrderWaybill.php?orderID=" . $orderID . "', '_blank', 'width=600,height=400'); return false;\">Print Waybill</a>&nbsp;&nbsp;";
-                                        echo "<a href='deliveryForm.php?orderID=" . $orderID . "' title='Update'>Update</a>";
+                                        echo "<a href='updateForm.php?orderID=" . $orderID . "' title='Update'>Update</a>";
                                         echo "</td>";
                                         echo "</tr>";
                                     };
