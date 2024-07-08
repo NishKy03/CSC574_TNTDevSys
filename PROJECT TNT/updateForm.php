@@ -1,14 +1,14 @@
 <?php
     include('CHeader.php');
-    $staffID = $_SESSION['staffID']; 
+    require_once('dbConnect.php');
     $branchID = $_SESSION['branchID']; 
     $sql1 = "SELECT branchID, CONCAT(branchID, ' - ', name) as branchName FROM branch ORDER BY branchID"; 
     if (isset($_GET["orderID"]) && !empty(trim($_GET["orderID"]))) {
         $orderID = trim($_GET["orderID"]);
         // Prepare a select statement
-        $sql = "SELECT staffID, CONCAT(staffID, ' - ', staffName) as staffName FROM staff WHERE position = 'courier' AND branchID = ? ORDER BY staffID";
+        $sql2 = "SELECT staffID, CONCAT(staffID, ' - ', staffName) as staffName FROM staff WHERE position = 'courier' AND branchID = ? ORDER BY staffID";
         
-        if ($stmt = mysqli_prepare($dbCon, $sql)) {
+        if ($stmt = mysqli_prepare($dbCon, $sql2)) {
             // Bind variables to the prepared statement as parameters
             mysqli_stmt_bind_param($stmt, "s", $param_id);
             
@@ -24,14 +24,52 @@
         }
     } else {
         exit();
-    }   
+    }
+    
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $orderID= trim($_POST["orderID"]);
+        $category = trim($_POST["category"]);
+        $branchID = trim($_POST["branchID"]);
+        if($category == 'Delivery') {
+            $staffID = trim($_POST["staffID"]);
+        } else {
+            $staffID = $_SESSION['staffID'];
+        }
+
+            $sql3 = "INSERT INTO tracking_update (date, category, staffID, branchID, orderID) VALUES (CURDATE(), ?, ?, ?, ?)";
+            if ($stmt = mysqli_prepare($dbCon, $sql3)) {
+                // Bind variables to the prepared statement as parameters
+                mysqli_stmt_bind_param($stmt, "sdsd", $param_ctg, $param_sid, $param_bid, $param_oid);
+    
+                // Set parameters
+                $param_ctg = $category;
+                $param_sid = $staffID;
+                $param_bid = $branchID;
+                $param_oid = $orderID;
+    
+                // Attempt to execute the prepared statement
+                if (mysqli_stmt_execute($stmt)) {
+                    // Records created successfully. Redirect to landing page
+                    header("location: COrderList.php");
+                    exit();
+                } else {
+                    echo "Something went wrong. Please try again later.";
+                }
+    
+            // Close statement
+            mysqli_stmt_close($stmt);
+            }
+    
+        // Close connection
+        mysqli_close($dbCon);
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logo Example</title>
+    <title>Update Form</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -40,12 +78,13 @@
             background-color: #ece0d1;
         }
         .container {
+            margin-left: 250px;
             width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 100px;
-            position:fixed;
+            margin-top: 150px;
+            position: fixed;
         }
         .form-container {
             position: relative;
@@ -57,17 +96,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             color: white;
             text-align: center;
-            
-        }
-        .button-close .btn-close {
-            position: absolute;
-            background-color: transparent;
-            border: none;
-            font-size: 40px;
-            cursor: pointer;
-            right: 4px;
-            top: 2px;
-            color: white;
+            margin-left: -10%;
         }
         .form-container h2 {
             color: white;
@@ -98,7 +127,7 @@
             border-radius: 10px;
             box-sizing: border-box;
         }
-        .button-confirm button {
+        .button-confirm input[type="submit"] {
             width: 30%;
             padding: 10px;
             margin-top: 10px;
@@ -110,7 +139,7 @@
             font-size: 25px;
             font-weight: bold;
         }
-        .button-confirm button:hover {
+        .button-confirm input[type="text"]:hover {
             background-color: #45a049;
         }
         .form-container a {
@@ -126,43 +155,41 @@
 <body>
     <div class="container">
         <div class="form-container">
-            <div class="button-close">
-                <button class="btn-close">&times;</button>
-            </div>
             <h2>Update Order</h2>
-            <label for="orderID">Order ID</label>
-            <input type="text" id="orderID" name="orderid" value="<?php echo $orderID ?>">
-            <label for="category">Category</label>
-            <select type="text" id="category" name="category" onchange="showSecondDropdown()">
-                <option value="Arrival">Arrival</option>
-                <option value="Departure">Departure</option>
-                <option value="Delivery">Delivery</option>
-            </select>
-            <label for="branchID">Branch ID</label>
-            <select type="text" id="branchID">
-                <?php 
-                    if($rsBranch = mysqli_query($dbCon, $sql1)) {
-                        while ($row = mysqli_fetch_assoc($rsBranch)) { ?>
-                        <option value="<?php echo $row['branchID']; ?>">
-                            <?php echo $row['branchName']; ?>
-                        </option>
-                <?php }} ?>
-            </select>
-            <div id="staff" style="display: none;">
-            <label for="staffID">Staff ID</label>
-            <select type="text" id="staffID">
-                <?php 
-                    while ($row = mysqli_fetch_assoc($rsStaff)) { ?>
-                        <option value="<?php echo $row['staffID']; ?>">
-                            <?php echo $row['staffName']; ?>
-                        </option>
-                <?php } ?>
-            </select>
-            </div>
-            <div class="button-confirm">
-                <button type="submit">SUBMIT</button>
-            </div>
-            
+            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
+                <label for="orderID">Order ID</label>
+                <input type="text" id="orderID" name="orderID" value="<?php echo $orderID ?>" readonly>
+                <label for="category">Category</label>
+                <select type="text" id="category" name="category" onchange="showSecondDropdown()">
+                    <option value="Arrival">Arrival</option>
+                    <option value="Departure">Departure</option>
+                    <option value="Delivery">Delivery</option>
+                </select>
+                <label for="branchID">Branch ID</label>
+                <select type="text" id="branchID">
+                    <?php 
+                        if($rsBranch = mysqli_query($dbCon, $sql1)) {
+                            while ($row = mysqli_fetch_assoc($rsBranch)) { ?>
+                            <option value="<?php echo $row['branchID']; ?>">
+                                <?php echo $row['branchName']; ?>
+                            </option>
+                    <?php }} ?>
+                </select>
+                <div id="staff" style="display: none;">
+                <label for="staffID">Staff ID</label>
+                <select type="text" id="staffID">
+                    <?php 
+                        while ($row = mysqli_fetch_assoc($rsStaff)) { ?>
+                            <option value="<?php echo $row['staffID']; ?>">
+                                <?php echo $row['staffName']; ?>
+                            </option>
+                    <?php } ?>
+                </select>
+                </div>
+                <div class="button-confirm">
+                    <input type="submit">
+                </div>
+            </form>
         </div>
     </div>
     <script>

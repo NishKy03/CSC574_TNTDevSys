@@ -254,7 +254,7 @@ if ($_SESSION['position'] !== 'staff') {
         </div>
         <ul class="menu">
             <li><a href="CProfile.php">Profile</a></li>
-            <a class="dropdown-btn">Dropdown 
+            <a class="dropdown-btn">Orders 
                 <i class="fa fa-caret-down"></i>
             </a>
             <div class="dropdown-container">
