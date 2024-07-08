@@ -483,13 +483,21 @@ font-family: Poppins;
 	border-radius: 6%;
 }
 
-.button{
-	color: white;
-	left: 6.08px;
-	border-radius: 1rem;
-	background-color: #b45858;
-	height: 50.4px;
-}
+		.button-confirm button {
+            width: 30%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #b45858;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 25px;
+            font-weight: bold;
+        }
+        .button-confirm button:hover {
+            background-color: #45a049;
+        }
 </style>
 </head>
 <body>
@@ -537,7 +545,9 @@ font-family: Poppins;
 				</select>
 			</div>
 			<br>
-			<button type="submit" class="button">Update Staff</button>
+			<div class="button-confirm">
+                <button type="submit">SUBMIT</button>
+            </div>
 		</form>
 		</div>	
 	</div>
