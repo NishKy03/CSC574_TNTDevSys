@@ -147,7 +147,7 @@ mysqli_close($dbCon);
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 80%;
-            max-width: 600px;
+            max-width: 600px;        
         }
         .myprofile-header {
             display: flex;
