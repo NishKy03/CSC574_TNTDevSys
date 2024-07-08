@@ -107,7 +107,7 @@
         if (empty($SName_err) && empty($SPhone_err) && empty($SAddress_err) && empty($SCity_err) && empty($SState_err) && empty($SPostcode_err) && empty($RName_err) && empty($RPhone_err) && empty($RAddress_err) && empty($RCity_err) && empty($RState_err) && empty($RPostcode_err) && empty($Weight_err) && empty($Description_err) && empty($rateID_err)) {
             $sql1 = "INSERT INTO sender (senderName, senderPhoneNo, addressLine1, city, state, postcode) VALUES (?, ?, ?, ?, ?, ?)";
             $sql2 = "INSERT INTO recipient (name, phoneNo, addressLine1, city, state, postcode) VALUES (?, ?, ?, ?, ?, ?)";
-            $sql3 = "INSERT INTO orders (senderID, recipientID, parcelWeight, insurance, shipRateID) VALUES (?, ?, ?, ?, ?)";
+            $sql3 = "INSERT INTO orders (senderID, recipientID, parcelWeight, insurance, shipRateID, status, orderDate) VALUES (?, ?, ?, ?, ?, 'Placed',CURDATE())";
 
             if ($stmt1 = mysqli_prepare($dbCon, $sql1)) {
                 mysqli_stmt_bind_param($stmt1, "sssssi", $SName, $SPhone, $SAddress, $SCity, $SState, $SPostcode);
@@ -135,15 +135,16 @@
                 mysqli_stmt_bind_param($stmt3, "iidii", $senderID, $recipientID, $Weight, $Insurance, $rateID);
                 if (mysqli_stmt_execute($stmt3)) {
                     $message = "Parcel details added successfully.";
-                    $success = $message;
 
                     $orderID = mysqli_insert_id($dbCon);
 
-                    $sql4 = "INSERT INTO tracking_update (staffID, branchID, orderID, date, category) VALUES (?, ? , ?, CURDATE(), 'Order placed')";
+                    $sql4 = "INSERT INTO tracking_update (branchID, orderID, date, category) VALUES ( ?, ?, CURDATE(), 'Arrival')";
                     if($stmt4 = mysqli_prepare($dbCon, $sql4)){
-                        mysqli_stmt_bind_param($stmt4, "isi", $staffIncharge, $staffBranch, $orderID);
+                        mysqli_stmt_bind_param($stmt4, "si",$staffBranch, $orderID);
                         if(mysqli_stmt_execute($stmt4)){
-                            $message = "Order placed successfully.";
+                            $message = "Order placed successfully."; 
+                            $success = $message;
+                            $updateID = mysqli_insert_id($dbCon);
                         }else{
                             $message = "Error adding tracking details.";
                         }
@@ -160,15 +161,19 @@
     }
 
     if (!empty($message)) {
-        if(!empty($success)){
-            echo "<script>
-            alert('$success');
-            window.location.href = 'paymentForm.html';
-            </script>";
-        }else{
+        if (!empty($success)) {
+            // Check if $rateID and $orderID are set and not empty
+            if (isset($rateID) && isset($orderID) && !empty($rateID) && !empty($orderID)) {
+                echo "<script>
+                    alert('$success');
+                    window.location.href = 'paymentForm.php?shipRateID=$rateID&orderID=$orderID';
+                </script>";
+            } else {
+                echo "<script>alert('Error: Missing rate ID or order ID');</script>";
+            }
+        } else {
             echo "<script>alert('$message');</script>";
         }
-       
     }
 ?>
 
@@ -704,8 +709,7 @@
             box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--primary-color);
         }
         </style>
-       
-</script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     </head>
     <body>
     <?php include("CHeader.php")?>
@@ -723,65 +727,73 @@
             
             <form id="orderForm" class="form" method="POST" action="orderForm.php">
                 <!-- <h1 class="text-center">Booking Form</h1> -->
+
+                
                     <h1>Sender Details</h1>
                     <div class="input-group">
                         <label for="SName">Name</label>
-                        <input name="SName" id="SName" type="text" value="<?php echo isset($SName) ? $SName : ''?>">
+                        <input name="SName" id="SName" type="text" value="<?php echo isset($SName) ? $SName : ''?>" required>
                      
                     </div>
                     <div class="input-group">
                         <label for="phoneno">Phone Number</label>
-                        <input type="text" name="SPhone" id="SPhone" value="<?php echo isset($SPhone) ? $SPhone : ''?>" >
+                        <input type="text" name="SPhone" id="SPhone" value="<?php echo isset($SPhone) ? $SPhone : ''?>" required>
                     </div>
                     <div class="input-group">
                         <label for="SAddress">Address</label>
-                        <input type="text" name="SAddress" id="SAddress" value="<?php echo isset($SAddress) ? $SAddress : ''?>" >
+                        <input type="text" name="SAddress" id="SAddress" value="<?php echo isset($SAddress) ? $SAddress : ''?>" required>
                     </div>
                     <div class="input-group2">
                         <label for="SCity">City</label>
-                        <input type="text" name="SCity" id="SCity"  value="<?php echo isset($SCity) ? $SCity : ''?>" >
+                        <input type="text" name="SCity" id="SCity"  value="<?php echo isset($SCity) ? $SCity : ''?>" required>
                     </div>
                     <div class="input-group3">
                         <label for="state">State</label>
-                        <input name="SState" id="SState" type="text" value="<?php echo isset($SState) ? $SState : ''?>" >
+                        <input name="SState" id="SState" type="text" value="<?php echo isset($SState) ? $SState : ''?>" required>
                     </div>
                     <div class="input-group">
                         <label for="SPostcode">Postcode</label>
-                        <input type="text" name="SPostcode" id="SPostcode"  value="<?php echo isset($SPostcode) ? $SPostcode : ''?>" >
+                        <input type="text" name="SPostcode" id="SPostcode"  value="<?php echo isset($SPostcode) ? $SPostcode : ''?>" required>
                     </div>
        
                     <div class="">
                         <a href="#" class="btn btn-next width-50 ml-auto">Next</a>
                     </div>
+                </div>
+
+                <div class="form-step">
                     <h1>Recipient Details</h1>
                     <div class="input-group">
                         <label for="recipient">Name</label>
-                        <input type="text" name="RName" id="RName" value="<?php echo isset($RName) ? $RName : ''?>" >
+                        <input type="text" name="RName" id="RName" value="<?php echo isset($RName) ? $RName : ''?>" required>
                     </div>
                     <div class="input-group">
                         <label for="phoneno">Phone Number</label>
-                        <input type="text" name="RPhone" id="RPhone" value="<?php echo isset($RPhone) ? $RPhone : ''?>" >
+                        <input type="text" name="RPhone" id="RPhone" value="<?php echo isset($RPhone) ? $RPhone : ''?>" required>
                     </div>
                     <div class="input-group">
                         <label for="address">Address</label>
-                        <input type="text" name="RAddress" id="RAddress" value="<?php echo isset($RAddress) ? $RAddress : ''?>" >
+                        <input type="text" name="RAddress" id="RAddress" value="<?php echo isset($RAddress) ? $RAddress : ''?>" required>
                     </div>
                     <div class="input-group2">
                         <label for="city">City</label>
-                        <input type="text" name="RCity" id="RCity" value="<?php echo isset($RCity) ? $RCity : ''?>" >
+                        <input type="text" name="RCity" id="RCity" value="<?php echo isset($RCity) ? $RCity : ''?>" required>
                     </div>
                     <div class="input-group3">
                         <label for="state">State</label>
-                        <input type="text" name="RState" id="RState" value="<?php echo isset($RState) ? $RState : ''?>" >
+                        <input type="text" name="RState" id="RState" value="<?php echo isset($RState) ? $RState : ''?>" required>
                     </div>
                     <div class="input-group">
                         <label for="postcode">Postcode</label>
-                        <input type="text" name="RPostcode" id="postcode" value="<?php echo isset($RPostcode) ? $RPostcode : ''?>" >
+                        <input type="text" name="RPostcode" id="postcode" value="<?php echo isset($RPostcode) ? $RPostcode : ''?>" required>
                     </div>
                     <div class="btns-group">
                         <a href="#" class="btn btn-prev">Previous</a>
                         <a href="#" class="btn btn-next">Next</a>
                     </div>
+                </div>
+
+                <div class="form-step">
                     <div class="input-group">
                         <label for="weight">Weight (kg)</label>
                         <input type="text" name="weight" id="weight" value="<?php echo isset($Weight) ? $Weight : ''?>" required>
@@ -812,10 +824,76 @@
                     </div>
 
                     <div class="btns-group">
+                        <a href="#" class="btn btn-prev">Previous</a>
                         <input type="submit" value="Submit" class="btn">
                     </div>
+                </div>
+
             </form>
         </div>
     </div>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            // Side bar toggle
+            $(".menu-btn").click(function(){
+                $(".side-bar").addClass("active");
+                $(".menu-btn").css("visibility", "hidden");
+            });
+
+            $(".close-btn").click(function(){
+                $(".side-bar").removeClass("active");
+                $(".menu-btn").css("visibility", "visible");
+            });
+
+            // Sub menu toggle
+            $(".sub-btn").click(function(){
+                $(this).next(".sub-menu").slideToggle();
+                $(this).find(".dropdown").toggleClass("rotate");
+            });
+        });
+        const prevBtns = document.querySelectorAll(".btn-prev");
+        const nextBtns = document.querySelectorAll(".btn-next");
+        const progress = document.getElementById("progress");
+        const formSteps = document.querySelectorAll(".form-step");
+        const progressSteps = document.querySelectorAll(".progress-step");
+
+        let formStepsNum = 0;
+
+        nextBtns.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                formStepsNum++;
+                updateFormSteps();
+                updateProgressbar();
+            });
+        });
+
+        prevBtns.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                formStepsNum--;
+                updateFormSteps();
+                updateProgressbar();
+            });
+        });
+
+        function updateFormSteps() {
+            formSteps.forEach((formStep) => {
+                formStep.classList.contains("form-step-active") &&
+                formStep.classList.remove("form-step-active");
+            });
+            formSteps[formStepsNum].classList.add("form-step-active");
+        }
+
+        function updateProgressbar() {
+            progressSteps.forEach((progressStep, idx) => {
+                if (idx <= formStepsNum) {
+                    progressStep.classList.add("progress-step-active");
+                } else {
+                    progressStep.classList.remove("progress-step-active");
+                }
+            });
+            const progressActive = document.querySelectorAll(".progress-step-active");
+            progress.style.width = ((progressActive.length - 1) / (progressSteps.length - 1)) * 100 + "%";
+        }
+    </script>
     </body>
 </html>
