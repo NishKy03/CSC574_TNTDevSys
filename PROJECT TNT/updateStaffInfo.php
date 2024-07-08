@@ -480,12 +480,13 @@ font-family: Poppins;
 	height: 600px;
 	width:1200px;
 	padding: 2%;
-	margin:6%;
-	border-radius: 6%;
+	margin-top: 18%;
+	margin-right: 18%;
+	border-radius: 1rem;
 }
 
 		.button-confirm button {
-            width: 30%;
+            width: 20%;
             padding: 10px;
             margin-top: 10px;
             background-color: #b45858;
@@ -497,7 +498,7 @@ font-family: Poppins;
             font-weight: bold;
         }
         .button-confirm button:hover {
-            background-color: #45a049;
+            background-color: #384613;
         }
 </style>
 </head>
