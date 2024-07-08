@@ -24,14 +24,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['position'] = $row['position'];
         $_SESSION['branchID'] = $row['branchID'];
 
-        // Check position for access control
+        // Set a session variable to indicate successful login
+        $_SESSION['login_success'] = true;
+
+        // Determine the redirection page based on position
         if (strtolower($_SESSION['position']) == 'courier') {
-            header("Location: deliverylist.php");
-            exit();
+            $_SESSION['redirect_page'] = 'deliverylist.php';
         } else if (strtolower($_SESSION['position']) == 'staff') {
-            header("Location: CDashboard.php");
-            exit();
+            $_SESSION['redirect_page'] = 'CDashboard.php';
         }
+
+        // Redirect to the login page to show the success message
+        header("Location: login.php");
+        exit();
     } else {
         $errorMessage = "Invalid credentials."; // Set error message
     }
@@ -47,6 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Login Form</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -193,6 +199,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             this.classList.remove('text-white', 'font-weight-bold');
         });
     });
+
+    // Show SweetAlert if login is successful and then redirect
+    <?php if (isset($_SESSION['login_success']) && isset($_SESSION['redirect_page'])): ?>
+        Swal.fire({
+            icon: 'success',
+            title: 'Login Successful',
+            text: 'Welcome back!',
+            showConfirmButton: false,
+            timer: 1500
+        }).then(() => {
+            window.location.href = '<?php echo $_SESSION['redirect_page']; ?>';
+        });
+        <?php
+        // Clear the session variables
+        unset($_SESSION['login_success']);
+        unset($_SESSION['redirect_page']);
+        ?>
+    <?php endif; ?>
 </script>
 </body>
 </html>
