@@ -2,6 +2,7 @@
     session_start();
     if (!isset($_SESSION['staffID'])) {
         echo '<div class="access-denied">Only Accessible by Staff</div>';
+        echo "<script>window.location = 'login.php'<script>";
         exit();
     }
 
