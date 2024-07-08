@@ -6,7 +6,7 @@ if (!isset($_SESSION['staffID'])) {
     exit();
 }
 
-require_once '../dbConnect.php'; // Adjust the path as per your project structure
+require_once 'dbConnect.php'; // Adjust the path as per your project structure
 
 // Check if staff position is 'courier'
 if ($_SESSION['position'] !== 'staff') {
@@ -365,7 +365,7 @@ $result = $dbCon->query($sql);
 </head>
 <body>
 
- <?php include("../CHeader.php")?>
+ <?php include("CHeader.php")?>
 
 	<div class="container mt-5">
     <h2>Staff Lists</h2>
@@ -377,7 +377,7 @@ $result = $dbCon->query($sql);
             echo '<table class="table table-striped">';
             echo '<tbody>';
             echo '<tr>';
-            echo '<td style="vertical-align: top;"><img class="profile-image" src="../images/picture.png"></td>';
+            echo '<td style="vertical-align: top;"><img class="profile-image" src="images/picture.png"></td>';
             echo '<td style="vertical-align: middle; ">';
             echo '<table>';
             echo '<tr><td>ID:</td><td>' . $row["staffID"] . '</td></tr>';

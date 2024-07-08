@@ -6,7 +6,7 @@
         exit();
     }
 
-    require_once '../dbConnect.php'; // Adjust the path as per your project structure
+    require_once 'dbConnect.php'; // Adjust the path as per your project structure
 
     // Check if staff position is 'courier'
     if ($_SESSION['position'] !== 'staff') {
@@ -713,7 +713,7 @@
         <div class="header">
             <a href="#default"><img src="images/tntlogo.png"></a>
             <div class="header-right">
-                <a class="opt" href="../logout.php">Logout</a>
+                <a class="opt" href="logout.php">Logout</a>
             </div>
         </div>
         <label class="hamburger-menu">
@@ -729,7 +729,7 @@
                 <ul>
                     <li><a href="CProfile.php">Profile</a></li>
                     <li><a href="orders.php">Orders</a></li>
-                    <li><a href="StaffClerk/staffList.php">Staff</a></li>
+                    <li><a href="staffList.php">Staff</a></li>
                 </ul>
             </nav>
         </aside>

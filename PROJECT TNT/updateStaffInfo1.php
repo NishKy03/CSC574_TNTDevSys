@@ -6,7 +6,7 @@ if (!isset($_SESSION['staffID'])) {
     exit();
 }
 
-require_once '../dbConnect.php'; // Adjust the path as per your project structure
+require_once 'dbConnect.php'; // Adjust the path as per your project structure
 
 // Check if staff position is 'courier'
 if ($_SESSION['position'] !== 'staff') {
@@ -502,7 +502,7 @@ font-family: Poppins;
 </style>
 </head>
 <body>
-	<?php include('../CnavIn.php') ?>
+	<?php include('CnavIn.php') ?>
 	<div class="container">
 		<div class="update-form-container">
 		<h2>Update Staff Information</h2>

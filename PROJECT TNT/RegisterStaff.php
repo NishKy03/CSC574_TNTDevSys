@@ -1,5 +1,5 @@
 <?php
-require_once("../dbConnect.php");
+require_once("dbConnect.php");
 
 $message = "";
 $name = $phone = $email = $position = $password = $confirm_password = "";
@@ -206,7 +206,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </head>
     <body class="body-register">
            <?php 
-            include("../universalHeader.php");
+            include("universalHeader.php");
            ?>
         <div class="main-content-register">
             <h2 class="text-center text-white">Register Staff</h2>
