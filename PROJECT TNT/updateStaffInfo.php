@@ -29,7 +29,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 
 			if($dbCon->query($sql) === TRUE){
-				echo "<div class='alert alert-success'>Record upated successfully</div><script>window.location.href=\'updateStaffInfo1.php?id=' . $staffID . '\''</script>";
+				echo "<div class='alert alert-success'>Record upated successfully</div><script>window.location.href=\'updateStaffInfo.php?id=' . $staffID . '\''</script>";
 	
 			} else{
 				echo "<div class='alert alert-danger'>Error updating reocrd: " . $dbCon->error > "</div>";
@@ -506,7 +506,7 @@ font-family: Poppins;
 	<div class="container">
 		<div class="update-form-container">
 		<h2>Update Staff Information</h2>
-		<form method="POST" action="updateStaffInfo1.php">
+		<form method="POST" action="updateStaffInfo.php">
 			<input type="hidden" name="staffID" value="<?php echo isset($row['staffID']) ? $row['staffID']: ""; ?>">
 			
 			<div class="mb-3">

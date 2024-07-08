@@ -206,7 +206,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </head>
     <body class="body-register">
            <?php 
-            include("universalHeader.php");
+            include("CHeader.php");
            ?>
         <div class="main-content-register">
             <h2 class="text-center text-white">Register Staff</h2>
