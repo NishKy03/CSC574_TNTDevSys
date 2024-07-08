@@ -135,6 +135,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             color: red;
             margin-top: 10px;
         }
+        .centered-link {
+            text-align: center;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -163,8 +167,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <button type="submit" class="btn btn-primary btn-lg btn-block">LOG IN</button>
             </div>
         </form>
-        <div class="d-flex justify-content-between mt-3">
-            <a href="signup.php" class="text-white pulse-link">Don't have an account?</a>
+        <div class="centered-link">
             <a href="forgotPassword.php" class="text-white pulse-link">Forgot password</a>
         </div>
     </div>

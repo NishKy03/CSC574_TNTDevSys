@@ -133,7 +133,13 @@ $dbCon->close();
             <button class="btn-close">&times;</button>
         </div>
         <h2>Security Question</h2>
-        <form id="securityQuestionForm" action="changePassword.php" method="POST">
+        <?php if (isset($_SESSION['wrongAnswer'])): ?>
+            <script>
+                alert("Wrong Answer, Please try again");
+            </script>
+            <?php unset($_SESSION['wrongAnswer']); ?>
+        <?php endif; ?>
+        <form id="securityQuestionForm" action="verifySecurityQuestion.php" method="POST">
             <div class="form-group">
                 <label for="securityQuestion">Question:</label>
                 <p><?php echo htmlspecialchars($securityQuestion, ENT_QUOTES, 'UTF-8'); ?></p>
