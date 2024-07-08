@@ -28,7 +28,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 
 			if($dbCon->query($sql) === TRUE){
-				echo "<div class='alert alert-success'>Record upated successfully</div>";
+				echo "<div class='alert alert-success'>Record upated successfully</div><script>window.location.href=\'updateStaffInfo1.php?id=' . $staffID . '\''</script>";
+	
 			} else{
 				echo "<div class='alert alert-danger'>Error updating reocrd: " . $dbCon->error > "</div>";
 			}
@@ -474,12 +475,20 @@ font-family: Poppins;
 }
 
 .update-form-container{
-	background:#CEA66080;
+	background: rgba(75, 6, 6, 0.5);
 	height: 600px;
 	width:1200px;
 	padding: 2%;
 	margin:6%;
 	border-radius: 6%;
+}
+
+.button{
+	color: white;
+	left: 6.08px;
+	border-radius: 1rem;
+	background-color: #b45858;
+	height: 50.4px;
 }
 </style>
 </head>
@@ -502,8 +511,8 @@ font-family: Poppins;
 			<div class="mb-3">
 				<label for="position" class="form-label">Position: </label>
 				<select class="form-control" id="position" name="position" required>
-					<option value="Regular Staff">Regular Staff</option>
-					<option value="Delivery Staff">Delivery Staff</option>
+					<option value="staff">Staff</option>
+					<option value="courier">Courier</option>
 				</select>
 			</div>
 			<div class="mb-3">
@@ -528,7 +537,7 @@ font-family: Poppins;
 				</select>
 			</div>
 			<br>
-			<button type="submit" class="btn btn-primary">Update Staff</button>
+			<button type="submit" class="button">Update Staff</button>
 		</form>
 		</div>	
 	</div>

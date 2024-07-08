@@ -118,6 +118,18 @@
                 if (mysqli_stmt_execute($stmt3)) {
                     $message = "Parcel details added successfully.";
                     $success = $message;
+
+                    $sql4 = "INSERT INTO tracking_update (date, category) VALUES (CURDATE(), 'Order placed')";
+                    if ($stmt4 = mysqli_prepare($dbCon, $sql4)) {
+                        if (mysqli_stmt_execute($stmt4)) {
+                            $trackingID = mysqli_insert_id($dbCon);
+                            $message = "Tracking details added successfully.";
+                        } else {
+                            $message = "Error adding tracking details.";
+                        }
+                        mysqli_stmt_close($stmt4);
+                        
+                    }
                 } else {
                     $message = "Error adding parcel details.";
                 }
