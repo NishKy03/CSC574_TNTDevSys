@@ -117,3 +117,4 @@ CREATE TABLE contactus (
     email VARCHAR(255) NOT NULL,
     description TEXT NOT NULL
 );
+ALTER TABLE contactus AUTO_INCREMENT = 9000001

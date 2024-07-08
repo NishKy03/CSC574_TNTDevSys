@@ -17,6 +17,11 @@
 
      $orderID = isset($_GET['orderID']) ? $_GET['orderID'] : null;
      $shipRateID = isset($_GET['shipRateID']) ? $_GET['shipRateID'] : null;
+     if (empty(trim($_POST["paymentMethod"]))) {
+        $paymentMethod = "Please choose the payment method.";
+    } else {
+        $paymentMethod = trim($_POST["paymentMethod"]);
+    }
      
      if ($orderID === null || $shipRateID === null) {
          die("Missing required parameters.");
@@ -47,10 +52,18 @@
      $stmt2->bind_param("di", $totalAmount, $orderID);
     if($stmt2->execute()){
         $message = "Record updated successfully";
-        echo "<script type='text/javascript'>alert('$message');
-        window.location = 'COrderList.php';</script>";
     }
      $stmt2->close();
+
+     $sql3 = "INSERT INTO payment (orderID, paymentMethod) VALUES (?, ?)";
+        $stmt3 = $dbCon->prepare($sql3);
+        $stmt3->bind_param("is", $orderID, $paymentMethod);
+        if($stmt3->execute()){
+            $message = "Record inserted successfully";
+            echo "<script type='text/javascript'>alert('$message');
+            window.location = 'COrderList.php';</script>";
+        }
+        $stmt3->close();
 
 
 ?>
