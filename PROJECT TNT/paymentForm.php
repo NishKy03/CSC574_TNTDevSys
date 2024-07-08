@@ -1,66 +1,66 @@
 <?php
-session_start();
-if (!isset($_SESSION['staffID'])) {
-    echo '<div class="access-denied">Only Accessible by Staff</div>';
-    echo "<script>window.location = 'login.php';</script>";
-    exit();
-}
+    session_start();
+    if (!isset($_SESSION['staffID'])) {
+        echo '<div class="access-denied">Only Accessible by Staff</div>';
+        echo "<script>window.location = 'login.php';</script>";
+        exit();
+    }
 
-require_once 'dbConnect.php'; // Adjust the path as per your project structure
+    require_once 'dbConnect.php'; // Adjust the path as per your project structure
 
-// Check if staff position is 'staff'
-if ($_SESSION['position'] !== 'staff') {
-    echo '<div class="access-denied">Access Denied. Only accessible by regular staff.</div>';
-    exit();
-}
+    // Check if staff position is 'staff'
+    if ($_SESSION['position'] !== 'staff') {
+        echo '<div class="access-denied">Access Denied. Only accessible by regular staff.</div>';
+        exit();
+    }
 
-$orderID = isset($_GET['orderID']) ? $_GET['orderID'] : null;
-$shipRateID = isset($_GET['shipRateID']) ? $_GET['shipRateID'] : null;
+    $orderID = isset($_GET['orderID']) ? $_GET['orderID'] : null;
+    $shipRateID = isset($_GET['shipRateID']) ? $_GET['shipRateID'] : null;
 
-if ($orderID === null || $shipRateID === null) {
-    die("Missing required parameters.");
-}
+    if ($orderID === null || $shipRateID === null) {
+        die("Missing required parameters.");
+    }
 
-$sqlselect = "SELECT * FROM orders WHERE orderID = ?";
-$stmtselect = $dbCon->prepare($sqlselect);
-$stmtselect->bind_param("i", $orderID);
-$stmtselect->execute();
-$resultselect = $stmtselect->get_result();
-$rowselect = $resultselect->fetch_assoc();
-$Weight = $rowselect['parcelWeight'];
-$insurance = $rowselect['insurance'];
+    $sqlselect = "SELECT * FROM orders WHERE orderID = ?";
+    $stmtselect = $dbCon->prepare($sqlselect);
+    $stmtselect->bind_param("i", $orderID);
+    $stmtselect->execute();
+    $resultselect = $stmtselect->get_result();
+    $rowselect = $resultselect->fetch_assoc();
+    $Weight = $rowselect['parcelWeight'];
+    $insurance = $rowselect['insurance'];
 
-$sql = "SELECT * FROM shipping_rate WHERE shipRateID = ?";
-$stmt = $dbCon->prepare($sql);
-$stmt->bind_param("i", $shipRateID);
-$stmt->execute();
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
-$baseFee = $row['baseFee'];
-$addFee = $row['addFee'];
-
-$totalAmount = $baseFee + ($Weight * $addFee) + ($insurance * $Weight);
-
-$sql2 = "UPDATE orders SET totalAmount = ? WHERE orderID = ?";
-$stmt2 = $dbCon->prepare($sql2);
-$stmt2->bind_param("di", $totalAmount, $orderID);
-if($stmt2->execute()){
-   $message = "Record updated successfully";
-}
-$stmt2->close();
-
-// Check if form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
-    $paymentMethod = $_POST['methodPay']; // Corrected to match the name attribute of your select element
-    $sql = "INSERT INTO payment (orderID, paymentMethod) VALUES (?, ?)";
+    $sql = "SELECT * FROM shipping_rate WHERE shipRateID = ?";
     $stmt = $dbCon->prepare($sql);
-    $stmt->bind_param("is", $orderID, $paymentMethod);
+    $stmt->bind_param("i", $shipRateID);
     $stmt->execute();
-    $stmt->close();
-    echo "<script>alert('Payment Successful!')</script>";
-    header("Location: COrderList.php");
-    exit();
-}
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $baseFee = $row['baseFee'];
+    $addFee = $row['addFee'];
+
+    $totalAmount = $baseFee + ($Weight * $addFee) + ($insurance * $Weight);
+
+    $sql2 = "UPDATE orders SET totalAmount = ? WHERE orderID = ?";
+    $stmt2 = $dbCon->prepare($sql2);
+    $stmt2->bind_param("di", $totalAmount, $orderID);
+    if($stmt2->execute()){
+    $message = "Record updated successfully";
+    }
+    $stmt2->close();
+
+    // Check if form is submitted
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
+        $paymentMethod = $_POST['methodPay']; // Corrected to match the name attribute of your select element
+        $sql = "INSERT INTO payment (orderID, paymentMethod) VALUES (?, ?)";
+        $stmt = $dbCon->prepare($sql);
+        $stmt->bind_param("is", $orderID, $paymentMethod);
+        $stmt->execute();
+        $stmt->close();
+        echo "<script>alert('Payment Successful!')</script>";
+        header("Location: COrderList.php");
+        exit();
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
