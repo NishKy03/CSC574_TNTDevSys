@@ -134,7 +134,7 @@
         <div class="icon-container"></div>
         <div class="form-container shadow-lg p-4">
             <h2>Contact Us</h2>
-            <form>
+            <form action="process_contact_form.php" method="post">
                 <div class="form-group">
                     <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name">
                 </div>
@@ -150,7 +150,12 @@
             </form>
         </div>
     </div>
-
+    <?php
+    // Check for error message from PHP script
+    if (isset($_GET['message']) && $_GET['message'] == 'error') {
+        echo '<script>alert("Failed to send message. Please try again later.");</script>';
+    }
+    ?>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

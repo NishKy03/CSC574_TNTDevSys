@@ -127,12 +127,7 @@
         }
     }
 
-    if (!empty($message)) {
-        echo "<script>
-        alert('$message');
-        window.location.href = 'paymentForm.html';
-        </script>";
-    }
+    echo $message;
 ?>
 
 <!DOCTYPE html>
@@ -706,7 +701,7 @@
                 </div>
             </div>
             
-            <form class="form" method="POST" action="orderForm.php">
+            <form class="form" method="POST">
                 <!-- <h1 class="text-center">Booking Form</h1> -->
 
                 <div class="form-step form-step-active">
