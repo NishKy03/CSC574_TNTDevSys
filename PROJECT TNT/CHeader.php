@@ -49,7 +49,7 @@ if ($_SESSION['position'] !== 'staff') {
             margin: 0;
             padding: 0;
             font-family: 'Roboto', sans-serif; /* Premium font */
-            background-color: #f8f9fa; /* Bootstrap default background color */
+            background-color: #ECE0D1; /* Bootstrap default background color */
         }
 
         header {
