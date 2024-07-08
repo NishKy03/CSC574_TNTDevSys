@@ -4,9 +4,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Retrieve the staff name from the session or set a default value
-$staffName = isset($_SESSION['staffName']) ? $_SESSION['staffName'] : 'Guest';
-
 // Database connection
 require_once 'dbConnect.php'; // Adjust the path as per your project structure
 
@@ -14,14 +11,24 @@ require_once 'dbConnect.php'; // Adjust the path as per your project structure
 $staffID = isset($_SESSION['staffID']) ? $_SESSION['staffID'] : null;
 
 if ($staffID) {
-    // Fetch profile picture path from database
-    $selectQuery = "SELECT profilePicture FROM Staff WHERE staffID = ?";
+    // Fetch staffName and profile picture path from database
+    $selectQuery = "SELECT staffName, profilePicture FROM Staff WHERE staffID = ?";
     $stmt = $dbCon->prepare($selectQuery);
     $stmt->bind_param('i', $staffID);
     $stmt->execute();
-    $stmt->bind_result($profilePicture);
+    $stmt->bind_result($staffNameFromDB, $profilePicture);
     $stmt->fetch();
     $stmt->close(); // Close the statement after fetching results
+
+    // Ensure the session staffName is in sync with the database
+    if ($_SESSION['staffName'] != $staffNameFromDB) {
+        $_SESSION['staffName'] = $staffNameFromDB;
+    }
+
+    // Set the staffName for use in the page
+    $staffName = $staffNameFromDB;
+} else {
+    $staffName = 'Guest';
 }
 
 // Check if staff position is 'courier'
@@ -241,18 +248,19 @@ $deliveredOrders = $resultDelivered->fetch_assoc()['delivered'];
             <li><a href="deliverylist.php">Delivery</a></li>
         </ul>
     </div>
-
     <!-- Main Content -->
-    <!-- Your main content goes here -->
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        // Function to toggle sidebar
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
         }
+
+        document.getElementById('profile-picture-upload').addEventListener('change', function() {
+            document.getElementById('submit-profile-picture').click();
+        });
     </script>
 </body>
 </html>
