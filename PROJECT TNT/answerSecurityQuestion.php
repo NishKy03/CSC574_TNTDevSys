@@ -1,5 +1,49 @@
+<?php
+session_start();
+
+// Check if the staffID is set in the session
+if (!isset($_SESSION['staffID'])) {
+    header("Location: forgotPassword.php");
+    exit();
+}
+
+// Database connection
+require_once 'dbConnect.php';
+
+// Security questions array
+$securityQuestions = [
+    "childhood_nickname" => "What was your childhood nickname?",
+    "childhood_friend" => "What is the name of your favorite childhood friend?",
+    "oldest_sibling" => "What is your oldest sibling’s birthday month and year? (e.g., January 1900)",
+    "pet_name" => "What is your pet's name?",
+    "favorite_artist" => "Who is your favorite artist?"
+];
+
+// Fetch the security question for the given staffID
+$staffID = $_SESSION['staffID'];
+$sql = "SELECT staffQuestion FROM Staff WHERE staffID = ?";
+$stmt = $dbCon->prepare($sql);
+$stmt->bind_param("i", $staffID);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows == 1) {
+    $row = $result->fetch_assoc();
+    $questionKey = $row['staffQuestion'];
+    $securityQuestion = isset($securityQuestions[$questionKey]) ? $securityQuestions[$questionKey] : "Security question not found.";
+} else {
+    // Handle case where the security question is not found
+    $_SESSION['errorMessage'] = "Security question not found for the given user ID.";
+    header("Location: forgotPassword.php");
+    exit();
+}
+
+$stmt->close();
+$dbCon->close();
+?>
+
 <?php include 'universalHeader.php'; ?>
-<title>Forgot Password</title>
+<title>Security Question</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
@@ -88,11 +132,15 @@
         <div class="button-close">
             <button class="btn-close">&times;</button>
         </div>
-        <h2>Forgot Password</h2>
-        <form id="forgotPasswordForm" action="verifySecurityQuestion.php" method="POST">
+        <h2>Security Question</h2>
+        <form id="securityQuestionForm" action="changePassword.php" method="POST">
             <div class="form-group">
-                <label for="userid">User ID</label>
-                <input type="text" class="form-control" id="userid" name="userid" required>
+                <label for="securityQuestion">Question:</label>
+                <p><?php echo htmlspecialchars($securityQuestion, ENT_QUOTES, 'UTF-8'); ?></p>
+            </div>
+            <div class="form-group">
+                <label for="securityAnswer">Answer:</label>
+                <input type="text" class="form-control" id="securityAnswer" name="securityAnswer" required>
             </div>
             <div class="button-confirm">
                 <button type="submit" class="btn">NEXT</button>
