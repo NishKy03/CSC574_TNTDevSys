@@ -360,6 +360,9 @@ $result = $dbCon->query($sql);
 	margin:6%;
 	border-radius: 6%;
 }
+.maining{
+	margin: 6%;
+}
     </style>
   	
 </head>
@@ -367,8 +370,10 @@ $result = $dbCon->query($sql);
 
  <?php include("CHeader.php")?>
 
+
 	<div class="container mt-5">
-    <h2>Staff Lists</h2>
+	<div>
+	<h2>Staff Lists</h2>
     <button class="btn btn-warning" onclick="location.href='RegisterStaff.php'">Register Staff</button><br><br>
 
     <?php
@@ -415,6 +420,9 @@ $result = $dbCon->query($sql);
             <?php endif; ?>
         </ul>
     </nav>
+
+	</div>
+    
 </div>
 </body>
 </html>
