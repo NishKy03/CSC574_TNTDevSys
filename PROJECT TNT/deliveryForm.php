@@ -26,7 +26,7 @@
         $staffID = $_POST['staffid'];
 
         // Update the orders table with the selected staffID
-        $updateSql = "UPDATE orders SET staffID = ? WHERE orderID = ?";
+        $updateSql = "UPDATE orders SET staff_id = ? WHERE orderID = ?";
         if ($stmt = mysqli_prepare($dbCon, $updateSql)) {
             mysqli_stmt_bind_param($stmt, "ss", $staffID, $orderID);
 
@@ -63,6 +63,7 @@
 
     mysqli_close($dbCon);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

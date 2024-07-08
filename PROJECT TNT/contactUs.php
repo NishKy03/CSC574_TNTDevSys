@@ -126,6 +126,14 @@
         header {
             z-index: 4; /* Ensure the header stays above everything */
         }
+
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+            text-align: left;
+            margin-left: 20px;
+        }
     </style>
 </head>
 <body>
@@ -134,15 +142,18 @@
         <div class="icon-container"></div>
         <div class="form-container shadow-lg p-4">
             <h2>Contact Us</h2>
-            <form action="process_contact_form.php" method="post">
+            <form action="process_contact_form.php" method="post" id="contactForm" onsubmit="return validateForm()">
                 <div class="form-group">
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required pattern="[A-Za-z\s]{1,50}">
+                    <div id="nameError" class="error-message"></div>
                 </div>
                 <div class="form-group">
                     <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                    <div id="emailError" class="error-message"></div>
                 </div>
                 <div class="form-group">
-                    <textarea class="form-control" id="desc" name="desc" placeholder="Enter your description" rows="5" required></textarea>
+                    <textarea class="form-control" id="desc" name="desc" placeholder="Enter your description (max 250 characters)" rows="5" required maxlength="250"></textarea>
+                    <div id="descError" class="error-message"></div>
                 </div>
                 <div class="button-submit">
                     <button type="submit" class="btn btn-primary btn-lg btn-block">SUBMIT</button>
@@ -161,5 +172,77 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Function to validate form fields on the fly
+        function validateForm() {
+            var name = document.getElementById('name').value.trim();
+            var email = document.getElementById('email').value.trim();
+            var desc = document.getElementById('desc').value.trim();
+
+            var namePattern = /^[A-Za-z\s]{1,50}$/;
+            var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            var isValid = true;
+
+            // Validate Name
+            if (!name.match(namePattern)) {
+                document.getElementById('nameError').innerHTML = 'Please enter a valid name (only letters and spaces, max 50 characters).';
+                isValid = false;
+            } else {
+                document.getElementById('nameError').innerHTML = '';
+            }
+
+            // Validate Email
+            if (!email.match(emailPattern)) {
+                document.getElementById('emailError').innerHTML = 'Please enter a valid email address.';
+                isValid = false;
+            } else {
+                document.getElementById('emailError').innerHTML = '';
+            }
+
+            // Validate Description
+            if (desc.length > 250) {
+                document.getElementById('descError').innerHTML = 'Description should not exceed 250 characters.';
+                isValid = false;
+            } else {
+                document.getElementById('descError').innerHTML = '';
+            }
+
+            return isValid;
+        }
+
+        // Real-time validation on input change
+        document.getElementById('name').addEventListener('input', function() {
+            var name = this.value.trim();
+            var namePattern = /^[A-Za-z\s]{1,50}$/;
+
+            if (!name.match(namePattern)) {
+                document.getElementById('nameError').innerHTML = 'Please enter a valid name (only letters and spaces, max 50 characters).';
+            } else {
+                document.getElementById('nameError').innerHTML = '';
+            }
+        });
+
+        document.getElementById('email').addEventListener('input', function() {
+            var email = this.value.trim();
+            var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!email.match(emailPattern)) {
+                document.getElementById('emailError').innerHTML = 'Please enter a valid email address.';
+            } else {
+                document.getElementById('emailError').innerHTML = '';
+            }
+        });
+
+        document.getElementById('desc').addEventListener('input', function() {
+            var desc = this.value.trim();
+
+            if (desc.length > 250) {
+                document.getElementById('descError').innerHTML = 'Description should not exceed 250 characters.';
+            } else {
+                document.getElementById('descError').innerHTML = '';
+            }
+        });
+    </script>
 </body>
 </html>
