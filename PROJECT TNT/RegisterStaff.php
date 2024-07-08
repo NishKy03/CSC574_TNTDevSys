@@ -229,8 +229,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="form-group">
                     <label for="position" class="text-white">Position:</label>
                     <select class="form-control <?php echo (!empty($position_err)) ? 'is-invalid' : ''; ?>" id="position" name="position" required>
-                        <option value="Manager" <?php echo ($position == "staff") ? 'selected' : ''; ?>>Staff</option>
-                        <option value="Cashier" <?php echo ($position == "courier") ? 'selected' : ''; ?>>Courier</option>
+                        <option value="staff" <?php echo ($position == "staff") ? 'selected' : ''; ?>>Staff</option>
+                        <option value="courier" <?php echo ($position == "courier") ? 'selected' : ''; ?>>Courier</option>
                     </select>
                     <span class="invalid-feedback"><?php echo $position_err; ?></span>
                 </div>

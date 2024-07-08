@@ -502,7 +502,7 @@ font-family: Poppins;
 </style>
 </head>
 <body>
-	<?php include('CnavIn.php') ?>
+	<?php include('CHeader.php') ?>
 	<div class="container">
 		<div class="update-form-container">
 		<h2>Update Staff Information</h2>
