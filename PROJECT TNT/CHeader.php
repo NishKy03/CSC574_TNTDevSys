@@ -14,7 +14,7 @@ if ($staffID) {
     // Fetch staffName and profile picture path from database
     $selectQuery = "SELECT staffName, profilePicture FROM Staff WHERE staffID = ?";
     $stmt = $dbCon->prepare($selectQuery);
-    $stmt->bind_param('i', $staffID);
+    $stmt->bind_param('d', $staffID);
     $stmt->execute();
     $stmt->bind_result($staffNameFromDB, $profilePicture);
     $stmt->fetch();
@@ -31,9 +31,8 @@ if ($staffID) {
     $staffName = 'Guest';
 }
 
-// Check if staff position is 'courier'
 if ($_SESSION['position'] !== 'staff') {
-    echo '<div class="access-denied">Access Denied. Only accessible by courier staff.</div>';
+    echo '<div class="access-denied">Access Denied. Only accessible by regular staff.</div>';
     exit();
 }
 ?>

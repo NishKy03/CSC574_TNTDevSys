@@ -8,7 +8,7 @@ if (!isset($_SESSION['staffID'])) {
 ?>
 <?php
 // Include dbConnect file
-require_once "dbConnect.php";
+//require_once "dbConnect.php";
 
 // Define variables and initialize with empty values
 $c_pw = $c_name = $c_hpno = $c_email = $c_security_question = $c_security_answer = "";
@@ -148,10 +148,6 @@ if (isset($_POST["id"]) && !empty(trim($_POST["id"]))) {
 
         // Close statement
         mysqli_stmt_close($stmt);
-    } else {
-        // URL doesn't contain id parameter. Redirect to error page
-        //header("location: errorA.php");
-        exit();
     }
 
     // Close connection
@@ -178,6 +174,7 @@ if (isset($_POST["id"]) && !empty(trim($_POST["id"]))) {
             justify-content: center;
             align-items: center;
             height: 100%;
+            padding-top: 100px;
         }
         .myprofile-container {
             background: #CEA660;
@@ -186,7 +183,6 @@ if (isset($_POST["id"]) && !empty(trim($_POST["id"]))) {
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 80%;
             max-width: 600px;
-            margin-top: 100px;
         }
         .myprofile-header {
             display: flex;
@@ -243,7 +239,7 @@ if (isset($_POST["id"]) && !empty(trim($_POST["id"]))) {
 </head>
 <body>
     <div class="container">
-        <div class="myprofile-container">
+        <div class="myprofile-container"><br><br>
             <div class="myprofile-header">
                 <h1>PROFILE</h1>
             </div>
