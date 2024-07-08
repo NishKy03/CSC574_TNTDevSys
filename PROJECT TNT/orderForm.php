@@ -182,220 +182,6 @@
     <head>
         
         <style>
-
-        :root {
-            --bar-width: 30px;
-            --bar-height: 4px;
-            --hamburger-gap: 4px;
-            --foreground: #333;
-            --background: white;
-            --hamburger-margin: 10px;
-            --animation-timing: 200ms ease-in-out;
-            --hamburger-height: calc(var(--bar-height) * 3 + var(--hamburger-gap) * 2);
-        }
-
-        .header {
-            overflow: hidden;
-            font-family: 'Poppins', sans-serif;
-            padding: 10px;
-            position: fixed;
-            z-index: 1; 
-            width: 100%;
-            background-color: #4B0606;
-            color: white;
-            font-size: 35px;
-            cursor: pointer;
-            padding-left: 40px;
-        }
-
-        .header .opt {
-            float: left;
-            color: white;
-            text-align: center;
-            padding: 12px;
-            text-decoration: none;
-            font-size: 18px;
-            line-height: 25px;
-            border-radius: 4px;
-        }
-
-        .header .logo {
-            padding: 0;
-            
-        }
-
-        .header img {
-            height: 50px;
-            width: auto;
-            margin-left: 40px;
-        }
-
-        .header .opt:hover {
-            background-color: #85856A;
-            color: black;
-        }
-
-        .header .opt.active {
-            background-color: #2b2b23;
-            color: white;
-        }
-
-        .header-right {
-            float: right;
-            padding-right: 1%;
-        }
-
-        @media screen and (max-width: 500px) {
-            .header .opt {
-                float: none;
-                display: block;
-                text-align: left;
-            }
-
-            .header-right {
-                float: none;
-            }
-        }
-
-        .hamburger-menu {
-            --x-width: calc(var(--hamburger-height) * 1.41421356237);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            gap: var(--hamburger-gap);
-            width: max-content;
-            position: absolute;
-            top: var(--hamburger-margin);
-            left: var(--hamburger-margin);
-            z-index: 2;
-            cursor: pointer;
-            margin-top: 15px;
-            margin-bottom: 10px;;
-        }
-
-        .hamburger-menu:has(input:checked) {
-            --foreground: #333;
-            --background: #333;
-        }
-
-        .hamburger-menu:has(input:focus-visible)::before,
-        .hamburger-menu:has(input:focus-visible)::after,
-        .hamburger-menu input:focus-visible {
-            border: 1px solid var(--background);
-            box-shadow: 0 0 0 1px var(--foreground);
-        }
-
-        .hamburger-menu::before,
-        .hamburger-menu::after,
-        .hamburger-menu input {
-            content: "";
-            width: var(--bar-width);
-            height: var(--bar-height);
-            background-color: var(--foreground);
-            border-radius: 9999px;
-            transform-origin: left center;
-            transition: opacity var(--animation-timing), width var(--animation-timing),
-                rotate var(--animation-timing), translate var(--animation-timing),
-                background-color var(--animation-timing);
-        }
-
-        .hamburger-menu input {
-            appearance: none;
-            padding: 0;
-            margin: 0;
-            outline: none;
-            pointer-events: none;
-        }
-
-        .hamburger-menu:has(input:checked)::before {
-            rotate: 45deg;
-            width: var(--x-width);
-            translate: 0 calc(var(--bar-height) / -2);
-        }
-
-        .hamburger-menu:has(input:checked)::after {
-            rotate: -45deg;
-            width: var(--x-width);
-            translate: 0 calc(var(--bar-height) / 2);
-        }
-
-        .hamburger-menu input:checked {
-            opacity: 0;
-            width: 0;
-        }
-
-        .sidebar {
-            transition: translate var(--animation-timing);
-            translate: -100%;
-            padding-top: calc(var(--hamburger-height) + var(--hamburger-margin) + 1rem);
-            background-color: #59593F;
-            color: var(--background);
-            max-width: 10 rem;
-            min-height: 100vh;
-            margin-top: 50px;
-            position: fixed;
-            padding-left: 10px;
-            padding-right: 10px;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .sidebar a {
-            padding: 8px 8px 8px 32px;
-            text-decoration: none;
-            font-size: 25px;
-            color: white;
-            display: block;
-            transition: 0.3s;
-        }
-
-        /* When you mouse over the navigation links, change their color */
-        .sidebar a:hover {
-            color: black;
-        }
-
-        .sidebar .profile {
-            text-align: center;
-            padding: 10px 0;
-        }
-
-        .sidebar .profile img {
-            width: 100px;
-            border-radius: 50%;
-        }
-
-        .sidebar nav ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .sidebar nav ul li {
-            padding: 10px 20px;
-        }
-
-        .sidebar nav ul li a {
-            color: white;
-            text-decoration: none;
-            display: block;
-        }
-
-        .sidebar nav ul li.active a {
-            background-color: #b30000; /* Slightly lighter red */
-        }
-
-        .hamburger-menu:has(input:checked) + .sidebar {
-            translate: 0;
-        }
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
-        :root{
-            --primary-color: rgb(11, 78, 179);
-        }
-        *{
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Poppins", sans-serif;
-        }
-
         body{
             min-height: 100vh;
             background: #ECE0D1;
@@ -497,36 +283,7 @@
             cursor: pointer;
         }
 
-        .menu-btn{
-            width: 100%;
-            background-color: #4B0606;
-            color: white;
-            font-size: 35px;
-            cursor: pointer;
-            padding: 10px;
-            padding-left: 40px;
-        }
-
-
-        img{
-            width: 100px;
-            margin: 15px;
-            border-radius: 50%;
-            margin-left: 70px;
-            border: 3px solid #b4b8b9;
-        }
-
-        header{
-            background: #33363a;
-        }
-
-        .section{
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+      
         .progressbar-wrap{
             width: 100%;
             display: flex;
@@ -544,53 +301,7 @@
             margin-top: 100px;
         }
 
-        .progressbar::before, .progress{
-            content: "";
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            height: 4px;
-            width: 100%; 
-            background-color: #414040;
-            z-index: -1;
-        }
-
-        .progress{
-            background-color: rgb(11, 169, 11);
-            width: 0%;
-        }
-
-        .progress-step{
-            width: 50px;
-            height: 50px;
-            border: 3px solid #414040;
-            background-color: #dcdcdc;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .progress-step::before{
-            counter-increment: step;
-            content: counter(step);
-        }
-
-        .progress-step::after{
-            content: attr(data-title);
-            position: absolute;
-            top: calc(100% + 0.5rem);
-            font-size: 18px;
-            color: #666;
-            font-weight: bold;
-        }
-
-        .progress-step-active{
-            background-color: rgb(11, 169, 11);
-            color: #fff;
-            border: none;
-            back
-        }
+      
 
         *::before,
         *::after {
@@ -602,6 +313,11 @@
             padding-left: 10px;
             font-weight: bold;
             font-size: 18px;
+        }
+
+        *::before,
+        *::after {
+            box-sizing: border-box;
         }
 
         .width-50{
@@ -653,19 +369,13 @@
             padding-right: 50px;
             padding-top: 20px;
             padding-bottom: 20px;
+            margin-bottom: 20px;
 
         }
         .form h1{
             padding-left: 10px;
             padding-bottom: 15px;
             font-size: 25px;
-        }
-        .form-step{
-            display: none;
-        }
-
-        .form-step-active{
-            display: block;
         }
 
         .input-group{
@@ -708,6 +418,36 @@
         .btn:hover{
             box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--primary-color);
         }
+
+        
+        .btn:hover{
+            box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--primary-color);
+        }
+
+
+        #header1{
+            font-weight: 600;
+        }
+
+        .button-confirm button {
+            width: 30%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #b45858;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 25px;
+            font-weight: bold;
+        }
+        .button-confirm button:hover {
+            background-color: #45a049;
+        }
+
+        .error {
+            color: red;
+        }
         </style>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     </head>
@@ -717,86 +457,85 @@
         <div class="section">
             <div class="progressbar-wrap">
                 <div class="progressbar">
-                    <div class="progress" id="progress"></div>
-                    <div class="progress-step progress-step-active" data-title="Sender"></div>
-                    <div class="progress-step" data-title="Receipent"></div>
-                    <div class="progress-step" data-title="Parcel"></div>
-                    <!-- <div class="progress-step" data-title="Submit"></div> -->
+                    <h1 id="header1">ORDER</h1>
                 </div>
             </div>
             
             <form id="orderForm" class="form" method="POST" action="orderForm.php">
                 <!-- <h1 class="text-center">Booking Form</h1> -->
-
                 <div class="form-step form-step-active">
-                    <h1>Sender Details</h1>
+                <h1>Sender Details</h1>
                     <div class="input-group">
                         <label for="SName">Name</label>
-                        <input name="SName" id="SName" type="text" value="<?php echo isset($SName) ? $SName : ''?>">
-                     
+                        <input name="SName" id="SName" type="text" value="<?php echo isset($SName) ? $SName : ''?>" required>
+                        <span id="nameError" class="error"></span>
                     </div>
                     <div class="input-group">
                         <label for="phoneno">Phone Number</label>
-                        <input type="text" name="SPhone" id="SPhone" value="<?php echo isset($SPhone) ? $SPhone : ''?>" >
+                        <input type="text" name="SPhone" id="SPhone" value="<?php echo isset($SPhone) ? $SPhone : ''?>" required>
+                        <span id="phoneNumberError" class="error"></span>
                     </div>
                     <div class="input-group">
                         <label for="SAddress">Address</label>
-                        <input type="text" name="SAddress" id="SAddress" value="<?php echo isset($SAddress) ? $SAddress : ''?>" >
+                        <input type="text" name="SAddress" id="SAddress" value="<?php echo isset($SAddress) ? $SAddress : ''?>" required>
+                        <span id="stateError" class="error"></span>
                     </div>
                     <div class="input-group2">
                         <label for="SCity">City</label>
-                        <input type="text" name="SCity" id="SCity"  value="<?php echo isset($SCity) ? $SCity : ''?>" >
+                        <input type="text" name="SCity" id="SCity"  value="<?php echo isset($SCity) ? $SCity : ''?>" required>
+                        <span id="cityError" class="error"></span>
                     </div>
                     <div class="input-group3">
                         <label for="state">State</label>
-                        <input name="SState" id="SState" type="text" value="<?php echo isset($SState) ? $SState : ''?>" >
+                        <input name="SState" id="SState" type="text" value="<?php echo isset($SState) ? $SState : ''?>" required>
+                        <span id="stateError" class="error"></span>
                     </div>
                     <div class="input-group">
                         <label for="SPostcode">Postcode</label>
-                        <input type="text" name="SPostcode" id="SPostcode"  value="<?php echo isset($SPostcode) ? $SPostcode : ''?>" >
+                        <input type="text" name="SPostcode" id="SPostcode"  value="<?php echo isset($SPostcode) ? $SPostcode : ''?>" required>
+                        <span id="postcodeError" class="error"></span>
                     </div>
-       
-                    <div class="">
-                        <a href="#" class="btn btn-next width-50 ml-auto">Next</a>
-                    </div>
+                    <hr>
                 </div>
-
-                <div class="form-step">
+                   
                     <h1>Recipient Details</h1>
                     <div class="input-group">
                         <label for="recipient">Name</label>
-                        <input type="text" name="RName" id="RName" value="<?php echo isset($RName) ? $RName : ''?>" >
+                        <input type="text" name="RName" id="RName" value="<?php echo isset($RName) ? $RName : ''?>" required>
+                        <span id="RNameError" class="error"></span>
                     </div>
                     <div class="input-group">
                         <label for="phoneno">Phone Number</label>
-                        <input type="text" name="RPhone" id="RPhone" value="<?php echo isset($RPhone) ? $RPhone : ''?>" >
+                        <input type="text" name="RPhone" id="RPhone" value="<?php echo isset($RPhone) ? $RPhone : ''?>" required>
+                        <span id="RPhoneError" class="error"></span>
                     </div>
                     <div class="input-group">
                         <label for="address">Address</label>
-                        <input type="text" name="RAddress" id="RAddress" value="<?php echo isset($RAddress) ? $RAddress : ''?>" >
+                        <input type="text" name="RAddress" id="RAddress" value="<?php echo isset($RAddress) ? $RAddress : ''?>" required>
+                       
                     </div>
                     <div class="input-group2">
                         <label for="city">City</label>
-                        <input type="text" name="RCity" id="RCity" value="<?php echo isset($RCity) ? $RCity : ''?>" >
+                        <input type="text" name="RCity" id="RCity" value="<?php echo isset($RCity) ? $RCity : ''?>" required>
+                         <span id="RCityError" class="error"></span>
                     </div>
                     <div class="input-group3">
                         <label for="state">State</label>
-                        <input type="text" name="RState" id="RState" value="<?php echo isset($RState) ? $RState : ''?>" >
+                        <input type="text" name="RState" id="RState" value="<?php echo isset($RState) ? $RState : ''?>" required>
+                        <span id="RStateError" class="error"></span>
                     </div>
                     <div class="input-group">
                         <label for="postcode">Postcode</label>
-                        <input type="text" name="RPostcode" id="postcode" value="<?php echo isset($RPostcode) ? $RPostcode : ''?>" >
+                        <input type="text" name="RPostcode" id="postcode" value="<?php echo isset($RPostcode) ? $RPostcode : ''?>" required>
+                        <span id="RPostcodeError" class="error"></span>
                     </div>
-                    <div class="btns-group">
-                        <a href="#" class="btn btn-prev">Previous</a>
-                        <a href="#" class="btn btn-next">Next</a>
-                    </div>
-                </div>
-
-                <div class="form-step">
+                    
+                    <hr>
+                    <h1>Parcel Details</h1>
                     <div class="input-group">
                         <label for="weight">Weight (kg)</label>
                         <input type="text" name="weight" id="weight" value="<?php echo isset($Weight) ? $Weight : ''?>" required>
+                        <span id="weightError" class="error"></span>
                     </div>
                     <div class="input-group">
                         <label for="description">Description</label>
@@ -823,77 +562,83 @@
                         <input type="checkbox" name="insurance" id="insurance">
                     </div>
 
-                    <div class="btns-group">
-                        <a href="#" class="btn btn-prev">Previous</a>
-                        <input type="submit" value="Submit" class="btn">
-                    </div>
+                    
+                        <input type="submit" value="Submit">
+                    
                 </div>
-
             </form>
         </div>
     </div>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            // Side bar toggle
-            $(".menu-btn").click(function(){
-                $(".side-bar").addClass("active");
-                $(".menu-btn").css("visibility", "hidden");
-            });
-
-            $(".close-btn").click(function(){
-                $(".side-bar").removeClass("active");
-                $(".menu-btn").css("visibility", "visible");
-            });
-
-            // Sub menu toggle
-            $(".sub-btn").click(function(){
-                $(this).next(".sub-menu").slideToggle();
-                $(this).find(".dropdown").toggleClass("rotate");
-            });
-        });
-        const prevBtns = document.querySelectorAll(".btn-prev");
-        const nextBtns = document.querySelectorAll(".btn-next");
-        const progress = document.getElementById("progress");
-        const formSteps = document.querySelectorAll(".form-step");
-        const progressSteps = document.querySelectorAll(".progress-step");
-
-        let formStepsNum = 0;
-
-        nextBtns.forEach((btn) => {
-            btn.addEventListener("click", () => {
-                formStepsNum++;
-                updateFormSteps();
-                updateProgressbar();
-            });
-        });
-
-        prevBtns.forEach((btn) => {
-            btn.addEventListener("click", () => {
-                formStepsNum--;
-                updateFormSteps();
-                updateProgressbar();
-            });
-        });
-
-        function updateFormSteps() {
-            formSteps.forEach((formStep) => {
-                formStep.classList.contains("form-step-active") &&
-                formStep.classList.remove("form-step-active");
-            });
-            formSteps[formStepsNum].classList.add("form-step-active");
-        }
-
-        function updateProgressbar() {
-            progressSteps.forEach((progressStep, idx) => {
-                if (idx <= formStepsNum) {
-                    progressStep.classList.add("progress-step-active");
+    <script>
+        document.getElementById("orderForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent form submission
+            
+            // Validation function
+            function validateField(value, regex, errorMessageElement, errorMessage) {
+                if (!regex.test(value)) {
+                    errorMessageElement.textContent = errorMessage;
+                    return false;
                 } else {
-                    progressStep.classList.remove("progress-step-active");
+                    errorMessageElement.textContent = "";
+                    return true;
+                }
+            }
+
+            // Regular expressions for validation
+            var nameRegex = /^[a-zA-Z@]+$/;
+            var phoneNumberRegex = /^\d{3}-\d{7}|\d{3}-\d{6}$/;
+            var cityStateRegex = /^[a-zA-Z\s]+$/;
+            var postcodeRegex = /^\d{5}$/;
+            var weightRegex = /^\d+(\.\d+)?$/;
+
+            // Sender fields
+            var senderFields = [
+                { id: "name", regex: nameRegex, errorElementId: "nameError", errorMessage: "Name must contain only letters and '@'" },
+                { id: "phoneNumber", regex: phoneNumberRegex, errorElementId: "phoneNumberError", errorMessage: "Phone Number must be in format 'XXX-XXXXXXXX' or 'XXX-XXXXXXX'" },
+                { id: "city", regex: cityStateRegex, errorElementId: "cityError", errorMessage: "City must contain only letters and spaces" },
+                { id: "state", regex: cityStateRegex, errorElementId: "stateError", errorMessage: "State must contain only letters and spaces" },
+                { id: "postcode", regex: postcodeRegex, errorElementId: "postcodeError", errorMessage: "Postcode must contain exactly 5 numbers" }
+            ];
+
+            // Recipient fields
+            var recipientFields = [
+                { id: "RName", regex: nameRegex, errorElementId: "RNameError", errorMessage: "Name must contain only letters and '@'" },
+                { id: "RPhone", regex: phoneNumberRegex, errorElementId: "RPhoneError", errorMessage: "Phone Number must be in format 'XXX-XXXXXXXX' or 'XXX-XXXXXXX'" },
+                { id: "RCity", regex: cityStateRegex, errorElementId: "RCityError", errorMessage: "City must contain only letters and spaces" },
+                { id: "RState", regex: cityStateRegex, errorElementId: "RStateError", errorMessage: "State must contain only letters and spaces" },
+                { id: "RPostcode", regex: postcodeRegex, errorElementId: "RPostcodeError", errorMessage: "Postcode must contain exactly 5 numbers" }
+            ];
+
+            // Weight field
+            var weightField = { id: "weight", regex: weightRegex, errorElementId: "weightError", errorMessage: "Weight must contain only numbers and '.'" };
+
+            // Validate all fields
+            var allValid = true;
+
+            senderFields.forEach(function(field) {
+                var value = document.getElementById(field.id).value.trim();
+                if (!validateField(value, field.regex, document.getElementById(field.errorElementId), field.errorMessage)) {
+                    allValid = false;
                 }
             });
-            const progressActive = document.querySelectorAll(".progress-step-active");
-            progress.style.width = ((progressActive.length - 1) / (progressSteps.length - 1)) * 100 + "%";
-        }
+
+            recipientFields.forEach(function(field) {
+                var value = document.getElementById(field.id).value.trim();
+                if (!validateField(value, field.regex, document.getElementById(field.errorElementId), field.errorMessage)) {
+                    allValid = false;
+                }
+            });
+
+            var weightValue = document.getElementById(weightField.id).value.trim();
+            if (!validateField(weightValue, weightField.regex, document.getElementById(weightField.errorElementId), weightField.errorMessage)) {
+                allValid = false;
+            }
+
+            // If all fields are valid, submit the form
+            if (allValid) {
+                document.getElementById("orderForm").submit();
+            }
+        });
     </script>
     </body>
 </html>
