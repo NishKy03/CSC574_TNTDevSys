@@ -35,7 +35,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 				echo "<div class='alert alert-danger'>Error updating reocrd: " . $dbCon->error > "</div>";
 			}
 
-			$dbCon->close();
 } else{
 	if(isset($_GET['id'])){
 		$staffID = $_GET['id'];
