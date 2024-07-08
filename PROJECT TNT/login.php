@@ -25,14 +25,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['branchID'] = $row['branchID'];
 
         // Check position for access control
-        if ($_SESSION['position'] == 'courier') {
+        if (strtolower($_SESSION['position']) == 'courier') {
             header("Location: deliverylist.php");
             exit();
-        } else {
-            // Redirect to appropriate page for other positions
-            // Example:
-            // header("Location: dashboard.php");
-            // exit();
+        } else if (strtolower($_SESSION['position']) == 'staff') {
+            header("Location: CDashboard.php");
+            exit();
         }
     } else {
         $errorMessage = "Invalid credentials."; // Set error message
