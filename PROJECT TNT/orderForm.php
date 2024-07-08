@@ -23,86 +23,120 @@
     $SID = $SName = $SPhone = $SAddress = $SCity = $SState = $SPostcode = $RID = $RName = $RPhone = $RAddress = $RCity = $RState = $RPostcode = $Weight = $Description = $Insurance = $rateID = "";
     $SName_err = $SPhone_err = $SAddress_err = $SCity_err = $SState_err = $SPostcode_err = $RName_err = $RPhone_err = $RAddress_err = $RCity_err = $RState_err = $RPostcode_err = $Weight_err = $Description_err = $Insurance_err = $rateID_err = "";
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        //Sender Details
-        if (empty(trim($_POST["SName"]))) {
-            $SName_err = "Please enter the sender's name.";
-        } else {
-            $SName = trim($_POST["SName"]);
-        }
-        if (empty(trim($_POST["SPhone"]))) {
-            $SPhone_err = "Please enter the sender's phone number.";
-        } else {
-            $SPhone = trim($_POST["SPhone"]);
-        }
-        if (empty(trim($_POST["SAddress"]))) {
-            $SAddress_err = "Please enter the sender's address.";
-        } else {
-            $SAddress = trim($_POST["SAddress"]);
-        }
-        if (empty(trim($_POST["SCity"]))) {
-            $SCity_err = "Please enter the sender's city.";
-        } else {
-            $SCity = trim($_POST["SCity"]);
-        }
-        if (empty(trim($_POST["SState"]))) {
-            $SState_err = "Please enter the sender's state.";
-        } else {
-            $SState = trim($_POST["SState"]);
-        }
-        if (empty(trim($_POST["SPostcode"]))) {
-            $SPostcode_err = "Please enter the sender's postcode.";
-        } else {
-            $SPostcode = trim($_POST["SPostcode"]);
-        }
-        //Recipient Details
-        if (empty(trim($_POST["RName"]))) {
-            $RName_err = "Please enter the recipient's name.";
-        } else {
-            $RName = trim($_POST["RName"]);
-        }
-        if (empty(trim($_POST["RPhone"]))) {
-            $RPhone_err = "Please enter the recipient's phone number.";
-        } else {
-            $RPhone = trim($_POST["RPhone"]);
-        }
-        if (empty(trim($_POST["RAddress"]))) {
-            $RAddress_err = "Please enter the recipient's address.";
-        } else {
-            $RAddress = trim($_POST["RAddress"]);
-        }
-        if (empty(trim($_POST["RCity"]))) {
-            $RCity_err = "Please enter the recipient's city.";
-        } else {
-            $RCity = trim($_POST["RCity"]);
-        }
-        if (empty(trim($_POST["RState"]))) {
-            $RState_err = "Please enter the recipient's state.";
-        } else {
-            $RState = trim($_POST["RState"]);
-        }
-        if (empty(trim($_POST["RPostcode"]))) {
-            $RPostcode_err = "Please enter the recipient's postcode.";
-        } else {
-            $RPostcode = trim($_POST["RPostcode"]);
-        }
-        //Parcel Details
-        if (empty(trim($_POST["weight"]))) {
-            $Weight_err = "Please enter the parcel's weight.";
-        } else {
-            $Weight = floatval($_POST["weight"]);
-        }
-        if (empty(trim($_POST["description"]))) {
-            $Description_err = "Please enter the parcel's description.";
-        } else {
-            $Description = trim($_POST["description"]);
-        }
-        $Insurance = isset($_POST["insurance"]) ? 1.0 : 0.0;
-        if (isset($_POST["shipRateID"]) && !empty(trim($_POST["shipRateID"]))) {
-            $rateID = trim($_POST["shipRateID"]);
-        } else {
-            $rateID_err = "Please select a shipping rate.";
-        }
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            //Sender Details
+            if (empty(trim($_POST["SName"]))) {
+                $SName_err = "Please enter the sender's name.";
+            } else {
+                $SName = trim($_POST["SName"]);
+                if (!preg_match("/^[a-zA-Z\s]+$/", $SName)) {
+                    $SName_err = "Name must contain only letters and spaces.";
+                }
+            }
+            if (empty(trim($_POST["SPhone"]))) {
+                $SPhone_err = "Please enter the sender's phone number.";
+            } else {
+                $SPhone = trim($_POST["SPhone"]);
+                if (!preg_match("/^\d{3}-\d{7}|\d{3}-\d{6}$/", $SPhone)) {
+                    $SPhone_err = "Phone Number must be in format 'XXX-XXXXXXXX' or 'XXX-XXXXXXX'";
+                }
+            }
+            if (empty(trim($_POST["SAddress"]))) {
+                $SAddress_err = "Please enter the sender's address.";
+            } else {
+                $SAddress = trim($_POST["SAddress"]);
+            }
+            if (empty(trim($_POST["SCity"]))) {
+                $SCity_err = "Please enter the sender's city.";
+            } else {
+                $SCity = trim($_POST["SCity"]);
+                if (!preg_match("/^[a-zA-Z\s]+$/", $SCity)) {
+                    $SCity_err = "City must contain only letters and spaces.";
+                }
+            }
+            if (empty(trim($_POST["SState"]))) {
+                $SState_err = "Please enter the sender's state.";
+            } else {
+                $SState = trim($_POST["SState"]);
+                if (!preg_match("/^[a-zA-Z\s]+$/", $SState)) {
+                    $SState_err = "State must contain only letters and spaces.";
+                }
+            }
+            if (empty(trim($_POST["SPostcode"]))) {
+                $SPostcode_err = "Please enter the sender's postcode.";
+            } else {
+                $SPostcode = trim($_POST["SPostcode"]);
+                if (!preg_match("/^\d{5}$/", $SPostcode)) {
+                    $SPostcode_err = "Postcode must contain exactly 5 numbers.";
+                }
+            }
+            //Recipient Details
+            if (empty(trim($_POST["RName"]))) {
+                $RName_err = "Please enter the recipient's name.";
+            } else {
+                $RName = trim($_POST["RName"]);
+                if (!preg_match("/^[a-zA-Z\s]+$/", $RName)) {
+                    $RName_err = "Name must contain only letters and spaces.";
+                }
+            }
+            if (empty(trim($_POST["RPhone"]))) {
+                $RPhone_err = "Please enter the recipient's phone number.";
+            } else {
+                $RPhone = trim($_POST["RPhone"]);
+                if (!preg_match("/^\d{3}-\d{7}|\d{3}-\d{6}$/", $RPhone)) {
+                    $RPhone_err = "Phone Number must be in format 'XXX-XXXXXXXX' or 'XXX-XXXXXXX'";
+                }
+            }
+            if (empty(trim($_POST["RAddress"]))) {
+                $RAddress_err = "Please enter the recipient's address.";
+            } else {
+                $RAddress = trim($_POST["RAddress"]);
+            }
+            if (empty(trim($_POST["RCity"]))) {
+                $RCity_err = "Please enter the recipient's city.";
+            } else {
+                $RCity = trim($_POST["RCity"]);
+                if (!preg_match("/^[a-zA-Z\s]+$/", $RCity)) {
+                    $RCity_err = "City must contain only letters and spaces.";
+                }
+            }
+            if (empty(trim($_POST["RState"]))) {
+                $RState_err = "Please enter the recipient's state.";
+            } else {
+                $RState = trim($_POST["RState"]);
+                if (!preg_match("/^[a-zA-Z\s]+$/", $RState)) {
+                    $RState_err = "State must contain only letters and spaces.";
+                }
+            }
+            if (empty(trim($_POST["RPostcode"]))) {
+                $RPostcode_err = "Please enter the recipient's postcode.";
+            } else {
+                $RPostcode = trim($_POST["RPostcode"]);
+                if (!preg_match("/^\d{5}$/", $RPostcode)) {
+                    $RPostcode_err = "Postcode must contain exactly 5 numbers.";
+                }
+            }
+            //Parcel Details
+            if (empty(trim($_POST["weight"]))) {
+                $Weight_err = "Please enter the parcel's weight.";
+            } else {
+                $Weight = floatval($_POST["weight"]);
+                if (!preg_match("/^\d+(\.\d+)?$/", $Weight)) {
+                    $Weight_err = "Weight must contain only numbers and '.'";
+                }
+            }
+            if (empty(trim($_POST["description"]))) {
+                $Description_err = "Please enter the parcel's description.";
+            } else {
+                $Description = trim($_POST["description"]);
+            }
+            $Insurance = isset($_POST["insurance"]) ? 1.0 : 0.0;
+            if (isset($_POST["shipRateID"]) && !empty(trim($_POST["shipRateID"]))) {
+                $rateID = trim($_POST["shipRateID"]);
+            } else {
+                $rateID_err = "Please select a shipping rate.";
+            }
+        
 
         if (empty($SName_err) && empty($SPhone_err) && empty($SAddress_err) && empty($SCity_err) && empty($SState_err) && empty($SPostcode_err) && empty($RName_err) && empty($RPhone_err) && empty($RAddress_err) && empty($RCity_err) && empty($RState_err) && empty($RPostcode_err) && empty($Weight_err) && empty($Description_err) && empty($rateID_err)) {
             $sql1 = "INSERT INTO sender (senderName, senderPhoneNo, addressLine1, city, state, postcode) VALUES (?, ?, ?, ?, ?, ?)";
@@ -562,83 +596,15 @@
                         <input type="checkbox" name="insurance" id="insurance">
                     </div>
 
-                    
+                    <div class="btns-group">
                         <input type="submit" value="Submit">
+                    </div>
+                        
                     
                 </div>
             </form>
         </div>
     </div>
-    <script>
-        document.getElementById("orderForm").addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent form submission
-            
-            // Validation function
-            function validateField(value, regex, errorMessageElement, errorMessage) {
-                if (!regex.test(value)) {
-                    errorMessageElement.textContent = errorMessage;
-                    return false;
-                } else {
-                    errorMessageElement.textContent = "";
-                    return true;
-                }
-            }
-
-            // Regular expressions for validation
-            var nameRegex = /^[a-zA-Z@]+$/;
-            var phoneNumberRegex = /^\d{3}-\d{7}|\d{3}-\d{6}$/;
-            var cityStateRegex = /^[a-zA-Z\s]+$/;
-            var postcodeRegex = /^\d{5}$/;
-            var weightRegex = /^\d+(\.\d+)?$/;
-
-            // Sender fields
-            var senderFields = [
-                { id: "name", regex: nameRegex, errorElementId: "nameError", errorMessage: "Name must contain only letters and '@'" },
-                { id: "phoneNumber", regex: phoneNumberRegex, errorElementId: "phoneNumberError", errorMessage: "Phone Number must be in format 'XXX-XXXXXXXX' or 'XXX-XXXXXXX'" },
-                { id: "city", regex: cityStateRegex, errorElementId: "cityError", errorMessage: "City must contain only letters and spaces" },
-                { id: "state", regex: cityStateRegex, errorElementId: "stateError", errorMessage: "State must contain only letters and spaces" },
-                { id: "postcode", regex: postcodeRegex, errorElementId: "postcodeError", errorMessage: "Postcode must contain exactly 5 numbers" }
-            ];
-
-            // Recipient fields
-            var recipientFields = [
-                { id: "RName", regex: nameRegex, errorElementId: "RNameError", errorMessage: "Name must contain only letters and '@'" },
-                { id: "RPhone", regex: phoneNumberRegex, errorElementId: "RPhoneError", errorMessage: "Phone Number must be in format 'XXX-XXXXXXXX' or 'XXX-XXXXXXX'" },
-                { id: "RCity", regex: cityStateRegex, errorElementId: "RCityError", errorMessage: "City must contain only letters and spaces" },
-                { id: "RState", regex: cityStateRegex, errorElementId: "RStateError", errorMessage: "State must contain only letters and spaces" },
-                { id: "RPostcode", regex: postcodeRegex, errorElementId: "RPostcodeError", errorMessage: "Postcode must contain exactly 5 numbers" }
-            ];
-
-            // Weight field
-            var weightField = { id: "weight", regex: weightRegex, errorElementId: "weightError", errorMessage: "Weight must contain only numbers and '.'" };
-
-            // Validate all fields
-            var allValid = true;
-
-            senderFields.forEach(function(field) {
-                var value = document.getElementById(field.id).value.trim();
-                if (!validateField(value, field.regex, document.getElementById(field.errorElementId), field.errorMessage)) {
-                    allValid = false;
-                }
-            });
-
-            recipientFields.forEach(function(field) {
-                var value = document.getElementById(field.id).value.trim();
-                if (!validateField(value, field.regex, document.getElementById(field.errorElementId), field.errorMessage)) {
-                    allValid = false;
-                }
-            });
-
-            var weightValue = document.getElementById(weightField.id).value.trim();
-            if (!validateField(weightValue, weightField.regex, document.getElementById(weightField.errorElementId), weightField.errorMessage)) {
-                allValid = false;
-            }
-
-            // If all fields are valid, submit the form
-            if (allValid) {
-                document.getElementById("orderForm").submit();
-            }
-        });
-    </script>
+    
     </body>
 </html>
