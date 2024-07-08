@@ -41,6 +41,14 @@ $addFee = $row['addFee'];
 
 $totalAmount = $baseFee + ($Weight * $addFee) + ($insurance * $Weight);
 
+$sql2 = "UPDATE orders SET totalAmount = ? WHERE orderID = ?";
+$stmt2 = $dbCon->prepare($sql2);
+$stmt2->bind_param("di", $totalAmount, $orderID);
+if($stmt2->execute()){
+   $message = "Record updated successfully";
+}
+$stmt2->close();
+
 // Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
     $paymentMethod = $_POST['methodPay']; // Corrected to match the name attribute of your select element
