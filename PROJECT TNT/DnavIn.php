@@ -210,7 +210,7 @@
     </head>
     <body>
         <div class="header">
-            <a href="#default"><img src="../images/tntlogo.png"></a>
+            <a href="#default"><img src="images/tntlogo.png"></a>
             <div class="header-right">
                 <a class="opt" href="logout.php">Logout</a>
             </div>
@@ -222,7 +222,7 @@
             <div class="profile">
                 <h3>Hi,</h3>
                 <h3>Lee Chin</h3>
-                <img src="../images/picture.png" alt="Profile Picture">
+                <img src="images/picture.png" alt="Profile Picture">
             </div>
             <nav>
                 <ul>

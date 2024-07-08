@@ -42,7 +42,7 @@ if ($_SESSION['position'] !== 'staff') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../header.css">
+    <link rel="stylesheet" href="header.css">
     <script src="sidebar.js" defer></script>
     <style>
         body {
@@ -237,7 +237,7 @@ if ($_SESSION['position'] !== 'staff') {
         <ul class="menu">
             <li><a href="CProfile.php">Profile</a></li>
             <li><a href="COrderList.php">Orders</a></li>
-            <li><a href="StaffClerk/staffList.php">Staff</a></li>
+            <li><a href="staffList.php">Staff</a></li>
         </ul>
     </div>
     <!-- Main Content -->
