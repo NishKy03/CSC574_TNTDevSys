@@ -67,6 +67,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["id"]) && !empty(trim($
         $c_email = $input_email;
     }
 
+    $c_security_question = $_POST["security_question"];
+    if (empty($c_security_question)) {
+        $security_question_err = "Please select a security question.";
+    }
+
+    $c_security_answer = trim($_POST["security_answer"]);
+    if (empty($c_security_answer)) {
+        $security_answer_err = "Please enter an answer to the security question.";
+    }
+
     // Check input errors before updating in database
     if (empty($pw_err) && empty($name_err) && empty($hpno_err) && empty($email_err) && empty($security_question_err) && empty($security_answer_err)) {
         $sql = "UPDATE staff SET password = ?, staffName = ?, staffPhone = ?, staffEmail = ?, staffQuestion = ?, staffAnswer = ? WHERE staffID = ?";
@@ -151,7 +161,7 @@ mysqli_close($dbCon);
             font-weight: bold;
             color: white;
         }
-        .myprofile-form input {
+        .myprofile-form input, .myprofile-form select {
             padding: 10px;
             margin-top: 5px;
             border: 1px solid #ccc;
@@ -173,7 +183,7 @@ mysqli_close($dbCon);
         .myprofile-form input[type="submit"]:hover {
             background: #45a2b9;
         }
-        span {
+        span.error {
             color: red;
             font-size: 14px;
         }
@@ -285,3 +295,4 @@ mysqli_close($dbCon);
     </script>
 </body>
 </html>
+
