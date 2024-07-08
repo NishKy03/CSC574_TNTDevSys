@@ -24,7 +24,7 @@
             }
             .content h1 {
                 color: #7a2321;
-                font: weight 700px;;
+                font-weight: 700;
                 margin-bottom: 20px;
             }
             .order-table {
@@ -65,21 +65,19 @@
                         <th>Order Date</th>
                         <th>State (Recipient)</th>
                         <th>Status</th>
-                        <th>Delivery Staff ID</th>
+                        <th>Delivery Staff ID & Name</th>
                         <th>Action</th>
                     </tr>
                     <?php
                         // Include dbConnect file
                         require_once "dbConnect.php";
                         // Attempt select query execution
-                        $sql = "SELECT o.orderID, o.orderDate, r.state, t.category, t.staffID
-                                FROM recipient r, orders o, tracking_update t, staff s
-                                WHERE o.orderID = t.orderID
-                                AND t.staffID = s.staffID
-                                AND r.recipientID = o.recipientID
-                                AND updateID IN (SELECT MAX(updateID)
-                                                FROM tracking_update
-                                                GROUP BY orderID)
+                        $sql = "SELECT o.orderID, o.orderDate, r.state, t.category, t.staffID, s.staffName
+                                FROM recipient r
+                                JOIN orders o ON r.recipientID = o.recipientID
+                                LEFT JOIN tracking_update t ON o.orderID = t.orderID
+                                LEFT JOIN staff s ON t.staffID = s.staffID
+                                WHERE t.updateID IN (SELECT MAX(updateID) FROM tracking_update GROUP BY orderID)
                                 AND t.branchID = ?;";
                         if ($stmt = mysqli_prepare($dbCon, $sql)) {
                             // Bind variables to the prepared statement as parameters
@@ -99,11 +97,15 @@
                                         echo "<td>" . $row['orderDate'] . "</td>";
                                         echo "<td>" . $row['state'] . "</td>";
                                         echo "<td>" . $row['category'] . "</td>\n";
-                                        echo "<td>" . $row['staffID'] . "</td>\n";
+                                        if ($row['staffID']) {
+                                            echo "<td>" . $row['staffID'] . " - " . $row['staffName'] . "</td>\n";
+                                        } else {
+                                            echo "<td>Unassigned</td>\n";
+                                        }
                                         echo "<td>";
                                         echo "<a href='printOrderStatement.php?orderID=" . $orderID . "' target=\"popup\" onclick=\"window.open('printOrderStatement.php?orderID=" . $orderID . "', '_blank', 'width=600,height=400'); return false;\">Print Statement</a>&nbsp;&nbsp;";
                                         echo "<a href='printOrderWaybill.php?orderID=" . $orderID . "' target=\"popup\" onclick=\"window.open('printOrderWaybill.php?orderID=" . $orderID . "', '_blank', 'width=600,height=400'); return false;\">Print Waybill</a>&nbsp;&nbsp;";
-                                        echo "<a href='deliveryForm.php?orderID=" . $orderID . "' title='Update'>Update</a>";
+                                        echo "<a href='updateForm.php?orderID=" . $orderID . "' title='Update'>Update</a>";
                                         echo "</td>";
                                         echo "</tr>";
                                     };
@@ -117,9 +119,12 @@
                                 echo "ERROR: Could not able to execute $sql. " . mysqli_error($dbCon);
                             }
 
-                            // Close connection
-                            mysqli_close($dbCon);
+                            // Close statement
+                            mysqli_stmt_close($stmt);
                         }
+
+                        // Close connection
+                        mysqli_close($dbCon);
                     ?>
                 </table>
             </div>

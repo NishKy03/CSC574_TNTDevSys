@@ -7,13 +7,14 @@
     $staffOptions = "";
 
     // Fetch staff members with position='courier'
-    $sql = "SELECT staffID, staffName FROM staff WHERE position = 'courier'";
+    $sql = "SELECT staffID, staffName, branchid FROM staff WHERE position = 'courier'";
     $result = mysqli_query($dbCon, $sql);
 
     if (mysqli_num_rows($result) > 0) {
         while ($row = mysqli_fetch_assoc($result)) {
             $staffID = $row['staffID'];
             $staffName = $row['staffName'];
+            $staffbranch = $row['branchid'];
             $staffOptions .= "<option value='$staffID'>$staffID - $staffName</option>";
         }
     } else {
@@ -29,8 +30,8 @@
         $updateSql = "UPDATE tracking_update SET date = NOW(), category = 'Assign Courier', staffID = ?, branchID = ? WHERE orderID = ?";
         if ($stmtUpdate = mysqli_prepare($dbCon, $updateSql)) {
             // Assuming branchID is available from session or other sources
-            $branchID = $_SESSION['branchID']; // Adjust as per your session setup
-            mysqli_stmt_bind_param($stmtUpdate, "sss", $staffID, $branchID, $orderID);
+            
+            mysqli_stmt_bind_param($stmtUpdate, "sss", $staffID, $staffbranch, $orderID);
 
             if (mysqli_stmt_execute($stmtUpdate)) {
                 // Redirect back to order list or wherever appropriate
