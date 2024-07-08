@@ -1,249 +1,198 @@
 <?php
-    //session_start();
-    //$_SESSION['staffID'] = 2000002;
-    include('CnavIn.php');
-?>
-<?php
-// Include dbConnect file
-require_once "dbConfig.php";
+// Start PHP session
+session_start();
 
-// Define variables and initialize with empty values
-$c_pw = $c_name = $c_hpno = $c_email = "";
-$pw_err = $name_err = $hpno_err = $email_err = "";
+// Check if staffID is set in session
+if (!isset($_SESSION['staffID'])) {
+    // Redirect to login page if not logged in
+    header("Location: login.php");
+    exit();
+}
 
-// Processing form data when form is submitted
-if (isset($_POST["id"]) && !empty(trim($_POST["id"]))) { 
-    $c_id = $_POST["id"];
+// Include header
+include 'CNavIn.php';
 
-    $input_pw = trim($_POST["pw"]);
-    if (empty($input_pw)) {
-        $pw_err = "Please enter a password.";
-    } else if (!filter_var($input_pw, FILTER_VALIDATE_REGEXP, array("options" => array("regexp" => "/^.{6,}$/")))) {
-        $pw_err = "Your password must be 6 characters or longer.";
+// Database connection
+require_once 'dbConnect.php';
+
+// Initialize variables to avoid null warnings
+$staffName = "";
+$phone = "";
+$email = "";
+
+// Check if staff position is 'courier'
+if ($_SESSION['position'] !== 'staff') {
+    echo '<div class="access-denied">Access Denied. Only accessible by regular staff.</div>';
+    exit();
+}
+
+// Handle form submission to update profile
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Get input values
+    $staffID = $_SESSION['staffID'];
+    $staffName = $_POST['staffName'];
+    $phone = $_POST['phone'];
+    $email = $_POST['email'];
+
+    // Update the staff information in the database
+    $sql = "UPDATE Staff SET staffName = ?, staffPhone = ?, staffEmail = ? WHERE staffID = ?";
+    $stmt = $dbCon->prepare($sql);
+    $stmt->bind_param("sssi", $staffName, $phone, $email, $staffID);
+
+    if ($stmt->execute()) {
+        // Update session variable
+        $_SESSION['staffName'] = $staffName;
+
+        // Redirect to profile page with success message
+        header("Location: myProfileStaff.php?update=success");
+        exit();
     } else {
-        $c_pw = $input_pw;
-    }
-
-    // Validate name
-    $input_name = trim($_POST["name"]);
-    if (empty($input_name)) {
-        $name_err = "Please enter a name.";
-    } else if (!filter_var($input_name, FILTER_VALIDATE_REGEXP, array("options" => array("regexp" => "/^[a-zA-Z\s\.\']+$/")))) {
-        $name_err = "Please enter a valid name.";
-    } else {
-        $c_name = $input_name;
-    }
-
-    // Validate phone number
-    $input_hpno = trim($_POST["phone"]);
-    if (empty($input_hpno)) {
-        $hpno_err = "Please enter a phone number.";
-    } else if (!filter_var($input_hpno, FILTER_VALIDATE_REGEXP, array("options" => array("regexp" => "/^[0-9]{3}-[0-9]+$/")))) {
-        $hpno_err = "Invalid phone number. Please use XXX-XXXXXXX format.";
-    } else {
-        $c_hpno = $input_hpno;
-    }
-
-    $input_email = trim($_POST["email"]);
-    if (empty($input_email)) {
-        $email_err = "Please enter an email.";
-    } else if (!filter_var($input_email, FILTER_VALIDATE_REGEXP, array("options" => array("regexp" => "/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/")))) {
-        $email_err = "Invalid email. Please use XXX@XXX.XXX format.";
-    } else {
-        $c_email = $input_email;
-    }
-
-    // Check input errors before updating in database
-    if (empty($name_err) && empty($hpno_err) && empty($email_err)) {
-        // Prepare an update statement
-        $sql = "UPDATE staff SET password = ?, staffName = ?, staffPhone = ?, staffEmail = ? WHERE staffID = ?";
-        if ($stmt = mysqli_prepare($conn, $sql)) {
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ssssd", $param_pw, $param_name, $param_hpno, $param_email, $param_id);
-
-            // Set parameters
-            $param_pw = $c_pw;
-            $param_name = $c_name;
-            $param_hpno = $c_hpno;
-            $param_email = $c_email;
-            $param_id = $c_id;
-
-            // Attempt to execute the prepared statement
-            if (mysqli_stmt_execute($stmt)) {
-                // Records updated successfully. Redirect to landing page
-                header("location: CProfile.php");
-                exit();
-            } else {
-                echo "Something went wrong. Please try again later.";
-            }
-        }
-
-        // Close statement
-        mysqli_stmt_close($stmt);
-    }
-
-    // Close connection
-    mysqli_close($conn);
-} else {
-    if (isset($_SESSION['staffID']) && !empty($_SESSION['staffID'])) {
-        // Get URL parameter
-        $c_id = trim($_SESSION['staffID']);
-
-        // Prepare a select statement
-        $sql = "SELECT staffID, password, staffName, staffPhone, staffEmail FROM staff WHERE staffID = ?";
-        if ($stmt = mysqli_prepare($conn, $sql)) {
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "s", $param_id);
-            
-            // Set parameters
-            $param_id = $c_id;
-
-            // Attempt to execute the prepared statement
-            if (mysqli_stmt_execute($stmt)) {
-                $result = mysqli_stmt_get_result($stmt);
-                if (mysqli_num_rows($result) == 1) {
-                    /* Fetch result row as an associative array. Since the result set
-                    contains only one row, we don't need to use while loop */
-                    $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
-
-                    // Retrieve individual field value
-                    $c_id = $row["staffID"];
-                    $c_pw = $row["password"];
-                    $c_name = $row["staffName"];
-                    $c_hpno = $row["staffPhone"];
-                    $c_email = $row["staffEmail"];
-                } else {
-                    // URL doesn't contain valid id parameter. Redirect to error page
-                    //header("location: errorA.php");
-                    exit();
-                }
-            } else {
-                echo "Oops! Something went wrong. Please try again later.";
-            }
-        }
-
-        // Close statement
-        mysqli_stmt_close($stmt);
-    } else {
-        // URL doesn't contain id parameter. Redirect to error page
-        //header("location: errorA.php");
+        // Redirect to profile page with error message
+        header("Location: myProfileStaff.php?update=error");
         exit();
     }
-
-    // Close connection
-    mysqli_close($conn);
 }
+
+// Fetch staff information from database based on staffID in session
+$staffID = $_SESSION['staffID'];
+$sql = "SELECT * FROM Staff WHERE staffID = ?";
+$stmt = $dbCon->prepare($sql);
+$stmt->bind_param("i", $staffID);
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Check if staff data exists
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $staffName = $row['staffName'];
+    $phone = isset($row['staffPhone']) ? $row['staffPhone'] : ""; // Check if phone is set in database result
+    $email = isset($row['staffEmail']) ? $row['staffEmail'] : ""; // Check if email is set in database result
+} else {
+    // Handle case where staff data is not found
+    echo "Staff data not found.";
+}
+
+// Close statement and connection
+$stmt->close();
+$dbCon->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-    <title>Profile Page</title>
+    <title>Profile - TNT</title>
     <style>
-        body, html {
+        body {
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            height: 100%;
-            font-family: "Poppins", sans-serif;
-            background: #F3EDE0;
+            background-color: #ECE0D1;
         }
+
         .container {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100%;
+            margin-top: 2%;
+            padding: 20px;
         }
-        .profile-container {
-            background: #CEA660;
+
+        .profile-content {
+            background-color: #4b0606;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 80%;
+            border-radius: 20px;
+            width: 100%;
             max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            color: white;
         }
-        .profile-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0;
-            margin-right: 30%;
-            margin-left: 40%;
+
+        .profile-details h1 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 30px;
         }
-        .profile-header h1 {
-            margin: 0;
-        }
-        .profile-form {
+
+        .profile-info {
             display: flex;
             flex-direction: column;
         }
-        .profile-form label {
-            margin-top: 10px;
+
+        .profile-info .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-info label {
+            width: 100px;
+            font-size: 16px;
             font-weight: bold;
         }
-        .profile-form input {
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: 100%;
-            box-sizing: border-box;
-            font-family: "Poppins", sans-serif;
-        }
-        .profile-form button {
-            margin-top: 20px;
+
+        .profile-info input {
+            flex: 1;
             padding: 10px;
             border: none;
-            border-radius: 5px;
-            background: #56c4e1;
-            color: white;
+            border-radius: 10px;
             font-size: 16px;
+        }
+
+        .profile-info .editable {
+            background-color: #fff;
+        }
+
+        .profile-info .non-editable {
+            background-color: transparent;
+            color: #fff;
+        }
+
+        .profile-info button {
+            padding: 15px;
+            background-color: #b45858;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
             cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+            width: 100%;
         }
-        .profile-form button:hover {
-            background: #45a2b9;
+
+        .profile-info button:hover {
+            background-color: #4b0606;
         }
-        span {
-            color: red;
-            font-size: 14px;
-        }
+        
     </style>
-    <script>
-        function drawAlert() {
-            var answer = confirm("Are you sure to update this record?");
-            if (!answer)
-                return false;
-        }
-    </script>
 </head>
 <body>
     <div class="container">
-        <div class="profile-container">
-            <div class="profile-header">
-            <h1>PROFILE</h1>
-            </div>
-            <div class="profile-form">
-                <form action="<?php echo htmlspecialchars(basename($_SERVER['REQUEST_URI'])); ?>" method="post" onSubmit="return drawAlert();">
-                <label for="id">ID</label>
-                <input type="text" id="id" name="id" value="<?php echo $c_id; ?>" readonly>
-
-                <label for="pw">Password</label>
-                <input type="password" id="pw" name="pw" value="<?php echo $c_pw; ?>">
-                <span><?php echo $pw_err."<br>"; ?></span>
-                
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" value="<?php echo $c_name; ?>">
-                <span><?php echo $name_err."<br>"; ?></span>
-                
-                <label for="phone">Phone Number</label>
-                <input type="text" id="phone" name="phone" value="<?php echo $c_hpno; ?>">
-                <span><?php echo $hpno_err."<br>"; ?></span>
-                
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" value="<?php echo $c_email; ?>">
-                <span><?php echo $email_err."<br>"; ?></span>
-                
-                <input type="submit" value="Update">
+        <div class="profile-content">
+            <div class="profile-details">
+                <h1>PROFILE</h1>
+                <form action="updateProfile.php" method="post">
+                    <div class="profile-info">
+                        <div class="form-group">
+                            <label for="id">ID</label>
+                            <input type="text" id="id" name="staffID" value="<?php echo htmlspecialchars($staffID); ?>" class="non-editable" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="staffName" value="<?php echo htmlspecialchars($staffName); ?>" class="editable">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="text" id="phone" name="phone" value="<?php echo htmlspecialchars($phone); ?>" class="editable">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" class="editable">
+                        </div>
+                        <button type="submit">UPDATE</button>
+                    </div>
                 </form>
             </div>
         </div>

@@ -212,7 +212,7 @@
         <div class="header">
             <a href="#default"><img src="images/tntlogo.png"></a>
             <div class="header-right">
-                <a class="opt" href="#about">Logout</a>
+                <a class="opt" href="logout.php">Logout</a>
             </div>
         </div>
         <label class="hamburger-menu">
