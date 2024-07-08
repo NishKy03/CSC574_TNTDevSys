@@ -166,15 +166,46 @@ $dbCon->close();
         .profile-info button:hover {
             background-color: #4b0606;
         }
-        
     </style>
+    <script>
+        function validateForm() {
+            // Validate name: only letters allowed
+            var name = document.getElementById("name").value;
+            var namePattern = /^[A-Za-z\s]+$/;
+            if (!namePattern.test(name)) {
+                alert("Name can only contain letters and spaces.");
+                return false;
+            }
+
+            // Validate phone: format ###-### ####
+            var phone = document.getElementById("phone").value;
+            var phonePattern = /^\d{3}-\d{3} \d{4}$/;
+            if (!phonePattern.test(phone)) {
+                alert("Phone number must be in the format ###-### #### (e.g., 017-970 3786).");
+                return false;
+            }
+
+            return true;
+        }
+
+        function formatPhoneNumber(input) {
+            // Strip all non-numeric characters
+            var cleaned = ('' + input.value).replace(/\D/g, '');
+
+            // Match cleaned input against phone number pattern
+            var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+            if (match) {
+                input.value = match[1] + '-' + match[2] + ' ' + match[3];
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="container">
         <div class="profile-content">
             <div class="profile-details">
                 <h1>PROFILE</h1>
-                <form action="updateProfile.php" method="post">
+                <form action="updateProfile.php" method="post" onsubmit="return validateForm()">
                     <div class="profile-info">
                         <div class="form-group">
                             <label for="id">ID</label>
@@ -186,7 +217,7 @@ $dbCon->close();
                         </div>
                         <div class="form-group">
                             <label for="phone">Phone Number</label>
-                            <input type="text" id="phone" name="phone" value="<?php echo htmlspecialchars($phone); ?>" class="editable">
+                            <input type="text" id="phone" name="phone" value="<?php echo htmlspecialchars($phone); ?>" class="editable" oninput="formatPhoneNumber(this)" maxlength="12">
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
