@@ -7,9 +7,6 @@ if (!isset($_SESSION['staffID'])) {
 }
 ?>
 <?php
-// Include dbConnect file
-//require_once "dbConnect.php";
-
 // Define variables and initialize with empty values
 $c_pw = $c_name = $c_hpno = $c_email = $c_security_question = $c_security_answer = "";
 $pw_err = $name_err = $hpno_err = $email_err = $security_question_err = $security_answer_err = "";
@@ -137,8 +134,6 @@ if (isset($_POST["id"]) && !empty(trim($_POST["id"]))) {
                     $c_security_question = $row["staffQuestion"];
                     $c_security_answer = $row["staffAnswer"];
                 } else {
-                    // URL doesn't contain valid id parameter. Redirect to error page
-                    header("location: CProfile.php");
                     exit();
                 }
             } else {
