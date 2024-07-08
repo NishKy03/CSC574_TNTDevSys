@@ -1,19 +1,147 @@
+<?php
+    include ("../dbConnect.php");
+
+    $message = "";
+    $SID = $SName = $SPhone = $SAddress = $SCity = $SState = $SPostcode = $RID = $RName = $RPhone = $RAddress = $RCity = $RState = $RPostcode = $Weight = $Description = $Insurance = $rateID = "";
+    $SName_err = $SPhone_err = $SAddress_err = $SCity_err = $SState_err = $SPostcode_err = $RName_err = $RPhone_err = $RAddress_err = $RCity_err = $RState_err = $RPostcode_err = $Weight_err = $Description_err = $Insurance_err = $rateID_err = "";
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        //Sender Details
+        if (empty(trim($_POST["SName"]))) {
+            $SName_err = "Please enter the sender's name.";
+        } else {
+            $SName = trim($_POST["SName"]);
+        }
+        if (empty(trim($_POST["SPhone"]))) {
+            $SPhone_err = "Please enter the sender's phone number.";
+        } else {
+            $SPhone = trim($_POST["SPhone"]);
+        }
+        if (empty(trim($_POST["SAddress"]))) {
+            $SAddress_err = "Please enter the sender's address.";
+        } else {
+            $SAddress = trim($_POST["SAddress"]);
+        }
+        if (empty(trim($_POST["SCity"]))) {
+            $SCity_err = "Please enter the sender's city.";
+        } else {
+            $SCity = trim($_POST["SCity"]);
+        }
+        if (empty(trim($_POST["SState"]))) {
+            $SState_err = "Please enter the sender's state.";
+        } else {
+            $SState = trim($_POST["SState"]);
+        }
+        if (empty(trim($_POST["SPostcode"]))) {
+            $SPostcode_err = "Please enter the sender's postcode.";
+        } else {
+            $SPostcode = trim($_POST["SPostcode"]);
+        }
+        //Recipient Details
+        if (empty(trim($_POST["RName"]))) {
+            $RName_err = "Please enter the recipient's name.";
+        } else {
+            $RName = trim($_POST["RName"]);
+        }
+        if (empty(trim($_POST["RPhone"]))) {
+            $RPhone_err = "Please enter the recipient's phone number.";
+        } else {
+            $RPhone = trim($_POST["RPhone"]);
+        }
+        if (empty(trim($_POST["RAddress"]))) {
+            $RAddress_err = "Please enter the recipient's address.";
+        } else {
+            $RAddress = trim($_POST["RAddress"]);
+        }
+        if (empty(trim($_POST["RCity"]))) {
+            $RCity_err = "Please enter the recipient's city.";
+        } else {
+            $RCity = trim($_POST["RCity"]);
+        }
+        if (empty(trim($_POST["RState"]))) {
+            $RState_err = "Please enter the recipient's state.";
+        } else {
+            $RState = trim($_POST["RState"]);
+        }
+        if (empty(trim($_POST["RPostcode"]))) {
+            $RPostcode_err = "Please enter the recipient's postcode.";
+        } else {
+            $RPostcode = trim($_POST["RPostcode"]);
+        }
+        //Parcel Details
+        if (empty(trim($_POST["weight"]))) {
+            $Weight_err = "Please enter the parcel's weight.";
+        } else {
+            $Weight = floatval($_POST["weight"]);
+        }
+        if (empty(trim($_POST["description"]))) {
+            $Description_err = "Please enter the parcel's description.";
+        } else {
+            $Description = trim($_POST["description"]);
+        }
+        $Insurance = isset($_POST["insurance"]) ? 1.0 : 0.0;
+        if (isset($_POST["shipRateID"]) && !empty(trim($_POST["shipRateID"]))) {
+            $rateID = trim($_POST["shipRateID"]);
+        } else {
+            $rateID_err = "Please select a shipping rate.";
+        }
+
+        if (empty($SName_err) && empty($SPhone_err) && empty($SAddress_err) && empty($SCity_err) && empty($SState_err) && empty($SPostcode_err) && empty($RName_err) && empty($RPhone_err) && empty($RAddress_err) && empty($RCity_err) && empty($RState_err) && empty($RPostcode_err) && empty($Weight_err) && empty($Description_err) && empty($rateID_err)) {
+            $sql1 = "INSERT INTO sender (senderName, senderPhoneNo, addressLine1, city, state, postcode) VALUES (?, ?, ?, ?, ?, ?)";
+            $sql2 = "INSERT INTO recipient (name, phoneNo, addressLine1, city, state, postcode) VALUES (?, ?, ?, ?, ?, ?)";
+            $sql3 = "INSERT INTO orders (senderID, recipientID, parcelWeight, insurance, shipRateID) VALUES (?, ?, ?, ?, ?)";
+
+            if ($stmt1 = mysqli_prepare($dbCon, $sql1)) {
+                mysqli_stmt_bind_param($stmt1, "sssssi", $SName, $SPhone, $SAddress, $SCity, $SState, $SPostcode);
+                if (mysqli_stmt_execute($stmt1)) {
+                    $senderID = mysqli_insert_id($dbCon);
+                    $message = "Sender details added successfully.";
+                } else {
+                    $message = "Error adding sender details.";
+                }
+                mysqli_stmt_close($stmt1);
+            }
+
+            if ($stmt2 = mysqli_prepare($dbCon, $sql2)) {
+                mysqli_stmt_bind_param($stmt2, "sssssi", $RName, $RPhone, $RAddress, $RCity, $RState, $RPostcode);
+                if (mysqli_stmt_execute($stmt2)) {
+                    $recipientID = mysqli_insert_id($dbCon);
+                    $message = "Recipient details added successfully.";
+                } else {
+                    $message = "Error adding recipient details.";
+                }
+                mysqli_stmt_close($stmt2);
+            }
+
+            if ($stmt3 = mysqli_prepare($dbCon, $sql3)) {
+                mysqli_stmt_bind_param($stmt3, "iidii", $senderID, $recipientID, $Weight, $Insurance, $rateID);
+                if (mysqli_stmt_execute($stmt3)) {
+                    $message = "Parcel details added successfully.";
+                } else {
+                    $message = "Error adding parcel details.";
+                }
+                mysqli_stmt_close($stmt3);
+            }
+        } else {
+            $message = "Please fill all the details.";
+        }
+    }
+
+    if (!empty($message)) {
+        echo "<script>
+        alert('$message');
+        window.location.href = 'paymentForm.html';
+        </script>";
+    }
+?>
+
 <!DOCTYPE html>
 <html>
     <head>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-		<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-		<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap" rel="stylesheet">
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" charset="utf-8"></script>
         <style>
-        body {
-            margin: 0;
-			background-color: #ECE0D1;
-        }
 
         :root {
             --bar-width: 30px;
@@ -27,14 +155,17 @@
         }
 
         .header {
-            height: 50px;
             overflow: hidden;
-            background-color: #4b0606;
             font-family: 'Poppins', sans-serif;
-            padding: 10px 10px;
+            padding: 10px;
             position: fixed;
+            z-index: 1; 
             width: 100%;
-            z-index: 1; /* Added this to make sure the header is above the sidebar */
+            background-color: #4B0606;
+            color: white;
+            font-size: 35px;
+            cursor: pointer;
+            padding-left: 40px;
         }
 
         .header .opt {
@@ -88,7 +219,7 @@
 
         .hamburger-menu {
             --x-width: calc(var(--hamburger-height) * 1.41421356237);
-
+            color: white;
             display: flex;
             flex-direction: column;
             gap: var(--hamburger-gap);
@@ -120,7 +251,7 @@
             content: "";
             width: var(--bar-width);
             height: var(--bar-height);
-            background-color: #FFFFFF;
+            background-color: var(--foreground);
             border-radius: 9999px;
             transform-origin: left center;
             transition: opacity var(--animation-timing), width var(--animation-timing),
@@ -157,9 +288,9 @@
             transition: translate var(--animation-timing);
             translate: -100%;
             padding-top: calc(var(--hamburger-height) + var(--hamburger-margin) + 1rem);
-            background-color: #4b0606;
+            background-color: #59593F;
             color: var(--background);
-            width: 350px;
+            max-width: 10 rem;
             min-height: 100vh;
             margin-top: 50px;
             position: fixed;
@@ -214,396 +345,535 @@
         .hamburger-menu:has(input:checked) + .sidebar {
             translate: 0;
         }
-		.process-div {
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+        :root{
+            --primary-color: rgb(11, 78, 179);
+        }
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body{
+            min-height: 100vh;
+            background: #ECE0D1;
+            background-size: cover;
+            background-position: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .side-bar{
+            background: #1b1a1b;
+            backdrop-filter: blur(15px);
+            width: 250px;
+            height: 100vh;
             position: fixed;
-            top: 70px;
+            top: 0;
+            left: -250px;
+            overflow-y: auto;
+            transition: 0.6s ease;
+            transition-property: left;
+            z-index: 1000;
+        }
+
+        .side-bar::-webkit-scrollbar {
+            width: 0px;
+        }
+
+        .side-bar.active{
             left: 0;
-            width: 100%;
-            background-color: rgba(75, 6, 6, 0.5);
-            z-index: 1;
         }
 
-        .progress {
-            position: relative;
-            width: 673.9px;
-            height: 93px;
-            margin: 0 auto;
+        header h1{
             text-align: center;
-            font-size: 32px;
-            color: #414040;
+            font-weight: 500;
+            font-size: 25px;
+            padding-bottom: 13px;
+            font-family: sans-serif;
+            letter-spacing: 2px;
+        }
+
+        .side-bar .menu{
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .side-bar .menu .item{
+            position: relative;
+            cursor: pointer;
+        }
+
+        .side-bar .menu .item a{
+            color: #fff;
+            font-size: 16px;
+            text-decoration: none;
+            display: block;
+            padding: 5px 30px;
+            line-height: 60px;
+        }
+
+        .side-bar .menu .item a:hover{
+            background: #33363a;
+            transition: 0.3s ease;
+        }
+
+        .side-bar .menu .item i{
+            margin-right: 15px;
+        }
+
+        .side-bar .menu .item a .dropdown{
+            position: absolute;
+            right: 0;
+            margin: 20px;
+            transition: 0.3s ease;
+        }
+
+        .side-bar .menu .item .sub-menu{
+            background: #262627;
+            display: none;
+        }
+
+        .side-bar .menu .item .sub-menu a{
+            padding-left: 80px;
+        }
+
+        .rotate{
+            transform: rotate(90deg);
+        }
+
+        .close-btn{
+            position: absolute;
+            color: #fff;
+            font-size: 23px;
+            right:  0px;
+            margin: 15px;
+            cursor: pointer;
+        }
+
+        .menu-btn{
+            width: 100%;
+            background-color: #4B0606;
+            color: white;
+            font-size: 35px;
+            cursor: pointer;
+            padding: 10px;
+            padding-left: 40px;
         }
 
 
-		.circle-1 {
-			position: absolute;
-			top: 0px;
-			left: 0px;
-			width: 140.1px;
-			height: 93px;
-			color: #000;
-		}
-		.circle-2 {
-			position: absolute;
-			top: 1.27px;
-			left: 282.82px;
-			width: 109.6px;
-			height: 91.7px;
-		}
-		.circle-3 {
-			position: absolute;
-			top: 0px;
-			left: 547.81px;
-			width: 126.1px;
-			height: 93px;
-		}
+        img{
+            width: 100px;
+            margin: 15px;
+            border-radius: 50%;
+            margin-left: 70px;
+            border: 3px solid #b4b8b9;
+        }
 
-		.cont-1 {
-			position: absolute;
-			top: 0px;
-			left: 38.22px;
-			border-radius: 50%;
-			border: 3px solid #000;
-			box-sizing: border-box;
-			width: 63.7px;
-			height: 63.7px;
-		}
-		.cont-2 {
-			position: absolute;
-			top: 0px;
-			left: 22.93px;
-			border-radius: 50%;
-			border: 3px solid #414040;
-			box-sizing: border-box;
-			width: 63.7px;
-			height: 63.7px;
-		}
-		.cont-3 {
-			position: absolute;
-			top: 0px;
-			left: 31.85px;
-			border-radius: 50%;
-			border: 3px solid #414040;
-			box-sizing: border-box;
-			width: 63.7px;
-			height: 63.7px;
-		}
+        header{
+            background: #33363a;
+        }
 
-		.line-1-2 {
-			position: absolute;
-			top: 31.78px;
-			left: 99.59px;
-			border-top: 3px solid #414040;
-			box-sizing: border-box;
-			width: 208.2px;
-			height: 3px;
-		}
-		.line-2-3 {
-			position: absolute;
-			top: 30.35px;
-			left: 367.95px;
-			border-top: 3px solid #414040;
-			box-sizing: border-box;
-			width: 213.2px;
-			height: 3px;
-		}
-
-		.order-title{
-			font-size: 64px;
-			display: flex;
-			color: #4b0606;
-			text-align: center;
-			align-items: center;
-			vertical-align: text-top;
-			justify-content: center;
-			width: 1440px;
-			height: 115px;
-			padding-left: 30%;
-		}
-
-		.payment-title{
-			font-size: 64px;
-			display: flex;
-			color: #4b0606;
-			text-align: center;
-			align-items: center;
-			justify-content: center;
-			width: 1440px;
-			height: 115px;
-			padding-left: 33%;
-			padding-top: 7%;
-
-		}
-
-		.parcel-title{
-			font-size: 64px;
-			display: flex;
-			color: #4b0606;
-			text-align: center;
-			align-items: center;
-			justify-content: center;
-			width: 1440px;
-			height: 115px;
-			padding-left: 33%;
-			padding-top: 7%;
-		}
-
-		.ordering{
-			margin-top: 70%;
-			top:8%;
-		}
-
-		.frame-sender{
-			position: absolute;
-			top: 270px;
-			margin-left: 26%;
-			border-radius: 20px;
-			border: 3px solid #4b0606;
-			box-sizing: border-box;
-			width: 1059px;
-			height: 651px;
-		}
-		.frame-recipient{
-			position: absolute;
-			top: 970px;
-			margin-left: 26%;
-			border-radius: 20px;
-			border: 3px solid #4b0606;
-			box-sizing: border-box;
-			width: 1059px;
-			height: 651px;
-		}
-
-		.frame-parcel{
-			position: absolute;
-			top: 1670px;
-			margin-left: 26%;
-			padding-bottom: 30px;
-			border-radius: 20px;
-			border: 3px solid #4b0606;
-			box-sizing: border-box;
-			width: 1059px;
-			height: 501px;
-		}
-		
-		
-		.top-details {
-			position: absolute;
-			font-size: 36px;
-			font-weight: 600;
-			display: flex;
-			align-items: center;
-			width: 885px;
-			height: 115px;
-			padding-left: 5%;
-		}
-
-		.fielding-1{
-			padding-top: 9%;
-			padding-left: 3%;
-			padding-right: 3%;
-		}
-		.fielding-2{
-			padding-top: 1%;
-			padding-left: 3%;
-			padding-right: 3%;
-		}
-		.fielding-3{
-			padding-top: 1%;
-			padding-left: 3%;
-			padding-right: 3%;
-			width: 350px;
-
-		}
-
-		.fielding-4{
-			padding-left: 10%;
-		}
-		
-        .form-row {
+        .section{
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .progressbar-wrap{
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .progressbar{
+            position: relative;
             display: flex;
             justify-content: space-between;
-			padding-left: 3.5%;
-			padding-right: 7%;
-			padding-top: 1%;
+            counter-reset: step;
+            margin: 2rem 0 4rem;
+            width: 20%;
+            margin-top: 100px;
         }
 
-        .form-group {
-            flex: 1;
-            margin-right: 10px;
+        .progressbar::before, .progress{
+            content: "";
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 4px;
+            width: 100%; 
+            background-color: #414040;
+            z-index: -1;
         }
-		.label-details {
-			position: absolute;
-			font-weight: 700;
-			font-size: 26px;
-			display: flex;
-			align-items: center;
-			width: 269px;
-			height: 29px;
-			padding-bottom: 1%;
-		}
 
-		
+        .progress{
+            background-color: rgb(11, 169, 11);
+            width: 0%;
+        }
+
+        .progress-step{
+            width: 50px;
+            height: 50px;
+            border: 3px solid #414040;
+            background-color: #dcdcdc;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .progress-step::before{
+            counter-increment: step;
+            content: counter(step);
+        }
+
+        .progress-step::after{
+            content: attr(data-title);
+            position: absolute;
+            top: calc(100% + 0.5rem);
+            font-size: 18px;
+            color: #666;
+            font-weight: bold;
+        }
+
+        .progress-step-active{
+            background-color: rgb(11, 169, 11);
+            color: #fff;
+            border: none;
+            back
+        }
+
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        label{
+            display: block;
+            padding-left: 10px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .width-50{
+            width: 50%;
+        }
+
+        .ml-auto{
+            margin-left: auto;
+        }
+
+        .text-center{
+            text-align: center;
+        }
+
+        .input-group input[type="text"], 
+        .input-group2 input[type="text"],
+        .input-group3 input[type="text"],
+        .input-group4 input[type="text"],.input-group select{
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+        }
+        .input-group4 input[type="checkbox"]{
+            margin-left: 20px;
+        }
+        .input-group input[type="textarea"]{
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border-radius: 20px;
+            outline: none;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+        select{
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            width: 270px;
+        }
+        .form{
+            width: 700px;
+            margin: 0 auto;
+            border: 3px solid #4B0606;
+            border-radius: 20px;
+            padding-left: 50px;
+            padding-right: 50px;
+            padding-top: 20px;
+            padding-bottom: 20px;
+
+        }
+        .form h1{
+            padding-left: 10px;
+            padding-bottom: 15px;
+            font-size: 25px;
+        }
+        .form-step{
+            display: none;
+        }
+
+        .form-step-active{
+            display: block;
+        }
+
+        .input-group{
+            margin-bottom: 10px;
+        }
+        .input-group2, .input-group3, .input-group4, .input-group4{
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .input-group4{
+            margin-left: 40px;
+        }
+        .input-group2{
+            width: 50%;
+            margin-right: 20px;
+        }
+        
+        .btns-group{
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+        .btns-group input[type="submit"]
+        {
+            border: none;
+        }
+        .btn{
+            padding: 0.75rem;
+            display: block;
+            text-decoration : none;
+            background-color: var(--primary-color);
+            color: #f3f3f3;
+            text-align: center;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 20px;
+        }
+
+        .btn:hover{
+            box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--primary-color);
+        }
         </style>
     </head>
     <body>
-		<!--Navigation Part-->
-		<div class="header">
-			<a href="#default"><img src="../images/tntlogo.png"></a>
-			<div class="header-right">
-				<a class="opt" href="#about">Logout</a>
-			</div>
-		</div>
-		<label class="hamburger-menu">
-			<input type="checkbox" />
-		</label>
-		<aside class="sidebar">
-			<div class="profile">
-				<h3>Hi,</h3>
-				<h3><?php echo $_SESSION['staffID']; ?></h3>
-				<img src="../images/picture.png" alt="Profile Picture">
-			</div>
-			<nav>
-				<ul>
-					<li><a href="CProfile.php">Profile</a></li>
-					<li><a href="orders.php">Orders</a></li>
-					<li><a href="staffList.php">Staff</a></li>
-				</ul>
-			</nav>
-		</aside>
-		<!--End of Navigation-->
+        <div class="header">
+            <a href="#default"><img src="images/tntlogo.png"></a>
+            <div class="header-right">
+                <a class="opt" href="#about">Logout</a>
+            </div>
+        </div>
+        <label class="hamburger-menu">
+            <input type="checkbox" />
+        </label>
+        <aside class="sidebar">
+            <div class="profile">
+                <h3>Hi,</h3>
+                <h3><?php echo $_SESSION['staffID']; ?></h3>
+                <img src="images/picture.png" alt="Profile Picture">
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="CProfile.php">Profile</a></li>
+                    <li><a href="orders.php">Orders</a></li>
+                    <li><a href="StaffClerk/staffList.php">Staff</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <div class="container">
+        <div class="section">
+            <div class="progressbar-wrap">
+                <div class="progressbar">
+                    <div class="progress" id="progress"></div>
+                    <div class="progress-step progress-step-active" data-title="Sender"></div>
+                    <div class="progress-step" data-title="Receipent"></div>
+                    <div class="progress-step" data-title="Parcel"></div>
+                    <!-- <div class="progress-step" data-title="Submit"></div> -->
+                </div>
+            </div>
+            
+            <form class="form" method="POST" action="orderForm.php">
+                <!-- <h1 class="text-center">Booking Form</h1> -->
 
-		<div class="process-div">
-			<div class="progress">
-				<div class="line-1-2">
-				</div>
-				<div class="line-2-3">
-				</div>
-				<div class="circle-1">
-					<div class="cont-1">
-					</div>
-					<b class="b">1</b>
-					<b class="order1">ORDER</b>
-				</div>
-				<div class="circle-2">
-					<div class="cont-2">
-					</div>
-					<b class="b2">2</b>
-					<b class="payment">PAYMENT</b>
-				</div>
-				<div class="circle-3">
-					<div class="cont-3">
-					</div>
-					<b class="b1">3</b>
-					<b class="statement">STATEMENT</b>
-				</div>
-			</div>
-		</div>
-		<form id="orderForm">
-			<ul class="nav nav-tabs" id="orderTabs" role="tablist">
-				<li class="nav-item" role="presentation">
-					<button class="nav-link active" id="sender-tab" data-bs-toggle="tab" data-bs-target="#sender-pane" type="button" role="tab" aria-controls="sender-pane" aria-selected="true">Sender</button>
-				</li>
-				<li class="nav-item" role="presentation">
-					<button class="nav-link" id="recipient-tab" data-bs-toggle="tab" data-bs-target="#recipient-pane" type="button" role="tab" aria-controls="recipient-pane" aria-selected="false">Recipient</button>
-				</li>
-				<li class="nav-item" role="presentation">
-					<button class="nav-link" id="parcel-tab" data-bs-toggle="tab" data-bs-target="#parcel-pane" type="button" role="tab" aria-controls="parcel-pane" aria-selected="false">Parcel</button>
-				</li>
-			</ul>
-						<!--Tab Content-->
-				<div class="tab-content" id="myTabContent">
-					<!-- Sender Frame-->
-					<div class="tab-pane fade show active" id="sender-pane" role="tabpanel" aria-labelledby="sender-tab">
-						<div class="frame-sender">
-							<p class="top-details">Sender Details</p>
-							<div class="fielding-1">
-								<label for="name" class="label-details">Name:</label><br>
-								<input class="form-control" type="text" name="name-field" value="<?php echo isset($row1['senderName'])? row1['senderName'] : ''?>" required>
-							</div>
-							<div class="fielding-2">
-								<label for="phone" class="label-details">Phone Number:</label><br>
-								<input class="form-control" type="text" name="phone-field" value="<?php echo isset($row1['senderPhoneNo']) ? $row1['senderPhoneNo'] : ''?>" required>
-							</div>
-							<div class="fielding-2">
-								<label for="address" class="label-details">Address:</label><br>
-								<input class="form-control" type="text" name="address-field" value="<?php echo isset($row1['addressLine1']) ? $row1['addressLine1'] : ''?>" required>
-							</div>
-							<div class="form-row">
-								<div class="form-group">
-									<label for="city" class="label-details">City:</label><br>
-									<input class="form-control" type="text" id="city" name="city-field" value="<?php echo isset($row1['city']) ? $row1['city'] : ''?>" required>
-								</div>
-								<div class="form-group">
-									<label for="state" class="label-details">State:</label><br>
-									<input class="form-control" type="text" id="state" name="state-field" value="<?php echo isset($row1['state']) ? $row1['state'] : ''?>">
-								</div>
-							</div>
-							<div class="fielding-3">
-								<label for="postcode" class="label-details">Postcode:</label><br>
-								<input class="form-control" type="text" name="postcode-field" value="<?php echo isset($row1['postcode']) ? $row1['postcode'] : ''?>">
-							</div><br>
-							<div class="nav-buttons" style="padding-left:3%;">
-								<button type="button" id="nextBtn" class="btn btn-primary" onclick="navigate(1)">Next</button>
-							</div>
-						</div>
-					</div>
+                <div class="form-step form-step-active">
+                    <h1>Sender Details</h1>
+                    <div class="input-group">
+                        <label for="SName">Name</label>
+                        <input name="SName" id="SName" type="text" value="<?php echo isset($SName) ? $SName : ''?>">
+                    </div>
+                    <div class="input-group">
+                        <label for="phoneno">Phone Number</label>
+                        <input type="text" name="SPhone" id="SPhone" value="<?php echo isset($SPhone) ? $SPhone : ''?>">
+                    </div>
+                    <div class="input-group">
+                        <label for="SAddress">Address</label>
+                        <input type="text" name="SAddress" id="SAddress" value="<?php echo isset($SAddress) ? $SAddress : ''?>">
+                    </div>
+                    <div class="input-group2">
+                        <label for="SCity">City</label>
+                        <input type="text" name="SCity" id="SCity"  value="<?php echo isset($SCity) ? $SCity : ''?>">
+                    </div>
+                    <div class="input-group3">
+                        <label for="state">State</label>
+                        <input name="SState" id="SState" type="text" value="<?php echo isset($SState) ? $SState : ''?>">
+                    </div>
+                    <div class="input-group">
+                        <label for="SPostcode">Postcode</label>
+                        <input type="text" name="SPostcode" id="SPostcode"  value="<?php echo isset($SPostcode) ? $SPostcode : ''?>">
+                    </div>
+       
+                    <div class="">
+                        <a href="#" class="btn btn-next width-50 ml-auto">Next</a>
+                    </div>
+                </div>
 
-					<!--Recipient Frame-->
-					 <div class="tab-pane fade" id="recipient-pane" role="tabpanel" aria-labelledby="recipient-tab">
-						<div class="frame-recipient">
-							<p class="top-details">Recipient Details</p>
-							<div class="fielding-1">
-								<label for="name" class="label-details">Name:</label><br>
-								<input class="form-control" type="text" name="Rname-field" value="<?php echo isset($row2['name']) ? $row2['name'] : ''?>">
-							</div>
-							<div class="fielding-2">
-								<label for="phone" class="label-details">Phone Number:</label><br>
-								<input class="form-control" type="text" name="Rphone-field" value="<?php echo isset($row2['phoneNo']) ? $row2['phoneNo'] : ''?>">
-							</div>
-							<div class="fielding-2">
-								<label for="address" class="label-details">Address:</label><br>
-								<input class="form-control" type="text" name="Raddress-field" value="<?php echo isset($row2['adressLine1']) ? $row2['addressLine1'] : ''?>">
-							</div>
-							<div class="form-row">
-								<div class="form-group">
-									<label for="city" class="label-details">City:</label>
-									<input class="form-control" type="text" id="city" name="city-field" value="<?php echo isset($row2['city']) ? $row2['city'] : ''?>">
-								</div>
-								<div class="form-group">
-									<label for="state" class="label-details">State:</label>
-									<input class="form-control" type="text" id="state" name="state-field" value="<?php echo isset($row2['state']) ? $row2['state'] : ''?>">
-								</div>
-							</div>				
-							<div class="fielding-3">
-								<label for="postcode" class="label-details">Postcode:</label><br>
-								<input class="form-control" type="text" name="Rpostcode-field" value="<?php echo isset($row2['postcode']) ? $row2['postcode'] : ''?>">
-							</div><br>
-							<div class="nav-buttons">
-								<button type="button" id="prevBtn" class="btn btn-secondary" onclick="navigate(-1)" style="display: none;">Back</button>
-								<button type="button" id="nextBtn" class="btn btn-primary" onclick="navigate(1)">Next</button>
-							</div>
-						</div>
-					</div>
+                <div class="form-step">
+                    <h1>Recipient Details</h1>
+                    <div class="input-group">
+                        <label for="recipient">Name</label>
+                        <input type="text" name="RName" id="RName" value="<?php echo isset($RName) ? $RName : ''?>">
+                    </div>
+                    <div class="input-group">
+                        <label for="phoneno">Phone Number</label>
+                        <input type="text" name="RPhone" id="RPhone" value="<?php echo isset($RPhone) ? $RPhone : ''?>">
+                    </div>
+                    <div class="input-group">
+                        <label for="address">Address</label>
+                        <input type="text" name="RAddress" id="RAddress" value="<?php echo isset($RAddress) ? $RAddress : ''?>">
+                    </div>
+                    <div class="input-group2">
+                        <label for="city">City</label>
+                        <input type="text" name="RCity" id="RCity" value="<?php echo isset($RCity) ? $RCity : ''?>" >
+                    </div>
+                    <div class="input-group3">
+                        <label for="state">State</label>
+                        <input type="text" name="RState" id="RState" value="<?php echo isset($RState) ? $RState : ''?>" >
+                    </div>
+                    <div class="input-group">
+                        <label for="postcode">Postcode</label>
+                        <input type="text" name="RPostcode" id="postcode" value="<?php echo isset($RPostcode) ? $RPostcode : ''?>">
+                    </div>
+                    <div class="btns-group">
+                        <a href="#" class="btn btn-prev">Previous</a>
+                        <a href="#" class="btn btn-next">Next</a>
+                    </div>
+                </div>
 
-					<!--parcel-->
-					<div class="tab-pane fade" id="parcel-pane" role="tabpanel" aria-labelledby="parcel-tab">
-						<div class="frame-parcel">
-							<p class="top-details">Parcel Details</p>
-							<div class="fielding-1">
-								<label for="parcel-weight" class="label-details">Weight (KG)</label><br>
-								<input class="form-control" type="text" name="PWeight-field" value="<?php echo isset($row3['parcelWeight']) ? $row3['parcelWeight'] : ''?>"/>
-							</div>
-							<div class="fielding-2">
-								<label clas="label-details" class="label-details">Description</label><br>
-								<textarea cols="50" rows="5"></textarea><br><br>
-							</div>					
-							<div class="d-grid gap-2 d-md-flex justify-content-md-start" style="padding-left:2%;">
-								<button type="button" id="prevBtn" class="btn btn-secondary" onclick="navigate(-1)" style="display: none;">Back</button>
-								<button type="button" id="submitBtn" class="btn btn-primary">Submit Order</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</form>	
+                <div class="form-step">
+                    <div class="input-group">
+                        <label for="weight">Weight (kg)</label>
+                        <input type="text" name="weight" id="weight" value="<?php echo isset($Weight) ? $Weight : ''?>">
+                    </div>
+                    <div class="input-group">
+                        <label for="description">Description</label>
+                        <input type="textarea" name="description" id="description">
+                    </div>
+                    <div class="input-group3">
+                        <label for="rate">Shipping Rate</label>
+                        <select name="shipRateID" id="shipRateID">
+                            <option value="" disabled selected>Select shipping rate</option>
+                        <?php
+							$sql = "SELECT * FROM shipping_rate";
+							$result = mysqli_query($dbCon, $sql);
+							while($row = mysqli_fetch_array($result)){
+								$rateID = $row['shipRateID'];
+								$rate = $row['shipRateName'];
+								$selected = ($rateID == $_POST['shipRateID']) ? 'selected' : '';
+								echo "<option value='$rateID'>$rate</option>";
+							}
+						?>
+                        </select>
+                    </div>
+                    <div class="input-group4">
+                        <b>Insurance</b>
+                        <input type="checkbox" name="insurance" id="insurance">
+                    </div>
+
+                    <div class="btns-group">
+                        <a href="#" class="btn btn-prev">Previous</a>
+                        <input type="submit" value="Submit" class="btn">
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            // Side bar toggle
+            $(".menu-btn").click(function(){
+                $(".side-bar").addClass("active");
+                $(".menu-btn").css("visibility", "hidden");
+            });
+
+            $(".close-btn").click(function(){
+                $(".side-bar").removeClass("active");
+                $(".menu-btn").css("visibility", "visible");
+            });
+
+            // Sub menu toggle
+            $(".sub-btn").click(function(){
+                $(this).next(".sub-menu").slideToggle();
+                $(this).find(".dropdown").toggleClass("rotate");
+            });
+        });
+        const prevBtns = document.querySelectorAll(".btn-prev");
+        const nextBtns = document.querySelectorAll(".btn-next");
+        const progress = document.getElementById("progress");
+        const formSteps = document.querySelectorAll(".form-step");
+        const progressSteps = document.querySelectorAll(".progress-step");
+
+        let formStepsNum = 0;
+
+        nextBtns.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                formStepsNum++;
+                updateFormSteps();
+                updateProgressbar();
+            });
+        });
+
+        prevBtns.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                formStepsNum--;
+                updateFormSteps();
+                updateProgressbar();
+            });
+        });
+
+        function updateFormSteps() {
+            formSteps.forEach((formStep) => {
+                formStep.classList.contains("form-step-active") &&
+                formStep.classList.remove("form-step-active");
+            });
+            formSteps[formStepsNum].classList.add("form-step-active");
+        }
+
+        function updateProgressbar() {
+            progressSteps.forEach((progressStep, idx) => {
+                if (idx <= formStepsNum) {
+                    progressStep.classList.add("progress-step-active");
+                } else {
+                    progressStep.classList.remove("progress-step-active");
+                }
+            });
+            const progressActive = document.querySelectorAll(".progress-step-active");
+            progress.style.width = ((progressActive.length - 1) / (progressSteps.length - 1)) * 100 + "%";
+        }
+    </script>
     </body>
 </html>

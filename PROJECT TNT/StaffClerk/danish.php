@@ -1,16 +1,135 @@
 <?php
-include ('../dbConnect.php');
+    include ("../dbConnect.php");
 
-$stmt = $dbCon->prepare("SELECT * FROM sender");
-$stmt->execute();
-$result = $stmt->get_result();
+    $message = "";
+    $SID = $SName = $SPhone = $SAddress = $SCity = $SState = $SPostcode = $RID = $RName = $RPhone = $RAddress = $RCity = $RState = $RPostcode = $Weight = $Description = $Insurance = $rateID = "";
+    $SName_err = $SPhone_err = $SAddress_err = $SCity_err = $SState_err = $SPostcode_err = $RName_err = $RPhone_err = $RAddress_err = $RCity_err = $RState_err = $RPostcode_err = $Weight_err = $Description_err = $Insurance_err = $rateID_err = "";
 
-$senders = [];
-while ($row = $result->fetch_assoc()) {
-    $senders[$row['senderID']] = $row;
-}
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        //Sender Details
+        if (empty(trim($_POST["SName"]))) {
+            $SName_err = "Please enter the sender's name.";
+        } else {
+            $SName = trim($_POST["SName"]);
+        }
+        if (empty(trim($_POST["SPhone"]))) {
+            $SPhone_err = "Please enter the sender's phone number.";
+        } else {
+            $SPhone = trim($_POST["SPhone"]);
+        }
+        if (empty(trim($_POST["SAddress"]))) {
+            $SAddress_err = "Please enter the sender's address.";
+        } else {
+            $SAddress = trim($_POST["SAddress"]);
+        }
+        if (empty(trim($_POST["SCity"]))) {
+            $SCity_err = "Please enter the sender's city.";
+        } else {
+            $SCity = trim($_POST["SCity"]);
+        }
+        if (empty(trim($_POST["SState"]))) {
+            $SState_err = "Please enter the sender's state.";
+        } else {
+            $SState = trim($_POST["SState"]);
+        }
+        if (empty(trim($_POST["SPostcode"]))) {
+            $SPostcode_err = "Please enter the sender's postcode.";
+        } else {
+            $SPostcode = trim($_POST["SPostcode"]);
+        }
+        //Recipient Details
+        if (empty(trim($_POST["RName"]))) {
+            $RName_err = "Please enter the recipient's name.";
+        } else {
+            $RName = trim($_POST["RName"]);
+        }
+        if (empty(trim($_POST["RPhone"]))) {
+            $RPhone_err = "Please enter the recipient's phone number.";
+        } else {
+            $RPhone = trim($_POST["RPhone"]);
+        }
+        if (empty(trim($_POST["RAddress"]))) {
+            $RAddress_err = "Please enter the recipient's address.";
+        } else {
+            $RAddress = trim($_POST["RAddress"]);
+        }
+        if (empty(trim($_POST["RCity"]))) {
+            $RCity_err = "Please enter the recipient's city.";
+        } else {
+            $RCity = trim($_POST["RCity"]);
+        }
+        if (empty(trim($_POST["RState"]))) {
+            $RState_err = "Please enter the recipient's state.";
+        } else {
+            $RState = trim($_POST["RState"]);
+        }
+        if (empty(trim($_POST["RPostcode"]))) {
+            $RPostcode_err = "Please enter the recipient's postcode.";
+        } else {
+            $RPostcode = trim($_POST["RPostcode"]);
+        }
+        //Parcel Details
+        if (empty(trim($_POST["weight"]))) {
+            $Weight_err = "Please enter the parcel's weight.";
+        } else {
+            $Weight = floatval($_POST["weight"]);
+        }
+        if (empty(trim($_POST["description"]))) {
+            $Description_err = "Please enter the parcel's description.";
+        } else {
+            $Description = trim($_POST["description"]);
+        }
+        $Insurance = isset($_POST["insurance"]) ? 1.0 : 0.0;
+        if (isset($_POST["shipRateID"]) && !empty(trim($_POST["shipRateID"]))) {
+            $rateID = trim($_POST["shipRateID"]);
+        } else {
+            $rateID_err = "Please select a shipping rate.";
+        }
 
+        if (empty($SName_err) && empty($SPhone_err) && empty($SAddress_err) && empty($SCity_err) && empty($SState_err) && empty($SPostcode_err) && empty($RName_err) && empty($RPhone_err) && empty($RAddress_err) && empty($RCity_err) && empty($RState_err) && empty($RPostcode_err) && empty($Weight_err) && empty($Description_err) && empty($rateID_err)) {
+            $sql1 = "INSERT INTO sender (senderName, senderPhoneNo, addressLine1, city, state, postcode) VALUES (?, ?, ?, ?, ?, ?)";
+            $sql2 = "INSERT INTO recipient (name, phoneNo, addressLine1, city, state, postcode) VALUES (?, ?, ?, ?, ?, ?)";
+            $sql3 = "INSERT INTO orders (senderID, recipientID, parcelWeight, insurance, shipRateID) VALUES (?, ?, ?, ?, ?)";
+
+            if ($stmt1 = mysqli_prepare($dbCon, $sql1)) {
+                mysqli_stmt_bind_param($stmt1, "sssssi", $SName, $SPhone, $SAddress, $SCity, $SState, $SPostcode);
+                if (mysqli_stmt_execute($stmt1)) {
+                    $senderID = mysqli_insert_id($dbCon);
+                    $message = "Sender details added successfully.";
+                } else {
+                    $message = "Error adding sender details.";
+                }
+                mysqli_stmt_close($stmt1);
+            }
+
+            if ($stmt2 = mysqli_prepare($dbCon, $sql2)) {
+                mysqli_stmt_bind_param($stmt2, "sssssi", $RName, $RPhone, $RAddress, $RCity, $RState, $RPostcode);
+                if (mysqli_stmt_execute($stmt2)) {
+                    $recipientID = mysqli_insert_id($dbCon);
+                    $message = "Recipient details added successfully.";
+                } else {
+                    $message = "Error adding recipient details.";
+                }
+                mysqli_stmt_close($stmt2);
+            }
+
+            if ($stmt3 = mysqli_prepare($dbCon, $sql3)) {
+                mysqli_stmt_bind_param($stmt3, "iidii", $senderID, $recipientID, $Weight, $Insurance, $rateID);
+                if (mysqli_stmt_execute($stmt3)) {
+                    $message = "Parcel details added successfully.";
+                } else {
+                    $message = "Error adding parcel details.";
+                }
+                mysqli_stmt_close($stmt3);
+            }
+        } else {
+            $message = "Please fill all the details.";
+        }
+    }
+
+    echo $message;
 ?>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -582,38 +701,34 @@ while ($row = $result->fetch_assoc()) {
                 </div>
             </div>
             
-            <form class="form">
+            <form class="form" method="POST">
                 <!-- <h1 class="text-center">Booking Form</h1> -->
 
                 <div class="form-step form-step-active">
                     <h1>Sender Details</h1>
                     <div class="input-group">
-                        <label for="sendername">Name</label>
-                        <select name="name" id="name">
-                            <option value="" disabled selected>Select sender name</option>
-                        </select>
+                        <label for="SName">Name</label>
+                        <input name="SName" id="SName" type="text" value="<?php echo isset($SName) ? $SName : ''?>">
                     </div>
                     <div class="input-group">
                         <label for="phoneno">Phone Number</label>
-                        <input type="text" name="SPhone" id="phoneno" value="<?php echo $selectedSender ? $selectedSender['phoneNo'] : '' ?>">
+                        <input type="text" name="SPhone" id="SPhone" value="<?php echo isset($SPhone) ? $SPhone : ''?>">
                     </div>
                     <div class="input-group">
-                        <label for="address">Address</label>
-                        <input type="text" name="SAddress" id="address" value="<?php echo $selectedSender ? $selectedSender['addressLine1'] : '' ?>">
+                        <label for="SAddress">Address</label>
+                        <input type="text" name="SAddress" id="SAddress" value="<?php echo isset($SAddress) ? $SAddress : ''?>">
                     </div>
                     <div class="input-group2">
-                        <label for="city">City</label>
-                        <input type="text" name="SCity" id="city"  value="<?php echo $selectedSender ? $selectedSender['city'] : '' ?>">
+                        <label for="SCity">City</label>
+                        <input type="text" name="SCity" id="SCity"  value="<?php echo isset($SCity) ? $SCity : ''?>">
                     </div>
                     <div class="input-group3">
                         <label for="state">State</label>
-                        <select name="SState" id="state">
-                            <option  value="<?php echo $selectedSender ? $selectedSender['state'] : '' ?>"> <?php echo $selectedSender['state']?> </option>
-                        </select>
+                        <input name="SState" id="SState" type="text" value="<?php echo isset($SState) ? $SState : ''?>">
                     </div>
                     <div class="input-group">
                         <label for="SPostcode">Postcode</label>
-                        <input type="text" name="postcode" id="postcode"  value="<?php echo $selectedSender ? $selectedSender['postcode'] : '' ?>">
+                        <input type="text" name="SPostcode" id="SPostcode"  value="<?php echo isset($SPostcode) ? $SPostcode : ''?>">
                     </div>
        
                     <div class="">
@@ -622,32 +737,30 @@ while ($row = $result->fetch_assoc()) {
                 </div>
 
                 <div class="form-step">
-                    <h1>Receipent Details</h1>
+                    <h1>Recipient Details</h1>
                     <div class="input-group">
-                        <label for="sendername">Name</label>
-                        <input type="text" name="sendername" id="sendername">
+                        <label for="recipient">Name</label>
+                        <input type="text" name="RName" id="RName" value="<?php echo isset($RName) ? $RName : ''?>">
                     </div>
                     <div class="input-group">
                         <label for="phoneno">Phone Number</label>
-                        <input type="text" name="phoneno" id="phoneno">
+                        <input type="text" name="RPhone" id="RPhone" value="<?php echo isset($RPhone) ? $RPhone : ''?>">
                     </div>
                     <div class="input-group">
                         <label for="address">Address</label>
-                        <input type="text" name="address" id="address">
+                        <input type="text" name="RAddress" id="RAddress" value="<?php echo isset($RAddress) ? $RAddress : ''?>">
                     </div>
                     <div class="input-group2">
                         <label for="city">City</label>
-                        <input type="text" name="city" id="city">
+                        <input type="text" name="RCity" id="RCity" value="<?php echo isset($RCity) ? $RCity : ''?>" >
                     </div>
                     <div class="input-group3">
                         <label for="state">State</label>
-                        <select name="state" id="state">
-                            <option value="perak">perak</option>
-                        </select>
+                        <input type="text" name="RState" id="RState" value="<?php echo isset($RState) ? $RState : ''?>" >
                     </div>
                     <div class="input-group">
                         <label for="postcode">Postcode</label>
-                        <input type="text" name="postcode" id="postcode">
+                        <input type="text" name="RPostcode" id="postcode" value="<?php echo isset($RPostcode) ? $RPostcode : ''?>">
                     </div>
                     <div class="btns-group">
                         <a href="#" class="btn btn-prev">Previous</a>
@@ -658,16 +771,26 @@ while ($row = $result->fetch_assoc()) {
                 <div class="form-step">
                     <div class="input-group">
                         <label for="weight">Weight (kg)</label>
-                        <input type="text" name="weight" id="weight">
+                        <input type="text" name="weight" id="weight" value="<?php echo isset($Weight) ? $Weight : ''?>">
                     </div>
                     <div class="input-group">
-                        <label for="details">Details</label>
-                        <input type="textarea" name="details" id="details">
+                        <label for="description">Description</label>
+                        <input type="textarea" name="description" id="description">
                     </div>
                     <div class="input-group3">
                         <label for="rate">Shipping Rate</label>
-                        <select name="rate" id="rate">
-                            <option value="medium">perak</option>
+                        <select name="shipRateID" id="shipRateID">
+                            <option value="" disabled selected>Select shipping rate</option>
+                        <?php
+							$sql = "SELECT * FROM shipping_rate";
+							$result = mysqli_query($dbCon, $sql);
+							while($row = mysqli_fetch_array($result)){
+								$rateID = $row['shipRateID'];
+								$rate = $row['shipRateName'];
+								$selected = ($rateID == $_POST['shipRateID']) ? 'selected' : '';
+								echo "<option value='$rateID'>$rate</option>";
+							}
+						?>
                         </select>
                     </div>
                     <div class="input-group4">
