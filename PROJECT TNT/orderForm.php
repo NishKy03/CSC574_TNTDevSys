@@ -120,9 +120,12 @@
             if (empty(trim($_POST["weight"]))) {
                 $Weight_err = "Please enter the parcel's weight.";
             } else {
-                $Weight = floatval($_POST["weight"]);
+                $Weight = $_POST["weight"];
                 if (!preg_match("/^\d+(\.\d+)?$/", $Weight)) {
-                    $Weight_err = "Weight must contain only numbers and '.'";
+                    $Weight_err = "Weight must be a valid numeric value.";
+                } else {
+                    // Convert to float for consistency if needed
+                    $Weight = floatval($Weight);
                 }
             }
             if (empty(trim($_POST["description"]))) {
@@ -190,7 +193,7 @@
                 mysqli_stmt_close($stmt3);
             }
         } else {
-            $message = "Please fill all the details.";
+            $message = "Please fill all the details correctly.";
         }
     }
 
@@ -461,6 +464,8 @@
 
         #header1{
             font-weight: 600;
+            margin-left: 13%;
+            font-size: 48px;
         }
 
         .button-confirm button {
@@ -481,6 +486,24 @@
 
         .error {
             color: red;
+            font-weight: bold;
+        }
+
+        #bttns{
+            width: 100px;
+            height: 50px;
+            background-color: #b45858;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        #bttns:hover{
+            background-color: #b39333;
         }
         </style>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -502,32 +525,32 @@
                     <div class="input-group">
                         <label for="SName">Name</label>
                         <input name="SName" id="SName" type="text" value="<?php echo isset($SName) ? $SName : ''?>" required>
-                        <span id="nameError" class="error"></span>
+                        <span id="nameError" class="error"><?php echo $SName_err?></span>
                     </div>
                     <div class="input-group">
                         <label for="phoneno">Phone Number</label>
                         <input type="text" name="SPhone" id="SPhone" value="<?php echo isset($SPhone) ? $SPhone : ''?>" required>
-                        <span id="phoneNumberError" class="error"></span>
+                        <span id="phoneNumberError" class="error"><?php echo $SPhone_err?></span>
                     </div>
                     <div class="input-group">
                         <label for="SAddress">Address</label>
                         <input type="text" name="SAddress" id="SAddress" value="<?php echo isset($SAddress) ? $SAddress : ''?>" required>
-                        <span id="stateError" class="error"></span>
+                        <span id="stateError" class="error"><?php echo $SAddress_err?></span>
                     </div>
                     <div class="input-group2">
                         <label for="SCity">City</label>
                         <input type="text" name="SCity" id="SCity"  value="<?php echo isset($SCity) ? $SCity : ''?>" required>
-                        <span id="cityError" class="error"></span>
+                        <span id="cityError" class="error"><?php echo $SCity_err?></span>
                     </div>
                     <div class="input-group3">
                         <label for="state">State</label>
                         <input name="SState" id="SState" type="text" value="<?php echo isset($SState) ? $SState : ''?>" required>
-                        <span id="stateError" class="error"></span>
+                        <span id="stateError" class="error"><?php echo $SState_err?></span>
                     </div>
                     <div class="input-group">
                         <label for="SPostcode">Postcode</label>
                         <input type="text" name="SPostcode" id="SPostcode"  value="<?php echo isset($SPostcode) ? $SPostcode : ''?>" required>
-                        <span id="postcodeError" class="error"></span>
+                        <span id="postcodeError" class="error"><?php echo $SPostcode_err?></span>
                     </div>
                     <hr>
                 </div>
@@ -536,32 +559,32 @@
                     <div class="input-group">
                         <label for="recipient">Name</label>
                         <input type="text" name="RName" id="RName" value="<?php echo isset($RName) ? $RName : ''?>" required>
-                        <span id="RNameError" class="error"></span>
+                        <span id="RNameError" class="error"><?php echo $RName_err?></span>
                     </div>
                     <div class="input-group">
                         <label for="phoneno">Phone Number</label>
                         <input type="text" name="RPhone" id="RPhone" value="<?php echo isset($RPhone) ? $RPhone : ''?>" required>
-                        <span id="RPhoneError" class="error"></span>
+                        <span id="RPhoneError" class="error"> <?php echo $RPhone_err ?></span>
                     </div>
                     <div class="input-group">
                         <label for="address">Address</label>
                         <input type="text" name="RAddress" id="RAddress" value="<?php echo isset($RAddress) ? $RAddress : ''?>" required>
-                       
+                        <span id="RAddress_error" class="error"><?php echo $RAddress_err?></span>
                     </div>
                     <div class="input-group2">
                         <label for="city">City</label>
                         <input type="text" name="RCity" id="RCity" value="<?php echo isset($RCity) ? $RCity : ''?>" required>
-                         <span id="RCityError" class="error"></span>
+                         <span id="RCityError" class="error"><?php echo $RCity_err?></span>
                     </div>
                     <div class="input-group3">
                         <label for="state">State</label>
                         <input type="text" name="RState" id="RState" value="<?php echo isset($RState) ? $RState : ''?>" required>
-                        <span id="RStateError" class="error"></span>
+                        <span id="RStateError" class="error"><?php echo $RState_err?></span>
                     </div>
                     <div class="input-group">
                         <label for="postcode">Postcode</label>
                         <input type="text" name="RPostcode" id="postcode" value="<?php echo isset($RPostcode) ? $RPostcode : ''?>" required>
-                        <span id="RPostcodeError" class="error"></span>
+                        <span id="RPostcodeError" class="error"><?php echo $RPostcode_err?></span>
                     </div>
                     
                     <hr>
@@ -569,11 +592,12 @@
                     <div class="input-group">
                         <label for="weight">Weight (kg)</label>
                         <input type="text" name="weight" id="weight" value="<?php echo isset($Weight) ? $Weight : ''?>" required>
-                        <span id="weightError" class="error"></span>
+                        <span id="weightError" class="error"><?php echo $Weight_err?></span>
                     </div>
                     <div class="input-group">
                         <label for="description">Description</label>
                         <input type="textarea" name="description" id="description" value="<?php echo isset($Description) ? $Description : ''?>" required>
+                        <span id="descriptionError" class="error"><?php echo $Description_err?></span>
                     </div>
                     <div class="input-group3">
                         <label for="rate">Shipping Rate</label>
@@ -597,14 +621,11 @@
                     </div>
 
                     <div class="btns-group">
-                        <input type="submit" value="Submit">
+                        <input type="submit" value="Submit" id="bttns">
                     </div>
-                        
-                    
                 </div>
             </form>
         </div>
-    </div>
-    
+    </div>    
     </body>
 </html>
