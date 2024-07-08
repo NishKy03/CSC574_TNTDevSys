@@ -13,24 +13,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $branchID = $_POST["branchID"];
     $staffID = isset($_POST["staffID"]) ? $_POST["staffID"] : null;
 
+    $nextUpdateID = 7000001;
+    $sql1 = "SELECT MAX(updateID) AS maxUpdateID FROM tracking_update";
+    $result = mysqli_query($dbCon, $sql1);
+    if ($result) {
+        $row = mysqli_fetch_assoc($result);
+        if ($row['maxUpdateID']) {
+            $nextUpdateID = $row['maxUpdateID'] + 1;
+        }
+    }
     // Prepare the appropriate SQL update statement
     if ($category === "Delivery" && !empty($staffID)) {
-        $sql = "UPDATE tracking_update SET category = ?, branchID = ?, staffID = ? WHERE orderID = ?";
+        $sql2 = "INSERT INTO tracking_update (updateID, date, category, staffID, branchID, orderID) VALUES (?, CURDATE(), ?, ?, ?, ?)";
         $orderStatusUpdate = "UPDATE orders SET status = 'Out for Delivery' WHERE orderID = ?";
     } elseif ($category === "Departure") {
-        $sql = "UPDATE tracking_update SET category = ?, branchID = ? WHERE orderID = ?";
+        $sql2 = "INSERT INTO tracking_update (updateID, date, category, branchID, orderID) VALUES (?, CURDATE(), ?, ?, ?)";
         $orderStatusUpdate = "UPDATE orders SET status = 'In Transit' WHERE orderID = ?";
     } else {
-        $sql = "UPDATE tracking_update SET category = ?, branchID = ? WHERE orderID = ?";
+        $sql2 = "INSERT INTO tracking_update (updateID, date, category, branchID, orderID) VALUES (?, CURDATE(), ?, ?, ?, ?)";
         $orderStatusUpdate = null; // No status update for other categories
     }
 
-    if ($stmt = mysqli_prepare($dbCon, $sql)) {
+    if ($stmt = mysqli_prepare($dbCon, $sql2)) {
         // Bind variables to the prepared statement as parameters
         if ($category === "Delivery" && !empty($staffID)) {
-            mysqli_stmt_bind_param($stmt, "ssss", $category, $branchID, $staffID, $orderID);
+            mysqli_stmt_bind_param($stmt, "issss", $nextUpdateID, $category, $branchID, $staffID, $orderID);
         } else {
-            mysqli_stmt_bind_param($stmt, "sss", $category, $branchID, $orderID);
+            mysqli_stmt_bind_param($stmt, "isss", $nextUpdateID, $category, $branchID, $orderID);
         }
 
         // Attempt to execute the prepared statement
