@@ -35,7 +35,7 @@
             <div class="chart-container">
                 <h2>Orders Delivered by Staff</h2>
                 <?php
-                    require_once "../dbConfig.php";
+                    require_once "dbConnect.php";
 
                     $sql = "SELECT t.staffID, COUNT(t.staffID) as total
                             FROM TRACKING_UPDATE t JOIN STAFF s
@@ -47,7 +47,7 @@
                     $labels = [];
                     $data = [];
 
-                    if ($result = mysqli_query($conn, $sql)) {
+                    if ($result = mysqli_query($dbCon, $sql)) {
                         if (mysqli_num_rows($result) > 0) {
                             while($row = mysqli_fetch_assoc($result)) {
                                 $labels[] = $row["staffID"];
