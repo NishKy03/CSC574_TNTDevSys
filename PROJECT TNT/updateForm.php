@@ -1,3 +1,8 @@
+<?php
+    include('CHeader.php');
+    $sql = "SELECT branchID, CONCAT(branchID, ' - ', name) as branchName FROM branch ORDER BY branchID";
+    $rsBranch = mysqli_query($dbCon, $sql);     
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,48 +16,6 @@
             padding: 0;
             background-color: #ece0d1;
         }
-        .navbar {
-            background-color: #4b0a05;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 60px;
-            padding: 0 20px;
-        }
-        .logo-container {
-            display: flex;
-            align-items: center;
-            margin-left: 15px;
-        }
-        .circle {
-           width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background-color: #4b0a05;
-            color: #ff6600;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            margin: -2px;
-            border: 4.5px solid #ff6600;
-            font-family: Verdana, sans-serif;
-            font-weight: bold;
-        }
-        .navbar-links a {
-            color: white;
-            text-decoration: none;
-            padding: 10px 10px;
-            transition: background-color 0.3s ease;
-            font-family: Verdana, sans-serif;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        .navbar-links a:hover {
-            background-color: #ddd;
-            color: black;
-        }
-        
         .container {
             width: 100%;
             display: flex;
@@ -131,32 +94,32 @@
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo-container">
-            <div class="circle">T</div>
-            <div class="circle">N</div>
-            <div class="circle">T</div>
-        </div>
-        <div class="navbar-links">
-            <a href="homepage.html">HOME</a>
-            <a href="contactUs.html">CONTACT</a>
-            <a href="tracking.html">TRACKING</a>
-            <a href="login.html">LOGIN</a>
-        </div>
-    </nav>
-
     <div class="container">
         <div class="form-container">
             <div class="button-close">
                 <button class="btn-close">&times;</button>
             </div>
-            <h2>UPDATE</h2>
-            <label for="userid">Order ID</label>
-            <input type="text" id="orderid" name="orderid" >
+            <h2>Update Order</h2>
+            <label for="orderID">Order ID</label>
+            <input type="text" id="orderID" name="orderid" >
             <label for="category">Category</label>
-            <input type="text" id="category" name="category" placeholder="Choose Category">
-            <label for="branchid">Branch ID</label>
-            <input type="text" id="branchid" name="branchid" placeholder="Choose Branch">
+            <select type="text" id="category" name="category">
+                <option value="Arrival">Arrival</option>
+                <option value="Departure">Departure</option>
+                <option value="Delivery">Delivery</option>
+            </select>
+            <label for="branchID">Branch ID</label>
+            <select type="text" id="branchID" name="branchID">
+                <?php 
+                    while ($row = mysqli_fetch_assoc($rsBranch)) { ?>
+                    <option value="<?php echo $row['branchID']; ?>">
+                        <?php echo $row['branchName']; ?>
+                    </option>
+                <?php } ?>
+            </select>
+            <select id="staff">
+
+            </select>
             <div class="button-confirm">
                 <button type="submit">SUBMIT</button>
             </div>

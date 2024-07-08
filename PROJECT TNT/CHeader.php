@@ -84,7 +84,7 @@ if ($_SESSION['position'] !== 'staff') {
         }
 
         .logo span:hover {
-            transform: scale(2); /* Enlarge icon on hover */
+             /* Enlarge icon on hover */
             font-size: 270%; /* Increase font size on hover */
             color: goldenrod;
         }
@@ -236,7 +236,8 @@ if ($_SESSION['position'] !== 'staff') {
         </div>
         <ul class="menu">
             <li><a href="CProfile.php">Profile</a></li>
-            <li><a href="COrderList.php">Orders</a></li>
+            <li><a href="COrderList.php">Orders List</a></li>
+            <li><a href="orderForm.php">Add Order</a></li>
             <li><a href="staffList.php">Staff</a></li>
         </ul>
     </div>
