@@ -1,35 +1,30 @@
 <?php
+include 'dbConnect.php';
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST['name'];
     $email = $_POST['email'];
-    $message = $_POST['desc'];
+    $description = $_POST['desc'];
 
-    // Email addresses to send the message to
-    $to_emails = array(
-        'TNT@courier.my'
-    );
+    // Prepare and bind
+    $stmt = $dbCon->prepare("INSERT INTO contactus (name, email, description) VALUES (?, ?, ?)");
+    $stmt->bind_param("sss", $name, $email, $description);
 
-    // Subject and message body
-    $subject = 'Contact Form Submission';
-    $body = "Name: $name\n\n";
-    $body .= "Email: $email\n\n";
-    $body .= "Message:\n$message";
-
-    // Headers
-    $headers = "From: $email\r\n";
-    $headers .= "Reply-To: $email\r\n";
-
-    // Send emails to each recipient
-    foreach ($to_emails as $to_email) {
-        mail($to_email, $subject, $body, $headers);
+    // Execute the statement
+    if ($stmt->execute()) {
+        // Redirect back to the form page after successful insertion
+        header('Location: contactUs.php?message=sent');
+    } else {
+        // Redirect back to the form page with error message
+        header('Location: contactUs.php?message=error');
     }
 
-    // Redirect back to the form page after sending emails
-    header('Location: contactUs.php?message=sent');
-    exit();
+    // Close the statement
+    $stmt->close();
+    // Close the connection
+    $dbCon->close();
 } else {
     // Redirect to the form page if accessed directly
     header('Location: contactUs.php');
     exit();
 }
-
