@@ -1,3 +1,59 @@
+
+<?php
+     session_start();
+     if (!isset($_SESSION['staffID'])) {
+         echo '<div class="access-denied">Only Accessible by Staff</div>';
+         echo "<script>window.location = 'login.php'<script>";
+         exit();
+     }
+ 
+     require_once 'dbConnect.php'; // Adjust the path as per your project structure
+ 
+     // Check if staff position is 'courier'
+     if ($_SESSION['position'] !== 'staff') {
+         echo '<div class="access-denied">Access Denied. Only accessible by regular staff.</div>';
+         exit();
+     }
+
+     $orderID = isset($_GET['orderID']) ? $_GET['orderID'] : null;
+     $shipRateID = isset($_GET['shipRateID']) ? $_GET['shipRateID'] : null;
+     
+     if ($orderID === null || $shipRateID === null) {
+         die("Missing required parameters.");
+     }
+     
+     $sqlselect = "SELECT * FROM orders WHERE orderID = ?";
+     $stmtselect = $dbCon->prepare($sqlselect);
+     $stmtselect->bind_param("i", $orderID);
+     $stmtselect->execute();
+     $resultselect = $stmtselect->get_result();
+     $rowselect = $resultselect->fetch_assoc();
+     $Weight = $rowselect['parcelWeight'];
+     $insurance = $rowselect['insurance'];
+     
+     $sql = "SELECT * FROM shipping_rate WHERE shipRateID = ?";
+     $stmt = $dbCon->prepare($sql);
+     $stmt->bind_param("i", $shipRateID);
+     $stmt->execute();
+     $result = $stmt->get_result();
+     $row = $result->fetch_assoc();
+     $baseFee = $row['baseFee'];
+     $addFee = $row['addFee'];
+     
+     $totalAmount = $baseFee + ($Weight * $addFee) + ($insurance * $Weight);
+     
+     $sql2 = "UPDATE orders SET totalAmount = ? WHERE orderID = ?";
+     $stmt2 = $dbCon->prepare($sql2);
+     $stmt2->bind_param("di", $totalAmount, $orderID);
+    if($stmt2->execute()){
+        $message = "Record updated successfully";
+        echo "<script type='text/javascript'>alert('$message');
+        window.location = 'COrderList.php';</script>";
+    }
+     $stmt2->close();
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -61,9 +117,11 @@
             position: fixed;
         }
         .form-container {
-            position: relative;
+            position: absolute;
             border: none;
-            padding: 20px;
+            padding: 3%;
+            margin-left: 70%;
+            margin-top: 60%;
             border-radius: 10px;
             background-color: #4b0606;
             width: 600px;
@@ -125,28 +183,16 @@
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo-container">
-            <div class="circle">T</div>
-            <div class="circle">N</div>
-            <div class="circle">T</div>
-        </div>
-        <div class="navbar-links">
-            <a href="homepage.html">HOME</a>
-            <a href="contactUs.html">CONTACT</a>
-            <a href="tracking.html">TRACKING</a>
-            <a href="login.html">LOGIN</a>
-        </div>
-    </nav>
+    <?php include("CHeader.php")?>
 
     <div class="container">
-        <div class="form-container">
+        <form class="form-container" action="paymentForm.php">
             <div class="button-close">
                 <button class="btn-close">&times;</button>
             </div>
             <h2>PAYMENT</h2>
             <label for="totalAmount">Total Amount</label>
-            <input type="text" id="totalAmount" name="totalAmount">
+            <input type="text" id="totalAmount" name="totalAmount" value="<?php echo isset($totalAmount) ? $totalAmount : ''?>">
             <label for="methodPay">Payment Method</label>
             <select id="methodPay" name="methodPay">
                 <option value="onlineBanking">Online Banking</option>
@@ -156,7 +202,7 @@
             <div class="button-confirm">
                 <button type="submit">SUBMIT</button>
             </div>
-        </div>
+        </form>
     </div>
 </body>
 </html>
