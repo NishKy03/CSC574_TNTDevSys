@@ -1,5 +1,5 @@
 <?php
-    include('CnavIn.php');
+    include('CHeader.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,21 +41,36 @@
                             FROM TRACKING_UPDATE t JOIN STAFF s
                             ON t.staffID = s.staffID
                             WHERE category = 'Delivered'
-                            AND s.branchID = 'KTN01'
+                            AND s.position = 'courier'
+                            AND s.branchID = ?
                             GROUP BY t.staffID;";
+                    
+                    if ($stmt = mysqli_prepare($dbCon, $sql)) {
+                        // Bind variables to the prepared statement as parameters
+                        mysqli_stmt_bind_param($stmt, "d", $param_bID);
+            
+                        // Set parameters
+                        $param_bID = $_SESSION['branchID'];
+            
+                        // Attempt to execute the prepared statement
+                        if (mysqli_stmt_execute($stmt)) {
+                            $result = mysqli_stmt_get_result($stmt);
+                        } else {
+                            echo "Something went wrong. Please try again later.";
+                        }
+                    }
 
                     $labels = [];
                     $data = [];
 
-                    if ($result = mysqli_query($dbCon, $sql)) {
-                        if (mysqli_num_rows($result) > 0) {
-                            while($row = mysqli_fetch_assoc($result)) {
-                                $labels[] = $row["staffID"];
-                                $data[] = $row["total"];
-                            }
+                    if (mysqli_num_rows($result) > 0) {
+                        while($row = mysqli_fetch_assoc($result)) {
+                            $labels[] = $row["staffID"];
+                            $data[] = $row["total"];
                         }
                     }
                     mysqli_free_result($result);
+                    mysqli_close($dbCon);
                 ?>
                 <canvas id="ordersChart" style="width:100%; max-width:800px; height:400px;"></canvas>
                 <script>
