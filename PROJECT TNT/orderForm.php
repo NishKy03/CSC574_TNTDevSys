@@ -107,7 +107,7 @@
         if (empty($SName_err) && empty($SPhone_err) && empty($SAddress_err) && empty($SCity_err) && empty($SState_err) && empty($SPostcode_err) && empty($RName_err) && empty($RPhone_err) && empty($RAddress_err) && empty($RCity_err) && empty($RState_err) && empty($RPostcode_err) && empty($Weight_err) && empty($Description_err) && empty($rateID_err)) {
             $sql1 = "INSERT INTO sender (senderName, senderPhoneNo, addressLine1, city, state, postcode) VALUES (?, ?, ?, ?, ?, ?)";
             $sql2 = "INSERT INTO recipient (name, phoneNo, addressLine1, city, state, postcode) VALUES (?, ?, ?, ?, ?, ?)";
-            $sql3 = "INSERT INTO orders (senderID, recipientID, parcelWeight, insurance, shipRateID) VALUES (?, ?, ?, ?, ?)";
+            $sql3 = "INSERT INTO orders (senderID, recipientID, parcelWeight, insurance, shipRateID, status, orderDate) VALUES (?, ?, ?, ?, ?, 'Out for Delivery',CURDATE())";
 
             if ($stmt1 = mysqli_prepare($dbCon, $sql1)) {
                 mysqli_stmt_bind_param($stmt1, "sssssi", $SName, $SPhone, $SAddress, $SCity, $SState, $SPostcode);
@@ -135,7 +135,6 @@
                 mysqli_stmt_bind_param($stmt3, "iidii", $senderID, $recipientID, $Weight, $Insurance, $rateID);
                 if (mysqli_stmt_execute($stmt3)) {
                     $message = "Parcel details added successfully.";
-                    $success = $message;
 
                     $orderID = mysqli_insert_id($dbCon);
 
@@ -143,7 +142,9 @@
                     if($stmt4 = mysqli_prepare($dbCon, $sql4)){
                         mysqli_stmt_bind_param($stmt4, "i", $orderID);
                         if(mysqli_stmt_execute($stmt4)){
-                            $message = "Order placed successfully.";
+                            $message = "Order placed successfully."; 
+                            $success = $message;
+                            $updateID = mysqli_insert_id($dbCon);
                         }else{
                             $message = "Error adding tracking details.";
                         }
@@ -160,15 +161,19 @@
     }
 
     if (!empty($message)) {
-        if(!empty($success)){
-            echo "<script>
-            alert('$success');
-            window.location.href = 'paymentForm.html';
-            </script>";
-        }else{
+        if (!empty($success)) {
+            // Check if $rateID and $orderID are set and not empty
+            if (isset($rateID) && isset($orderID) && !empty($rateID) && !empty($orderID)) {
+                echo "<script>
+                    alert('$success');
+                    window.location.href = 'paymentForm.php?shipRateID=$rateID&orderID=$orderID';
+                </script>";
+            } else {
+                echo "<script>alert('Error: Missing rate ID or order ID');</script>";
+            }
+        } else {
             echo "<script>alert('$message');</script>";
         }
-       
     }
 ?>
 
@@ -704,8 +709,7 @@
             box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--primary-color);
         }
         </style>
-       
-</script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     </head>
     <body>
     <?php include("CHeader.php")?>

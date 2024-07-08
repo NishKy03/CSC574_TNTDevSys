@@ -1,7 +1,30 @@
 <?php
     include('CHeader.php');
-    $sql = "SELECT branchID, CONCAT(branchID, ' - ', name) as branchName FROM branch ORDER BY branchID";
-    $rsBranch = mysqli_query($dbCon, $sql);     
+    $staffID = $_SESSION['staffID']; 
+    $branchID = $_SESSION['branchID']; 
+    $sql1 = "SELECT branchID, CONCAT(branchID, ' - ', name) as branchName FROM branch ORDER BY branchID"; 
+    if (isset($_GET["orderID"]) && !empty(trim($_GET["orderID"]))) {
+        $orderID = trim($_GET["orderID"]);
+        // Prepare a select statement
+        $sql = "SELECT staffID, CONCAT(staffID, ' - ', staffName) as staffName FROM staff WHERE position = 'courier' AND branchID = ? ORDER BY staffID";
+        
+        if ($stmt = mysqli_prepare($dbCon, $sql)) {
+            // Bind variables to the prepared statement as parameters
+            mysqli_stmt_bind_param($stmt, "s", $param_id);
+            
+            // Set parameters
+            $param_id = $branchID;
+            
+            // Attempt to execute the prepared statement
+            if (mysqli_stmt_execute($stmt)) {
+                $rsStaff = mysqli_stmt_get_result($stmt);
+            } else {
+                echo "Oops! Something went wrong. Please try again later.";
+            }
+        }
+    } else {
+        exit();
+    }   
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -59,8 +82,15 @@
             color: white;
             margin-left: 40px;
         }
-        .form-container input[type="text"],
-        .form-container input[type="password"] {
+        .form-container input[type="text"] {
+            width: 90%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
+        .form-container select {
             width: 90%;
             padding: 10px;
             margin-bottom: 10px;
@@ -101,30 +131,51 @@
             </div>
             <h2>Update Order</h2>
             <label for="orderID">Order ID</label>
-            <input type="text" id="orderID" name="orderid" >
+            <input type="text" id="orderID" name="orderid" value="<?php echo $orderID ?>">
             <label for="category">Category</label>
-            <select type="text" id="category" name="category">
+            <select type="text" id="category" name="category" onchange="showSecondDropdown()">
                 <option value="Arrival">Arrival</option>
                 <option value="Departure">Departure</option>
                 <option value="Delivery">Delivery</option>
             </select>
             <label for="branchID">Branch ID</label>
-            <select type="text" id="branchID" name="branchID">
+            <select type="text" id="branchID">
                 <?php 
-                    while ($row = mysqli_fetch_assoc($rsBranch)) { ?>
-                    <option value="<?php echo $row['branchID']; ?>">
-                        <?php echo $row['branchName']; ?>
-                    </option>
+                    if($rsBranch = mysqli_query($dbCon, $sql1)) {
+                        while ($row = mysqli_fetch_assoc($rsBranch)) { ?>
+                        <option value="<?php echo $row['branchID']; ?>">
+                            <?php echo $row['branchName']; ?>
+                        </option>
+                <?php }} ?>
+            </select>
+            <div id="staff" style="display: none;">
+            <label for="staffID">Staff ID</label>
+            <select type="text" id="staffID">
+                <?php 
+                    while ($row = mysqli_fetch_assoc($rsStaff)) { ?>
+                        <option value="<?php echo $row['staffID']; ?>">
+                            <?php echo $row['staffName']; ?>
+                        </option>
                 <?php } ?>
             </select>
-            <select id="staff">
-
-            </select>
+            </div>
             <div class="button-confirm">
                 <button type="submit">SUBMIT</button>
             </div>
             
         </div>
     </div>
+    <script>
+        function showSecondDropdown() {
+            var firstDropdown = document.getElementById('category');
+            var secondDropdownContainer = document.getElementById('staff');
+            
+            if (firstDropdown.value === 'Delivery') {
+                secondDropdownContainer.style.display = 'block';
+            } else {
+                secondDropdownContainer.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>
