@@ -17,7 +17,7 @@ if ($_SESSION['position'] !== 'staff') {
 $username = $_SESSION["staffName"]; // Use the correct session variable to display the username
 
 $page = isset($_GET['page']) ? $_GET['page'] : 1;
-$limit = 10;
+$limit = 8;
 $offset = ($page - 1) * $limit;
 
 // Query to get total number of records

@@ -29,7 +29,6 @@ function fetchUserData($dbCon, $staffID) {
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["id"]) && !empty(trim($_POST["id"]))) {
     $c_id = $_POST["id"];
 
-    // Validate password
     $input_pw = trim($_POST["pw"]);
     if (empty($input_pw)) {
         $pw_err = "Please enter a password.";
@@ -59,7 +58,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["id"]) && !empty(trim($
         $c_hpno = $input_hpno;
     }
 
-    // Validate email
     $input_email = trim($_POST["email"]);
     if (empty($input_email)) {
         $email_err = "Please enter an email.";
@@ -67,21 +65,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["id"]) && !empty(trim($
         $email_err = "Invalid email. Please use XXX@XXX.XXX format.";
     } else {
         $c_email = $input_email;
-    }
-
-    // Validate security question and answer
-    $input_security_question = trim($_POST["security_question"]);
-    if (empty($input_security_question)) {
-        $security_question_err = "Please select a security question.";
-    } else {
-        $c_security_question = $input_security_question;
-    }
-
-    $input_security_answer = trim($_POST["security_answer"]);
-    if (empty($input_security_answer)) {
-        $security_answer_err = "Please enter an answer.";
-    } else {
-        $c_security_answer = $input_security_answer;
     }
 
     // Check input errors before updating in database
@@ -138,7 +121,6 @@ mysqli_close($dbCon);
             justify-content: center;
             align-items: flex-start;
             height: 100%;
-            padding-top: 100px;
         }
         .myprofile-container {
             background: #4b0606;
@@ -169,7 +151,7 @@ mysqli_close($dbCon);
             font-weight: bold;
             color: white;
         }
-        .myprofile-form input, .myprofile-form select {
+        .myprofile-form input {
             padding: 10px;
             margin-top: 5px;
             border: 1px solid #ccc;
@@ -234,10 +216,10 @@ mysqli_close($dbCon);
     </script>
 </head>
 <body>
-    <div class="container">
-        <div class="myprofile-container"><br><br>
+<div class="container">
+        <div class="myprofile-container">
             <div class="myprofile-header">
-                <h1>PROFILE</h1>
+            <h1>PROFILE</h1>
             </div>
             <div class="myprofile-form">
                 <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" id="profileForm">
