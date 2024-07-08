@@ -25,20 +25,39 @@
         $orderID = $_POST['orderID'];
         $staffID = $_POST['staffid'];
 
-        // Update the order with the selected staffID
+        // Update the orders table with the selected staffID
         $updateSql = "UPDATE orders SET staffID = ? WHERE orderID = ?";
         if ($stmt = mysqli_prepare($dbCon, $updateSql)) {
             mysqli_stmt_bind_param($stmt, "ss", $staffID, $orderID);
 
             if (mysqli_stmt_execute($stmt)) {
-                // Redirect back to order list or wherever appropriate
-                header("Location: COrderList.php");
-                exit();
+                // Insert into tracking_update table
+                $insertSql = "INSERT INTO tracking_update (date, category, staffID, branchID, orderID)
+                              VALUES (NOW(), 'Assign Courier', ?, ?, ?)";
+                if ($stmtInsert = mysqli_prepare($dbCon, $insertSql)) {
+                    // Assuming branchID and orderID are available from session or other sources
+                    $branchID = $_SESSION['branchID']; // Adjust as per your session setup
+                    mysqli_stmt_bind_param($stmtInsert, "sss", $staffID, $branchID, $orderID);
+
+                    if (mysqli_stmt_execute($stmtInsert)) {
+                        // Redirect back to order list or wherever appropriate
+                        header("Location: COrderList.php");
+                        exit();
+                    } else {
+                        echo "Error inserting record into tracking_update: " . mysqli_error($dbCon);
+                    }
+
+                    mysqli_stmt_close($stmtInsert);
+                } else {
+                    echo "Error preparing insert statement: " . mysqli_error($dbCon);
+                }
             } else {
-                echo "Error updating record: " . mysqli_error($dbCon);
+                echo "Error updating record in orders table: " . mysqli_error($dbCon);
             }
 
             mysqli_stmt_close($stmt);
+        } else {
+            echo "Error preparing update statement: " . mysqli_error($dbCon);
         }
     }
 
@@ -146,7 +165,7 @@
             <p>Order ID: <?php echo $orderID; ?></p>
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                 <input type="hidden" name="orderID" value="<?php echo htmlspecialchars($orderID); ?>">
-                <label for="staffid">Choose Staff:</label>
+                <label for="staffid">Select Courier:</label>
                 <select id="staffid" name="staffid">
                     <?php echo $staffOptions; ?>
                 </select>
