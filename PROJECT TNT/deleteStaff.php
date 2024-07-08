@@ -1,23 +1,24 @@
 <?php
 session_start();
 
-if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION["userlevel"] !== '1') {
+require_once 'dbConnect.php';
+
+if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION["position"] !== 'staff') {
+    echo "<script>alert(You are not authorized to view this page. Please log in as staff.)</script>";
     header("location: login.php");
     exit;
 }
 
-$usrname = $_SESSION["username"];
+$staffID = $_GET['id'];
 
-$matricNo = $_GET['id'];
-
-$sql = "DELETE FROM student WHERE Std_MatricNo='$matricNo'";
+$sql = "DELETE FROM Staff WHERE staffID = '$staffID'";
 
 if ($conn->query($sql) === TRUE) {
-    echo "Record deleted successfully";
+    echo "<script>alert(Record deleted successfully)</script>";
 } else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
+    echo "<script>Error: " . $sql . "<br>" . $conn->error . "</script>";
 }
 
 $conn->close();
-header("Location: students.php");
+header("Location: staffList.php");
 ?>
