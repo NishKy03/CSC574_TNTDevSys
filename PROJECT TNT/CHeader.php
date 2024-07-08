@@ -214,6 +214,38 @@ if ($_SESSION['position'] !== 'staff') {
             float: right;
             padding-right: 8px;
         }
+        .navbar-links {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            transition: background-color 0.3s ease, color 0.3s ease; /* Added color transition */
+            font-family: Verdana, sans-serif;
+            font-weight: bold;
+            font-size: 18px;
+            position: relative;
+        }
+
+        .navbar-links:hover {
+            background-color: #ddd; /* Hover background color */
+            color: black; /* Hover text color */
+            text-decoration: none;
+        }
+
+        .navbar-links::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            bottom: 0;
+            left: 0;
+            background-color: #ff6600;
+            transform: scaleX(0); /* Initially hidden */
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-links:hover::before {
+            transform: scaleX(1); /* Expand underline on hover */
+        }
     </style>
 </head>
 <body>
@@ -228,6 +260,7 @@ if ($_SESSION['position'] !== 'staff') {
         </a>
         </div>
         <nav>
+            <a href="message.php" class="navbar-links">Messages</a>
             <div class="logout">
             <a href="logout.php">
                 <img src="images/logout.png" alt="Logout Icon">

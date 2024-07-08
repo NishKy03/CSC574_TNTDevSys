@@ -1,6 +1,6 @@
 <?php 
 include 'dbConnect.php';
-include 'universalHeader.php';
+include 'CHeader.php';
 
 // Pagination variables
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? $_GET['page'] : 1;
@@ -42,7 +42,7 @@ $result = $dbCon->query($sql);
             color: #000;
             text-align: center;
             font-weight: 800;
-            margin-top: 20px;
+            margin-top: 6%;
         }
         .container {
             margin-top: 20px; /* Adjust this margin as needed */
@@ -53,7 +53,7 @@ $result = $dbCon->query($sql);
             justify-content: center;
             align-items: center;
             width: 100%;
-            margin-top: 20px;
+            margin-top: 1%;
             overflow-x: auto; /* Add horizontal scrolling if needed */
         }
         table {
