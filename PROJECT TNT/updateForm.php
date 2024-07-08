@@ -1,67 +1,78 @@
 <?php
     include('CHeader.php');
-    require_once('dbConnect.php');
-    $branchID = $_SESSION['branchID']; 
-    $sql1 = "SELECT branchID, CONCAT(branchID, ' - ', name) as branchName FROM branch ORDER BY branchID"; 
-    if (isset($_GET["orderID"]) && !empty(trim($_GET["orderID"]))) {
-        $orderID = trim($_GET["orderID"]);
-        // Prepare a select statement
-        $sql2 = "SELECT staffID, CONCAT(staffID, ' - ', staffName) as staffName FROM staff WHERE position = 'courier' AND branchID = ? ORDER BY staffID";
-        
-        if ($stmt = mysqli_prepare($dbCon, $sql2)) {
+    require_once "dbConnect.php";
+
+    // Initialize variables
+    $orderID = $category = $branchID = $staffID = "";
+
+    // Processing form data when form is submitted
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        // Validate orderID (you may need additional validation here)
+        $orderID = trim($_POST["orderID"]);
+        $category = $_POST["category"];
+        $branchID = $_POST["branchID"];
+        $staffID = isset($_POST["staffID"]) ? $_POST["staffID"] : null;
+
+        // Prepare the appropriate SQL update statement
+        if ($category === "Delivery" && !empty($staffID)) {
+            $sql = "UPDATE tracking_update SET category = ?, branchID = ?, staffID = ? WHERE orderID = ?";
+        } else {
+            $sql = "UPDATE tracking_update SET category = ?, branchID = ? WHERE orderID = ?";
+        }
+
+        if ($stmt = mysqli_prepare($dbCon, $sql)) {
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "s", $param_id);
-            
-            // Set parameters
-            $param_id = $branchID;
-            
+            if ($category === "Delivery" && !empty($staffID)) {
+                mysqli_stmt_bind_param($stmt, "ssss", $category, $branchID, $staffID, $orderID);
+            } else {
+                mysqli_stmt_bind_param($stmt, "sss", $category, $branchID, $orderID);
+            }
+
             // Attempt to execute the prepared statement
             if (mysqli_stmt_execute($stmt)) {
-                $rsStaff = mysqli_stmt_get_result($stmt);
+                // Set session variable to indicate success
+                $_SESSION['update_success'] = true;
+
+                // Redirect to the orders list page after successful update
+                header("location: COrderList.php");
+                exit();
             } else {
                 echo "Oops! Something went wrong. Please try again later.";
             }
         }
-    } else {
-        exit();
-    }
-    
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $orderID= trim($_POST["orderID"]);
-        $category = trim($_POST["category"]);
-        $branchID = trim($_POST["branchID"]);
-        if($category == 'Delivery') {
-            $staffID = trim($_POST["staffID"]);
-        } else {
-            $staffID = $_SESSION['staffID'];
-        }
 
-            $sql3 = "INSERT INTO tracking_update (date, category, staffID, branchID, orderID) VALUES (CURDATE(), ?, ?, ?, ?)";
-            if ($stmt = mysqli_prepare($dbCon, $sql3)) {
+        // Close statement
+        mysqli_stmt_close($stmt);
+    } else {
+        // Fetch existing order details for display
+        if (isset($_GET["orderID"]) && !empty(trim($_GET["orderID"]))) {
+            $orderID = trim($_GET["orderID"]);
+
+            // Prepare a select statement to fetch staff based on branch
+            $sql1 = "SELECT branchID, CONCAT(branchID, ' - ', name) as branchName FROM branch ORDER BY branchID";
+            $rsBranch = mysqli_query($dbCon, $sql1);
+
+            // Prepare a select statement to fetch staff for delivery category
+            $sql2 = "SELECT staffID, CONCAT(staffID, ' - ', staffName) as staffName FROM staff WHERE position = 'courier' AND branchID = ?";
+            if ($stmt = mysqli_prepare($dbCon, $sql2)) {
                 // Bind variables to the prepared statement as parameters
-                mysqli_stmt_bind_param($stmt, "sdsd", $param_ctg, $param_sid, $param_bid, $param_oid);
-    
-                // Set parameters
-                $param_ctg = $category;
-                $param_sid = $staffID;
-                $param_bid = $branchID;
-                $param_oid = $orderID;
-    
+                mysqli_stmt_bind_param($stmt, "s", $branchID);
+
+                // Set parameter
+                $branchID = $_SESSION['branchID'];
+
                 // Attempt to execute the prepared statement
                 if (mysqli_stmt_execute($stmt)) {
-                    // Records created successfully. Redirect to landing page
-                    header("location: COrderList.php");
-                    exit();
+                    $rsStaff = mysqli_stmt_get_result($stmt);
                 } else {
-                    echo "Something went wrong. Please try again later.";
+                    echo "Oops! Something went wrong. Please try again later.";
                 }
-    
-            // Close statement
-            mysqli_stmt_close($stmt);
             }
-    
-        // Close connection
-        mysqli_close($dbCon);
+        } else {
+            // Redirect to error page if orderID is not provided
+            header("location: error.php");
+            exit();
+        }
     }
 ?>
 <!DOCTYPE html>
@@ -69,8 +80,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update Form</title>
+    <title>Update Order</title>
     <style>
+        /* Styles remain the same */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -78,12 +90,11 @@
             background-color: #ece0d1;
         }
         .container {
-            margin-left: 250px;
             width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 150px;
+            margin-top: 100px;
             position: fixed;
         }
         .form-container {
@@ -96,7 +107,16 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             color: white;
             text-align: center;
-            margin-left: -10%;
+        }
+        .button-close .btn-close {
+            position: absolute;
+            background-color: transparent;
+            border: none;
+            font-size: 40px;
+            cursor: pointer;
+            right: 4px;
+            top: 2px;
+            color: white;
         }
         .form-container h2 {
             color: white;
@@ -111,7 +131,7 @@
             color: white;
             margin-left: 40px;
         }
-        .form-container input[type="text"] {
+        .form-container input[type="text"], .form-container select {
             width: 90%;
             padding: 10px;
             margin-bottom: 10px;
@@ -119,15 +139,7 @@
             border-radius: 10px;
             box-sizing: border-box;
         }
-        .form-container select {
-            width: 90%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            box-sizing: border-box;
-        }
-        .button-confirm input[type="submit"] {
+        .button-confirm button {
             width: 30%;
             padding: 10px;
             margin-top: 10px;
@@ -139,7 +151,7 @@
             font-size: 25px;
             font-weight: bold;
         }
-        .button-confirm input[type="text"]:hover {
+        .button-confirm button:hover {
             background-color: #45a049;
         }
         .form-container a {
@@ -155,39 +167,40 @@
 <body>
     <div class="container">
         <div class="form-container">
+            <div class="button-close">
+                <button class="btn-close">&times;</button>
+            </div>
             <h2>Update Order</h2>
-            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
-                <label for="orderID">Order ID</label>
-                <input type="text" id="orderID" name="orderID" value="<?php echo $orderID ?>" readonly>
+            <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+                <input type="hidden" name="orderID" value="<?php echo $orderID; ?>">
                 <label for="category">Category</label>
-                <select type="text" id="category" name="category" onchange="showSecondDropdown()">
+                <select id="category" name="category" onchange="showSecondDropdown()">
                     <option value="Arrival">Arrival</option>
                     <option value="Departure">Departure</option>
                     <option value="Delivery">Delivery</option>
                 </select>
                 <label for="branchID">Branch ID</label>
-                <select type="text" id="branchID">
+                <select id="branchID" name="branchID">
                     <?php 
-                        if($rsBranch = mysqli_query($dbCon, $sql1)) {
-                            while ($row = mysqli_fetch_assoc($rsBranch)) { ?>
-                            <option value="<?php echo $row['branchID']; ?>">
-                                <?php echo $row['branchName']; ?>
-                            </option>
-                    <?php }} ?>
+                        while ($row = mysqli_fetch_assoc($rsBranch)) { ?>
+                        <option value="<?php echo $row['branchID']; ?>">
+                            <?php echo $row['branchName']; ?>
+                        </option>
+                    <?php } ?>
                 </select>
                 <div id="staff" style="display: none;">
-                <label for="staffID">Staff ID</label>
-                <select type="text" id="staffID">
-                    <?php 
-                        while ($row = mysqli_fetch_assoc($rsStaff)) { ?>
+                    <label for="staffID">Staff ID</label>
+                    <select id="staffID" name="staffID">
+                        <?php 
+                            while ($row = mysqli_fetch_assoc($rsStaff)) { ?>
                             <option value="<?php echo $row['staffID']; ?>">
                                 <?php echo $row['staffName']; ?>
                             </option>
-                    <?php } ?>
-                </select>
+                        <?php } ?>
+                    </select>
                 </div>
                 <div class="button-confirm">
-                    <input type="submit">
+                    <button type="submit">SUBMIT</button>
                 </div>
             </form>
         </div>
@@ -203,6 +216,14 @@
                 secondDropdownContainer.style.display = 'none';
             }
         }
+
+        // Check if session variable is set and display alert
+        <?php
+            if (isset($_SESSION['update_success']) && $_SESSION['update_success']) {
+                echo "alert('Successfully updated order');";
+                unset($_SESSION['update_success']); // unset the session variable after displaying alert
+            }
+        ?>
     </script>
 </body>
 </html>
