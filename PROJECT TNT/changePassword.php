@@ -1,5 +1,32 @@
+<?php
+session_start();
+include 'dbConnect.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $staffID = $_SESSION['staffID'];
+    $securityAnswer = $_POST['securityAnswer'];
+    
+    // Verify the security answer
+    $sql = "SELECT * FROM STAFF WHERE staffID = ? AND staffAnswer = ?";
+    $stmt = $dbCon->prepare($sql);
+    $stmt->bind_param("ss", $staffID, $securityAnswer);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows == 1) {
+        // Security answer is correct, allow password change
+        header("Location: changePassword.php");
+        exit();
+    } else {
+        $_SESSION['errorMessage'] = "Incorrect answer.";
+        header("Location: answerSecurityQuestion.php");
+        exit();
+    }
+}
+?>
+
 <?php include 'universalHeader.php'; ?>
-<title>Forgot Password</title>
+<title>Change Password</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
@@ -88,14 +115,18 @@
         <div class="button-close">
             <button class="btn-close">&times;</button>
         </div>
-        <h2>Forgot Password</h2>
-        <form id="forgotPasswordForm" action="verifySecurityQuestion.php" method="POST">
+        <h2>Change Password</h2>
+        <form id="changePasswordForm" action="updatePassword.php" method="POST">
             <div class="form-group">
-                <label for="userid">User ID</label>
-                <input type="text" class="form-control" id="userid" name="userid" required>
+                <label for="newpassword">New Password</label>
+                <input type="password" class="form-control" id="newpassword" name="newpassword" required>
+            </div>
+            <div class="form-group">
+                <label for="conpassword">Confirm Password</label>
+                <input type="password" class="form-control" id="conpassword" name="conpassword" required>
             </div>
             <div class="button-confirm">
-                <button type="submit" class="btn">NEXT</button>
+                <button type="submit" class="btn">CONFIRM</button>
             </div>
         </form>
     </div>

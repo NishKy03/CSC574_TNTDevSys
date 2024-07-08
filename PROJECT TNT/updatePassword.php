@@ -1,39 +1,31 @@
 <?php
-session_start(); // Start session to store message temporarily
-
-include '../dbConnect.php';
+session_start();
+include 'dbConnect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $userid = $_POST['userid'];
-    $newpassword = $_POST['newpassword'];
-    $conpassword = $_POST['conpassword'];
+    $staffID = $_SESSION['staffID'];
+    $newPassword = $_POST['newpassword'];
+    $confirmPassword = $_POST['conpassword'];
 
-    if ($newpassword === $conpassword) {
-        $sql = "UPDATE staff SET password = ? WHERE staffID = ?";
-        if ($stmt = $dbCon->prepare($sql)) {
-            $stmt->bind_param("ss", $newpassword, $userid);
-            if ($stmt->execute()) {
-                $_SESSION['message'] = "Password updated successfully.";
-                $stmt->close();
-                echo "<script>alert('Password updated successfully.'); window.location='login.php';</script>";
-                exit(); // Ensure script execution stops after redirection
-            } else {
-                $_SESSION['error'] = "Error updating password: " . $stmt->error;
-                $stmt->close();
-                echo "<script>alert('Error updating password: " . $stmt->error . "'); window.location='forgotPassword.php';</script>";
-                exit(); // Ensure script execution stops after redirection
-            }
+    if ($newPassword === $confirmPassword) {
+        // Update the password
+        $sql = "UPDATE STAFF SET password = ? WHERE staffID = ?";
+        $stmt = $dbCon->prepare($sql);
+        $stmt->bind_param("ss", $newPassword, $staffID);
+        
+        if ($stmt->execute()) {
+            // Password updated successfully
+            session_destroy(); // End session
+            echo "<script>alert('Password has been successfully changed');window.location.href='login.php';</script>";
+            exit();
         } else {
-            $_SESSION['error'] = "Error preparing statement: " . $dbCon->error;
-            echo "<script>alert('Error preparing statement: " . $dbCon->error . "'); window.location='forgotPassword.php';</script>";
-            exit(); // Ensure script execution stops after redirection
+            $_SESSION['errorMessage'] = "Error updating password.";
+            header("Location: changePassword.php");
+            exit();
         }
     } else {
-        $_SESSION['error'] = "Passwords do not match.";
-        echo "<script>alert('Passwords do not match.'); window.location='forgotPassword.php';</script>";
-        exit(); // Ensure script execution stops after redirection
+        echo "<script>alert('Password is not match');window.location.href='changePassword.php';</script>";
+        exit();
     }
 }
-
-$dbCon->close();
 ?>
