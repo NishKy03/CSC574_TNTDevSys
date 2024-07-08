@@ -6,7 +6,7 @@ if (!isset($_SESSION['staffID'])) {
     exit();
 }
 
-require_once '../dbConnect.php'; // Adjust the path as per your project structure
+require_once 'dbConnect.php'; // Adjust the path as per your project structure
 
 // Check if staff position is 'courier'
 if ($_SESSION['position'] !== 'staff') {
@@ -360,15 +360,20 @@ $result = $dbCon->query($sql);
 	margin:6%;
 	border-radius: 6%;
 }
+.maining{
+	margin: 6%;
+}
     </style>
   	
 </head>
 <body>
 
- <?php include("../CHeader.php")?>
+ <?php include("CHeader.php")?>
+
 
 	<div class="container mt-5">
-    <h2>Staff Lists</h2>
+	<div>
+	<h2>Staff Lists</h2>
     <button class="btn btn-warning" onclick="location.href='RegisterStaff.php'">Register Staff</button><br><br>
 
     <?php
@@ -377,7 +382,7 @@ $result = $dbCon->query($sql);
             echo '<table class="table table-striped">';
             echo '<tbody>';
             echo '<tr>';
-            echo '<td style="vertical-align: top;"><img class="profile-image" src="../images/picture.png"></td>';
+            echo '<td style="vertical-align: top;"><img class="profile-image" src="images/picture.png"></td>';
             echo '<td style="vertical-align: middle; ">';
             echo '<table>';
             echo '<tr><td>ID:</td><td>' . $row["staffID"] . '</td></tr>';
@@ -388,7 +393,7 @@ $result = $dbCon->query($sql);
             echo '</table>';
             echo '</td>';
             echo '<td style="vertical-align: middle;">';
-            echo '<button class="btn btn-tertiary me-2" onclick="location.href=\'updateStaffInfo1.php?id=' . $row["staffID"] . '\'"><img src="edit.png"></button>';
+            echo '<button class="btn btn-tertiary me-2" onclick="location.href=\'updateStaffInfo.php?id=' . $row["staffID"] . '\'"><img src="edit.png"></button>';
             echo '<button class="btn btn-tertiary me-2" onclick="location.href=\'deleteStaff.php?id=' . $row["staffID"] . '\'"><img src="delete.png"></button>';
             echo '</td>';
             echo '</tr>';
@@ -415,6 +420,9 @@ $result = $dbCon->query($sql);
             <?php endif; ?>
         </ul>
     </nav>
+
+	</div>
+    
 </div>
 </body>
 </html>

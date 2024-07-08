@@ -12,7 +12,7 @@
             margin: 0;
             padding: 0;
             height: 100%;
-            background: linear-gradient(0deg, rgba(148, 148, 148, 0.61) 0%, rgba(148, 148, 148, 0.61) 20%), url('../images/bg.jpg') no-repeat center center fixed;
+            background: linear-gradient(0deg, rgba(148, 148, 148, 0.61) 0%, rgba(148, 148, 148, 0.61) 20%), url('images/bg.jpg') no-repeat center center fixed;
             background-size: cover;
             font-family: "Poppins", sans-serif;
             }
