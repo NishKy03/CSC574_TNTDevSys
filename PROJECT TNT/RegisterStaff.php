@@ -89,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "<script>alert('Data has been created.');</script>";
                 echo "<script>location.href='staffList.php';</script>";
             } else {
-                echo "Something went wrong. Please try again later.";
+                echo "<script>alert(Something went wrong. Please try again later.);</script>";
             }
         }
         mysqli_stmt_close($stmt);

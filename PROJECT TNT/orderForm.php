@@ -583,8 +583,8 @@
                     </div>
                     <div class="input-group">
                         <label for="postcode">Postcode</label>
-                        <input type="text" name="RPostcode" id="postcode" value="<?php echo isset($RPostcode) ? $RPostcode : ''?>" required>
-                        <span id="RPostcodeError" class="error"><?php echo $RPostcode_err?></span>
+                        <input type="text" name="RPostcode" id="RPostcode" value="<?php echo isset($RPostcode) ? $RPostcode : ''?>" required>
+                        <span id="RPostcodeError" class="error"><?php echo $SPostcode_err?></span>
                     </div>
                     
                     <hr>
@@ -735,22 +735,28 @@
                 document.getElementById('RStateError').innerHTML = '';
             }
 
-            // Validate Recipient Postcode
-            var RPostcode = document.getElementById('RPostcode').value.trim();
-            if (!RPostcode.match(/^\d{5}$/)) {
-                document.getElementById('RPostcodeError').innerHTML = 'Postcode must contain exactly 5 digits.';
-                isValid = false;
-            } else {
-                document.getElementById('RPostcodeError').innerHTML = '';
+           // Validate Recipient Postcode
+            function validateRecipientPostcode() {
+                var RPostcode = document.getElementById('RPostcode').value.trim();
+                if (!RPostcode.match(/^\d{5}$/)) {
+                    document.getElementById('RPostcodeError').innerHTML = 'Postcode must contain exactly 5 digits.';
+                    return false;
+                } else {
+                    document.getElementById('RPostcodeError').innerHTML = '';
+                    return true;
+                }
             }
 
             // Validate Weight
-            var weight = document.getElementById('weight').value.trim();
-            if (!RState.match(/^\d+$/) || weight <= 0) {
-                document.getElementById('weightError').innerHTML = 'Please enter a valid weight (> 0).';
-                isValid = false;
-            } else {
-                document.getElementById('weightError').innerHTML = '';
+            function validateWeight() {
+                var weight = document.getElementById('weight').value.trim();
+                if (!weight.match(/^\d+(\.\d{1})?$/) || parseFloat(weight) <= 0) {
+                    document.getElementById('weightError').innerHTML = 'Please enter a valid weight (> 0).';
+                    return false;
+                } else {
+                    document.getElementById('weightError').innerHTML = '';
+                    return true;
+                }
             }
 
             // Validate Description
@@ -885,7 +891,7 @@
 
         document.getElementById('weight').addEventListener('input', function() {
             var weight = this.value.trim();
-            if (!weight.match(/^\d+$/)|| weight <= 0) {
+            if (!weight.match(/^\d+(\.\d{1})?$/) || parseFloat(weight) <= 0) {
                 document.getElementById('weightError').innerHTML = 'Please enter a valid weight (> 0).';
             } else {
                 document.getElementById('weightError').innerHTML = '';
