@@ -23,86 +23,123 @@
     $SID = $SName = $SPhone = $SAddress = $SCity = $SState = $SPostcode = $RID = $RName = $RPhone = $RAddress = $RCity = $RState = $RPostcode = $Weight = $Description = $Insurance = $rateID = "";
     $SName_err = $SPhone_err = $SAddress_err = $SCity_err = $SState_err = $SPostcode_err = $RName_err = $RPhone_err = $RAddress_err = $RCity_err = $RState_err = $RPostcode_err = $Weight_err = $Description_err = $Insurance_err = $rateID_err = "";
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        //Sender Details
-        if (empty(trim($_POST["SName"]))) {
-            $SName_err = "Please enter the sender's name.";
-        } else {
-            $SName = trim($_POST["SName"]);
-        }
-        if (empty(trim($_POST["SPhone"]))) {
-            $SPhone_err = "Please enter the sender's phone number.";
-        } else {
-            $SPhone = trim($_POST["SPhone"]);
-        }
-        if (empty(trim($_POST["SAddress"]))) {
-            $SAddress_err = "Please enter the sender's address.";
-        } else {
-            $SAddress = trim($_POST["SAddress"]);
-        }
-        if (empty(trim($_POST["SCity"]))) {
-            $SCity_err = "Please enter the sender's city.";
-        } else {
-            $SCity = trim($_POST["SCity"]);
-        }
-        if (empty(trim($_POST["SState"]))) {
-            $SState_err = "Please enter the sender's state.";
-        } else {
-            $SState = trim($_POST["SState"]);
-        }
-        if (empty(trim($_POST["SPostcode"]))) {
-            $SPostcode_err = "Please enter the sender's postcode.";
-        } else {
-            $SPostcode = trim($_POST["SPostcode"]);
-        }
-        //Recipient Details
-        if (empty(trim($_POST["RName"]))) {
-            $RName_err = "Please enter the recipient's name.";
-        } else {
-            $RName = trim($_POST["RName"]);
-        }
-        if (empty(trim($_POST["RPhone"]))) {
-            $RPhone_err = "Please enter the recipient's phone number.";
-        } else {
-            $RPhone = trim($_POST["RPhone"]);
-        }
-        if (empty(trim($_POST["RAddress"]))) {
-            $RAddress_err = "Please enter the recipient's address.";
-        } else {
-            $RAddress = trim($_POST["RAddress"]);
-        }
-        if (empty(trim($_POST["RCity"]))) {
-            $RCity_err = "Please enter the recipient's city.";
-        } else {
-            $RCity = trim($_POST["RCity"]);
-        }
-        if (empty(trim($_POST["RState"]))) {
-            $RState_err = "Please enter the recipient's state.";
-        } else {
-            $RState = trim($_POST["RState"]);
-        }
-        if (empty(trim($_POST["RPostcode"]))) {
-            $RPostcode_err = "Please enter the recipient's postcode.";
-        } else {
-            $RPostcode = trim($_POST["RPostcode"]);
-        }
-        //Parcel Details
-        if (empty(trim($_POST["weight"]))) {
-            $Weight_err = "Please enter the parcel's weight.";
-        } else {
-            $Weight = floatval($_POST["weight"]);
-        }
-        if (empty(trim($_POST["description"]))) {
-            $Description_err = "Please enter the parcel's description.";
-        } else {
-            $Description = trim($_POST["description"]);
-        }
-        $Insurance = isset($_POST["insurance"]) ? 1.0 : 0.0;
-        if (isset($_POST["shipRateID"]) && !empty(trim($_POST["shipRateID"]))) {
-            $rateID = trim($_POST["shipRateID"]);
-        } else {
-            $rateID_err = "Please select a shipping rate.";
-        }
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            //Sender Details
+            if (empty(trim($_POST["SName"]))) {
+                $SName_err = "Please enter the sender's name.";
+            } else {
+                $SName = trim($_POST["SName"]);
+                if (!preg_match("/^[a-zA-Z\s]+$/", $SName)) {
+                    $SName_err = "Name must contain only letters and spaces.";
+                }
+            }
+            if (empty(trim($_POST["SPhone"]))) {
+                $SPhone_err = "Please enter the sender's phone number.";
+            } else {
+                $SPhone = trim($_POST["SPhone"]);
+                if (!preg_match("/^\d{3}-\d{7}|\d{3}-\d{6}$/", $SPhone)) {
+                    $SPhone_err = "Phone Number must be in format 'XXX-XXXXXXXX' or 'XXX-XXXXXXX'";
+                }
+            }
+            if (empty(trim($_POST["SAddress"]))) {
+                $SAddress_err = "Please enter the sender's address.";
+            } else {
+                $SAddress = trim($_POST["SAddress"]);
+            }
+            if (empty(trim($_POST["SCity"]))) {
+                $SCity_err = "Please enter the sender's city.";
+            } else {
+                $SCity = trim($_POST["SCity"]);
+                if (!preg_match("/^[a-zA-Z\s]+$/", $SCity)) {
+                    $SCity_err = "City must contain only letters and spaces.";
+                }
+            }
+            if (empty(trim($_POST["SState"]))) {
+                $SState_err = "Please enter the sender's state.";
+            } else {
+                $SState = trim($_POST["SState"]);
+                if (!preg_match("/^[a-zA-Z\s]+$/", $SState)) {
+                    $SState_err = "State must contain only letters and spaces.";
+                }
+            }
+            if (empty(trim($_POST["SPostcode"]))) {
+                $SPostcode_err = "Please enter the sender's postcode.";
+            } else {
+                $SPostcode = trim($_POST["SPostcode"]);
+                if (!preg_match("/^\d{5}$/", $SPostcode)) {
+                    $SPostcode_err = "Postcode must contain exactly 5 numbers.";
+                }
+            }
+            //Recipient Details
+            if (empty(trim($_POST["RName"]))) {
+                $RName_err = "Please enter the recipient's name.";
+            } else {
+                $RName = trim($_POST["RName"]);
+                if (!preg_match("/^[a-zA-Z\s]+$/", $RName)) {
+                    $RName_err = "Name must contain only letters and spaces.";
+                }
+            }
+            if (empty(trim($_POST["RPhone"]))) {
+                $RPhone_err = "Please enter the recipient's phone number.";
+            } else {
+                $RPhone = trim($_POST["RPhone"]);
+                if (!preg_match("/^\d{3}-\d{7}|\d{3}-\d{6}$/", $RPhone)) {
+                    $RPhone_err = "Phone Number must be in format 'XXX-XXXXXXXX' or 'XXX-XXXXXXX'";
+                }
+            }
+            if (empty(trim($_POST["RAddress"]))) {
+                $RAddress_err = "Please enter the recipient's address.";
+            } else {
+                $RAddress = trim($_POST["RAddress"]);
+            }
+            if (empty(trim($_POST["RCity"]))) {
+                $RCity_err = "Please enter the recipient's city.";
+            } else {
+                $RCity = trim($_POST["RCity"]);
+                if (!preg_match("/^[a-zA-Z\s]+$/", $RCity)) {
+                    $RCity_err = "City must contain only letters and spaces.";
+                }
+            }
+            if (empty(trim($_POST["RState"]))) {
+                $RState_err = "Please enter the recipient's state.";
+            } else {
+                $RState = trim($_POST["RState"]);
+                if (!preg_match("/^[a-zA-Z\s]+$/", $RState)) {
+                    $RState_err = "State must contain only letters and spaces.";
+                }
+            }
+            if (empty(trim($_POST["RPostcode"]))) {
+                $RPostcode_err = "Please enter the recipient's postcode.";
+            } else {
+                $RPostcode = trim($_POST["RPostcode"]);
+                if (!preg_match("/^\d{5}$/", $RPostcode)) {
+                    $RPostcode_err = "Postcode must contain exactly 5 numbers.";
+                }
+            }
+            //Parcel Details
+            if (empty(trim($_POST["weight"]))) {
+                $Weight_err = "Please enter the parcel's weight.";
+            } else {
+                $Weight = $_POST["weight"];
+                if (!preg_match("/^\d+(\.\d+)?$/", $Weight)) {
+                    $Weight_err = "Weight must be a valid numeric value.";
+                } else {
+                    // Convert to float for consistency if needed
+                    $Weight = floatval($Weight);
+                }
+            }
+            if (empty(trim($_POST["description"]))) {
+                $Description_err = "Please enter the parcel's description.";
+            } else {
+                $Description = trim($_POST["description"]);
+            }
+            $Insurance = isset($_POST["insurance"]) ? 1.0 : 0.0;
+            if (isset($_POST["shipRateID"]) && !empty(trim($_POST["shipRateID"]))) {
+                $rateID = trim($_POST["shipRateID"]);
+            } else {
+                $rateID_err = "Please select a shipping rate.";
+            }
+        
 
         if (empty($SName_err) && empty($SPhone_err) && empty($SAddress_err) && empty($SCity_err) && empty($SState_err) && empty($SPostcode_err) && empty($RName_err) && empty($RPhone_err) && empty($RAddress_err) && empty($RCity_err) && empty($RState_err) && empty($RPostcode_err) && empty($Weight_err) && empty($Description_err) && empty($rateID_err)) {
             $sql1 = "INSERT INTO sender (senderName, senderPhoneNo, addressLine1, city, state, postcode) VALUES (?, ?, ?, ?, ?, ?)";
@@ -156,7 +193,7 @@
                 mysqli_stmt_close($stmt3);
             }
         } else {
-            $message = "Please fill all the details.";
+            $message = "Please fill all the details correctly.";
         }
     }
 
@@ -182,220 +219,6 @@
     <head>
         
         <style>
-
-        :root {
-            --bar-width: 30px;
-            --bar-height: 4px;
-            --hamburger-gap: 4px;
-            --foreground: #333;
-            --background: white;
-            --hamburger-margin: 10px;
-            --animation-timing: 200ms ease-in-out;
-            --hamburger-height: calc(var(--bar-height) * 3 + var(--hamburger-gap) * 2);
-        }
-
-        .header {
-            overflow: hidden;
-            font-family: 'Poppins', sans-serif;
-            padding: 10px;
-            position: fixed;
-            z-index: 1; 
-            width: 100%;
-            background-color: #4B0606;
-            color: white;
-            font-size: 35px;
-            cursor: pointer;
-            padding-left: 40px;
-        }
-
-        .header .opt {
-            float: left;
-            color: white;
-            text-align: center;
-            padding: 12px;
-            text-decoration: none;
-            font-size: 18px;
-            line-height: 25px;
-            border-radius: 4px;
-        }
-
-        .header .logo {
-            padding: 0;
-            
-        }
-
-        .header img {
-            height: 50px;
-            width: auto;
-            margin-left: 40px;
-        }
-
-        .header .opt:hover {
-            background-color: #85856A;
-            color: black;
-        }
-
-        .header .opt.active {
-            background-color: #2b2b23;
-            color: white;
-        }
-
-        .header-right {
-            float: right;
-            padding-right: 1%;
-        }
-
-        @media screen and (max-width: 500px) {
-            .header .opt {
-                float: none;
-                display: block;
-                text-align: left;
-            }
-
-            .header-right {
-                float: none;
-            }
-        }
-
-        .hamburger-menu {
-            --x-width: calc(var(--hamburger-height) * 1.41421356237);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            gap: var(--hamburger-gap);
-            width: max-content;
-            position: absolute;
-            top: var(--hamburger-margin);
-            left: var(--hamburger-margin);
-            z-index: 2;
-            cursor: pointer;
-            margin-top: 15px;
-            margin-bottom: 10px;;
-        }
-
-        .hamburger-menu:has(input:checked) {
-            --foreground: #333;
-            --background: #333;
-        }
-
-        .hamburger-menu:has(input:focus-visible)::before,
-        .hamburger-menu:has(input:focus-visible)::after,
-        .hamburger-menu input:focus-visible {
-            border: 1px solid var(--background);
-            box-shadow: 0 0 0 1px var(--foreground);
-        }
-
-        .hamburger-menu::before,
-        .hamburger-menu::after,
-        .hamburger-menu input {
-            content: "";
-            width: var(--bar-width);
-            height: var(--bar-height);
-            background-color: var(--foreground);
-            border-radius: 9999px;
-            transform-origin: left center;
-            transition: opacity var(--animation-timing), width var(--animation-timing),
-                rotate var(--animation-timing), translate var(--animation-timing),
-                background-color var(--animation-timing);
-        }
-
-        .hamburger-menu input {
-            appearance: none;
-            padding: 0;
-            margin: 0;
-            outline: none;
-            pointer-events: none;
-        }
-
-        .hamburger-menu:has(input:checked)::before {
-            rotate: 45deg;
-            width: var(--x-width);
-            translate: 0 calc(var(--bar-height) / -2);
-        }
-
-        .hamburger-menu:has(input:checked)::after {
-            rotate: -45deg;
-            width: var(--x-width);
-            translate: 0 calc(var(--bar-height) / 2);
-        }
-
-        .hamburger-menu input:checked {
-            opacity: 0;
-            width: 0;
-        }
-
-        .sidebar {
-            transition: translate var(--animation-timing);
-            translate: -100%;
-            padding-top: calc(var(--hamburger-height) + var(--hamburger-margin) + 1rem);
-            background-color: #59593F;
-            color: var(--background);
-            max-width: 10 rem;
-            min-height: 100vh;
-            margin-top: 50px;
-            position: fixed;
-            padding-left: 10px;
-            padding-right: 10px;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .sidebar a {
-            padding: 8px 8px 8px 32px;
-            text-decoration: none;
-            font-size: 25px;
-            color: white;
-            display: block;
-            transition: 0.3s;
-        }
-
-        /* When you mouse over the navigation links, change their color */
-        .sidebar a:hover {
-            color: black;
-        }
-
-        .sidebar .profile {
-            text-align: center;
-            padding: 10px 0;
-        }
-
-        .sidebar .profile img {
-            width: 100px;
-            border-radius: 50%;
-        }
-
-        .sidebar nav ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .sidebar nav ul li {
-            padding: 10px 20px;
-        }
-
-        .sidebar nav ul li a {
-            color: white;
-            text-decoration: none;
-            display: block;
-        }
-
-        .sidebar nav ul li.active a {
-            background-color: #b30000; /* Slightly lighter red */
-        }
-
-        .hamburger-menu:has(input:checked) + .sidebar {
-            translate: 0;
-        }
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
-        :root{
-            --primary-color: rgb(11, 78, 179);
-        }
-        *{
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Poppins", sans-serif;
-        }
-
         body{
             min-height: 100vh;
             background: #ECE0D1;
@@ -497,36 +320,7 @@
             cursor: pointer;
         }
 
-        .menu-btn{
-            width: 100%;
-            background-color: #4B0606;
-            color: white;
-            font-size: 35px;
-            cursor: pointer;
-            padding: 10px;
-            padding-left: 40px;
-        }
-
-
-        img{
-            width: 100px;
-            margin: 15px;
-            border-radius: 50%;
-            margin-left: 70px;
-            border: 3px solid #b4b8b9;
-        }
-
-        header{
-            background: #33363a;
-        }
-
-        .section{
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+      
         .progressbar-wrap{
             width: 100%;
             display: flex;
@@ -544,53 +338,7 @@
             margin-top: 100px;
         }
 
-        .progressbar::before, .progress{
-            content: "";
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            height: 4px;
-            width: 100%; 
-            background-color: #414040;
-            z-index: -1;
-        }
-
-        .progress{
-            background-color: rgb(11, 169, 11);
-            width: 0%;
-        }
-
-        .progress-step{
-            width: 50px;
-            height: 50px;
-            border: 3px solid #414040;
-            background-color: #dcdcdc;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .progress-step::before{
-            counter-increment: step;
-            content: counter(step);
-        }
-
-        .progress-step::after{
-            content: attr(data-title);
-            position: absolute;
-            top: calc(100% + 0.5rem);
-            font-size: 18px;
-            color: #666;
-            font-weight: bold;
-        }
-
-        .progress-step-active{
-            background-color: rgb(11, 169, 11);
-            color: #fff;
-            border: none;
-            back
-        }
+      
 
         *::before,
         *::after {
@@ -602,6 +350,11 @@
             padding-left: 10px;
             font-weight: bold;
             font-size: 18px;
+        }
+
+        *::before,
+        *::after {
+            box-sizing: border-box;
         }
 
         .width-50{
@@ -653,19 +406,13 @@
             padding-right: 50px;
             padding-top: 20px;
             padding-bottom: 20px;
+            margin-bottom: 20px;
 
         }
         .form h1{
             padding-left: 10px;
             padding-bottom: 15px;
             font-size: 25px;
-        }
-        .form-step{
-            display: none;
-        }
-
-        .form-step-active{
-            display: block;
         }
 
         .input-group{
@@ -708,6 +455,56 @@
         .btn:hover{
             box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--primary-color);
         }
+
+        
+        .btn:hover{
+            box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--primary-color);
+        }
+
+
+        #header1{
+            font-weight: 600;
+            margin-left: 13%;
+            font-size: 48px;
+        }
+
+        .button-confirm button {
+            width: 30%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #b45858;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 25px;
+            font-weight: bold;
+        }
+        .button-confirm button:hover {
+            background-color: #45a049;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+
+        #bttns{
+            width: 100px;
+            height: 50px;
+            background-color: #b45858;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        #bttns:hover{
+            background-color: #b39333;
+        }
         </style>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     </head>
@@ -717,90 +514,90 @@
         <div class="section">
             <div class="progressbar-wrap">
                 <div class="progressbar">
-                    <div class="progress" id="progress"></div>
-                    <div class="progress-step progress-step-active" data-title="Sender"></div>
-                    <div class="progress-step" data-title="Receipent"></div>
-                    <div class="progress-step" data-title="Parcel"></div>
-                    <!-- <div class="progress-step" data-title="Submit"></div> -->
+                    <h1 id="header1">ORDER</h1>
                 </div>
             </div>
             
             <form id="orderForm" class="form" method="POST" action="orderForm.php">
                 <!-- <h1 class="text-center">Booking Form</h1> -->
-
                 <div class="form-step form-step-active">
-                    <h1>Sender Details</h1>
+                <h1>Sender Details</h1>
                     <div class="input-group">
                         <label for="SName">Name</label>
-                        <input name="SName" id="SName" type="text" value="<?php echo isset($SName) ? $SName : ''?>">
-                     
+                        <input name="SName" id="SName" type="text" value="<?php echo isset($SName) ? $SName : ''?>" required>
+                        <span id="nameError" class="error"><?php echo $SName_err?></span>
                     </div>
                     <div class="input-group">
                         <label for="phoneno">Phone Number</label>
-                        <input type="text" name="SPhone" id="SPhone" value="<?php echo isset($SPhone) ? $SPhone : ''?>" >
+                        <input type="text" name="SPhone" id="SPhone" value="<?php echo isset($SPhone) ? $SPhone : ''?>" required>
+                        <span id="phoneNumberError" class="error"><?php echo $SPhone_err?></span>
                     </div>
                     <div class="input-group">
                         <label for="SAddress">Address</label>
-                        <input type="text" name="SAddress" id="SAddress" value="<?php echo isset($SAddress) ? $SAddress : ''?>" >
+                        <input type="text" name="SAddress" id="SAddress" value="<?php echo isset($SAddress) ? $SAddress : ''?>" required>
+                        <span id="stateError" class="error"><?php echo $SAddress_err?></span>
                     </div>
                     <div class="input-group2">
                         <label for="SCity">City</label>
-                        <input type="text" name="SCity" id="SCity"  value="<?php echo isset($SCity) ? $SCity : ''?>" >
+                        <input type="text" name="SCity" id="SCity"  value="<?php echo isset($SCity) ? $SCity : ''?>" required>
+                        <span id="cityError" class="error"><?php echo $SCity_err?></span>
                     </div>
                     <div class="input-group3">
                         <label for="state">State</label>
-                        <input name="SState" id="SState" type="text" value="<?php echo isset($SState) ? $SState : ''?>" >
+                        <input name="SState" id="SState" type="text" value="<?php echo isset($SState) ? $SState : ''?>" required>
+                        <span id="stateError" class="error"><?php echo $SState_err?></span>
                     </div>
                     <div class="input-group">
                         <label for="SPostcode">Postcode</label>
-                        <input type="text" name="SPostcode" id="SPostcode"  value="<?php echo isset($SPostcode) ? $SPostcode : ''?>" >
+                        <input type="text" name="SPostcode" id="SPostcode"  value="<?php echo isset($SPostcode) ? $SPostcode : ''?>" required>
+                        <span id="postcodeError" class="error"><?php echo $SPostcode_err?></span>
                     </div>
-       
-                    <div class="">
-                        <a href="#" class="btn btn-next width-50 ml-auto">Next</a>
-                    </div>
+                    <hr>
                 </div>
-
-                <div class="form-step">
+                   
                     <h1>Recipient Details</h1>
                     <div class="input-group">
                         <label for="recipient">Name</label>
-                        <input type="text" name="RName" id="RName" value="<?php echo isset($RName) ? $RName : ''?>" >
+                        <input type="text" name="RName" id="RName" value="<?php echo isset($RName) ? $RName : ''?>" required>
+                        <span id="RNameError" class="error"><?php echo $RName_err?></span>
                     </div>
                     <div class="input-group">
                         <label for="phoneno">Phone Number</label>
-                        <input type="text" name="RPhone" id="RPhone" value="<?php echo isset($RPhone) ? $RPhone : ''?>" >
+                        <input type="text" name="RPhone" id="RPhone" value="<?php echo isset($RPhone) ? $RPhone : ''?>" required>
+                        <span id="RPhoneError" class="error"> <?php echo $RPhone_err ?></span>
                     </div>
                     <div class="input-group">
                         <label for="address">Address</label>
-                        <input type="text" name="RAddress" id="RAddress" value="<?php echo isset($RAddress) ? $RAddress : ''?>" >
+                        <input type="text" name="RAddress" id="RAddress" value="<?php echo isset($RAddress) ? $RAddress : ''?>" required>
+                        <span id="RAddress_error" class="error"><?php echo $RAddress_err?></span>
                     </div>
                     <div class="input-group2">
                         <label for="city">City</label>
-                        <input type="text" name="RCity" id="RCity" value="<?php echo isset($RCity) ? $RCity : ''?>" >
+                        <input type="text" name="RCity" id="RCity" value="<?php echo isset($RCity) ? $RCity : ''?>" required>
+                         <span id="RCityError" class="error"><?php echo $RCity_err?></span>
                     </div>
                     <div class="input-group3">
                         <label for="state">State</label>
-                        <input type="text" name="RState" id="RState" value="<?php echo isset($RState) ? $RState : ''?>" >
+                        <input type="text" name="RState" id="RState" value="<?php echo isset($RState) ? $RState : ''?>" required>
+                        <span id="RStateError" class="error"><?php echo $RState_err?></span>
                     </div>
                     <div class="input-group">
                         <label for="postcode">Postcode</label>
-                        <input type="text" name="RPostcode" id="postcode" value="<?php echo isset($RPostcode) ? $RPostcode : ''?>" >
+                        <input type="text" name="RPostcode" id="postcode" value="<?php echo isset($RPostcode) ? $RPostcode : ''?>" required>
+                        <span id="RPostcodeError" class="error"><?php echo $RPostcode_err?></span>
                     </div>
-                    <div class="btns-group">
-                        <a href="#" class="btn btn-prev">Previous</a>
-                        <a href="#" class="btn btn-next">Next</a>
-                    </div>
-                </div>
-
-                <div class="form-step">
+                    
+                    <hr>
+                    <h1>Parcel Details</h1>
                     <div class="input-group">
                         <label for="weight">Weight (kg)</label>
                         <input type="text" name="weight" id="weight" value="<?php echo isset($Weight) ? $Weight : ''?>" required>
+                        <span id="weightError" class="error"><?php echo $Weight_err?></span>
                     </div>
                     <div class="input-group">
                         <label for="description">Description</label>
                         <input type="textarea" name="description" id="description" value="<?php echo isset($Description) ? $Description : ''?>" required>
+                        <span id="descriptionError" class="error"><?php echo $Description_err?></span>
                     </div>
                     <div class="input-group3">
                         <label for="rate">Shipping Rate</label>
@@ -824,76 +621,11 @@
                     </div>
 
                     <div class="btns-group">
-                        <a href="#" class="btn btn-prev">Previous</a>
-                        <input type="submit" value="Submit" class="btn">
+                        <input type="submit" value="Submit" id="bttns">
                     </div>
                 </div>
-
             </form>
         </div>
-    </div>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            // Side bar toggle
-            $(".menu-btn").click(function(){
-                $(".side-bar").addClass("active");
-                $(".menu-btn").css("visibility", "hidden");
-            });
-
-            $(".close-btn").click(function(){
-                $(".side-bar").removeClass("active");
-                $(".menu-btn").css("visibility", "visible");
-            });
-
-            // Sub menu toggle
-            $(".sub-btn").click(function(){
-                $(this).next(".sub-menu").slideToggle();
-                $(this).find(".dropdown").toggleClass("rotate");
-            });
-        });
-        const prevBtns = document.querySelectorAll(".btn-prev");
-        const nextBtns = document.querySelectorAll(".btn-next");
-        const progress = document.getElementById("progress");
-        const formSteps = document.querySelectorAll(".form-step");
-        const progressSteps = document.querySelectorAll(".progress-step");
-
-        let formStepsNum = 0;
-
-        nextBtns.forEach((btn) => {
-            btn.addEventListener("click", () => {
-                formStepsNum++;
-                updateFormSteps();
-                updateProgressbar();
-            });
-        });
-
-        prevBtns.forEach((btn) => {
-            btn.addEventListener("click", () => {
-                formStepsNum--;
-                updateFormSteps();
-                updateProgressbar();
-            });
-        });
-
-        function updateFormSteps() {
-            formSteps.forEach((formStep) => {
-                formStep.classList.contains("form-step-active") &&
-                formStep.classList.remove("form-step-active");
-            });
-            formSteps[formStepsNum].classList.add("form-step-active");
-        }
-
-        function updateProgressbar() {
-            progressSteps.forEach((progressStep, idx) => {
-                if (idx <= formStepsNum) {
-                    progressStep.classList.add("progress-step-active");
-                } else {
-                    progressStep.classList.remove("progress-step-active");
-                }
-            });
-            const progressActive = document.querySelectorAll(".progress-step-active");
-            progress.style.width = ((progressActive.length - 1) / (progressSteps.length - 1)) * 100 + "%";
-        }
-    </script>
+    </div>    
     </body>
 </html>
