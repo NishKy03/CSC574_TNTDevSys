@@ -13,10 +13,10 @@ $staffID = $_GET['id'];
 
 $sql = "DELETE FROM Staff WHERE staffID = '$staffID'";
 
-if ($conn->query($sql) === TRUE) {
+if ($dbCon->query($sql) === TRUE) {
     echo "<script>alert(Record deleted successfully)</script>";
 } else {
-    echo "<script>Error: " . $sql . "<br>" . $conn->error . "</script>";
+    echo "<script>Error: " . $sql . "<br>" . $dbCon->error . "</script>";
 }
 
 $conn->close();

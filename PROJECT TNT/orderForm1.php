@@ -723,8 +723,6 @@
             
             <form id="orderForm" class="form" method="POST" action="orderForm.php">
                 <!-- <h1 class="text-center">Booking Form</h1> -->
-
-                <div class="form-step form-step-active">
                     <h1>Sender Details</h1>
                     <div class="input-group">
                         <label for="SName">Name</label>
@@ -755,9 +753,6 @@
                     <div class="">
                         <a href="#" class="btn btn-next width-50 ml-auto">Next</a>
                     </div>
-                </div>
-
-                <div class="form-step">
                     <h1>Recipient Details</h1>
                     <div class="input-group">
                         <label for="recipient">Name</label>
@@ -787,9 +782,6 @@
                         <a href="#" class="btn btn-prev">Previous</a>
                         <a href="#" class="btn btn-next">Next</a>
                     </div>
-                </div>
-
-                <div class="form-step">
                     <div class="input-group">
                         <label for="weight">Weight (kg)</label>
                         <input type="text" name="weight" id="weight" value="<?php echo isset($Weight) ? $Weight : ''?>" required>
@@ -820,76 +812,10 @@
                     </div>
 
                     <div class="btns-group">
-                        <a href="#" class="btn btn-prev">Previous</a>
                         <input type="submit" value="Submit" class="btn">
                     </div>
-                </div>
-
             </form>
         </div>
     </div>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            // Side bar toggle
-            $(".menu-btn").click(function(){
-                $(".side-bar").addClass("active");
-                $(".menu-btn").css("visibility", "hidden");
-            });
-
-            $(".close-btn").click(function(){
-                $(".side-bar").removeClass("active");
-                $(".menu-btn").css("visibility", "visible");
-            });
-
-            // Sub menu toggle
-            $(".sub-btn").click(function(){
-                $(this).next(".sub-menu").slideToggle();
-                $(this).find(".dropdown").toggleClass("rotate");
-            });
-        });
-        const prevBtns = document.querySelectorAll(".btn-prev");
-        const nextBtns = document.querySelectorAll(".btn-next");
-        const progress = document.getElementById("progress");
-        const formSteps = document.querySelectorAll(".form-step");
-        const progressSteps = document.querySelectorAll(".progress-step");
-
-        let formStepsNum = 0;
-
-        nextBtns.forEach((btn) => {
-            btn.addEventListener("click", () => {
-                formStepsNum++;
-                updateFormSteps();
-                updateProgressbar();
-            });
-        });
-
-        prevBtns.forEach((btn) => {
-            btn.addEventListener("click", () => {
-                formStepsNum--;
-                updateFormSteps();
-                updateProgressbar();
-            });
-        });
-
-        function updateFormSteps() {
-            formSteps.forEach((formStep) => {
-                formStep.classList.contains("form-step-active") &&
-                formStep.classList.remove("form-step-active");
-            });
-            formSteps[formStepsNum].classList.add("form-step-active");
-        }
-
-        function updateProgressbar() {
-            progressSteps.forEach((progressStep, idx) => {
-                if (idx <= formStepsNum) {
-                    progressStep.classList.add("progress-step-active");
-                } else {
-                    progressStep.classList.remove("progress-step-active");
-                }
-            });
-            const progressActive = document.querySelectorAll(".progress-step-active");
-            progress.style.width = ((progressActive.length - 1) / (progressSteps.length - 1)) * 100 + "%";
-        }
-    </script>
     </body>
 </html>

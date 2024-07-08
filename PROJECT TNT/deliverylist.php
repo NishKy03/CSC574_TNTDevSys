@@ -21,12 +21,6 @@ switch ($filter) {
     case 'out_for_delivery':
         $filterQuery = " AND ORDERS.status = 'Out for Delivery'";
         break;
-    case 'shipped':
-        $filterQuery = " AND ORDERS.status = 'Shipped'";
-        break;
-    case 'in_progress':
-        $filterQuery = " AND ORDERS.status = 'In Progress'";
-        break;
     case 'delivered':
         $filterQuery = " AND ORDERS.status = 'Delivered'";
         break;
@@ -37,15 +31,6 @@ switch ($filter) {
 
 $staffID = $_SESSION['staffID'];
 $staffName = $_SESSION['staffName'];
-
-// Fetch total orders and delivered orders count for progress bar
-$sqlTotalOrders = "SELECT COUNT(*) as total FROM ORDERS";
-$resultTotal = $dbCon->query($sqlTotalOrders);
-$totalOrders = $resultTotal->fetch_assoc()['total'];
-
-$sqlDeliveredOrders = "SELECT COUNT(*) as delivered FROM ORDERS WHERE status = 'Delivered'";
-$resultDelivered = $dbCon->query($sqlDeliveredOrders);
-$deliveredOrders = $resultDelivered->fetch_assoc()['delivered'];
 
 // Handle 'Done' button submission
 if (isset($_POST['done'])) {
@@ -58,8 +43,11 @@ if (isset($_POST['done'])) {
     $stmt->execute();
     $stmt->close();
 
+    // Add JavaScript alert
+    echo "<script>alert('Successfully delivered');</script>";
+
     // Redirect back to the same page to refresh the delivery list
-    header("Location: deliverylist.php");
+    echo "<script>window.location = 'deliverylist.php';</script>";
     exit();
 }
 
@@ -174,23 +162,6 @@ if (isset($_POST['done'])) {
             font-weight: bold;
             margin-right: 10px;
         }
-
-        /* Progress bar styles */
-        .progress {
-            height: 20px;
-            margin-bottom: 20px;
-            overflow: hidden;
-            background-color: #ddd;
-            border-radius: 10px;
-        }
-
-        .progress-bar {
-            background-color: #4B0606;
-            width:
-                <?php echo ($deliveredOrders / $totalOrders) * 100; ?>
-                %;
-            transition: width 0.6s ease;
-        }
     </style>
 </head>
 
@@ -211,11 +182,6 @@ if (isset($_POST['done'])) {
                         <option value="out_for_delivery" <?php if ($filter === 'out_for_delivery')
                             echo 'selected'; ?>>Out
                             for Delivery</option>
-                        <option value="shipped" <?php if ($filter === 'shipped')
-                            echo 'selected'; ?>>Shipped</option>
-                        <option value="in_progress" <?php if ($filter === 'in_progress')
-                            echo 'selected'; ?>>In Progress
-                        </option>
                         <option value="delivered" <?php if ($filter === 'delivered')
                             echo 'selected'; ?>>Delivered
                         </option>
@@ -223,22 +189,12 @@ if (isset($_POST['done'])) {
                 </form>
             </div>
 
-            <!-- Progress Bar -->
-            <div class="progress">
-                <div class="progress-bar" role="progressbar"
-                    style="width: <?php echo ($deliveredOrders / $totalOrders) * 100; ?>%;"
-                    aria-valuenow="<?php echo ($deliveredOrders / $totalOrders) * 100; ?>" aria-valuemin="0"
-                    aria-valuemax="100">
-                    <?php echo $deliveredOrders . " / " . $totalOrders . " Delivered"; ?>
-                </div>
-            </div>
             <table class="table">
                 <thead class="thead-light">
                     <tr>
                         <th>Tracking ID</th>
                         <th>Recipient</th>
                         <th>Address</th>
-                        <th>Proof of Delivery</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -246,30 +202,35 @@ if (isset($_POST['done'])) {
                 <tbody>
                     <?php
                     // Fetch delivery list from database with filter
-                    $sql = "SELECT ORDERS.orderID, RECIPIENT.name, RECIPIENT.addressLine1, RECIPIENT.city, RECIPIENT.state, RECIPIENT.postcode, ORDERS.status FROM ORDERS JOIN RECIPIENT ON ORDERS.recipientID = RECIPIENT.recipientID WHERE 1" . $filterQuery;
-                    $result = $dbCon->query($sql);
+                    $sql = "SELECT DISTINCT ORDERS.orderID, RECIPIENT.name, RECIPIENT.addressLine1, RECIPIENT.city, RECIPIENT.state, RECIPIENT.postcode, ORDERS.status 
+                            FROM ORDERS 
+                            JOIN TRACKING_UPDATE ON ORDERS.orderID = TRACKING_UPDATE.orderID 
+                            JOIN RECIPIENT ON ORDERS.recipientID = RECIPIENT.recipientID 
+                            WHERE TRACKING_UPDATE.staffID = ?" . $filterQuery;
+                    $stmt = $dbCon->prepare($sql);
+                    $stmt->bind_param('i', $staffID);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
 
-                    if ($result->num_rows > 0) {
-                        // Output data of each row
-                        while ($row = $result->fetch_assoc()) {
-                            echo "<tr style='background-color: #7A5961;'>"; // Adjust the background color here
-                            echo "<td>" . htmlspecialchars($row["orderID"]) . "</td>";
-                            echo "<td>" . htmlspecialchars($row["name"]) . "</td>";
-                            echo "<td>" . htmlspecialchars($row["addressLine1"] . ", " . $row["city"] . ", " . $row["state"] . " " . $row["postcode"]) . "</td>";
-                            echo "<td>Image(x)</td>"; // Placeholder for proof of delivery image
-                            echo "<td>" . htmlspecialchars($row["status"]) . "</td>";
-                            echo "<td>";
+                    while ($row = $result->fetch_assoc()) {
+                        echo "<tr>";
+                        echo "<td>" . htmlspecialchars($row['orderID']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['name']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['addressLine1']) . ", " . htmlspecialchars($row['city']) . ", " . htmlspecialchars($row['state']) . ", " . htmlspecialchars($row['postcode']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['status']) . "</td>";
+                        echo "<td>";
+                        if ($row['status'] === 'Out for Delivery' || $row['status'] === 'In Progress') {
                             echo "<form method='post'>";
-                            echo "<input type='hidden' name='orderID' value='" . $row['orderID'] . "'>";
-                            echo "<input type='submit' name='done' value='Done' class='btn btn-sm btn-danger'>";
+                            echo "<input type='hidden' name='orderID' value='" . htmlspecialchars($row['orderID']) . "'>";
+                            echo "<input type='submit' name='done' value='Done' class='btn btn-primary'>";
                             echo "</form>";
-                            echo "</td>";
-                            echo "</tr>";
                         }
-                    } else {
-                        echo "<tr><td colspan='6'>No deliveries found</td></tr>";
+                        echo "</td>";
+                        echo "</tr>";
                     }
-                    $dbCon->close(); // Close the database connection
+
+                    $stmt->close();
+                    $dbCon->close();
                     ?>
                 </tbody>
             </table>

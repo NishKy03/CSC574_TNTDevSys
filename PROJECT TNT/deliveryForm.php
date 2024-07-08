@@ -1,6 +1,6 @@
 <?php
-    include('CHeader.php');
     require_once "dbConnect.php";
+    session_start();
 
     // Initialize variables
     $orderID = $_GET['orderID'] ?? '';
@@ -20,42 +20,27 @@
         $staffOptions = "<option value=''>No couriers available</option>";
     }
 
-    // Handle form submission to update order
+    // Handle form submission to update tracking_update
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $orderID = $_POST['orderID'];
         $staffID = $_POST['staffid'];
 
-        // Update the orders table with the selected staffID
-        $updateSql = "UPDATE orders SET staff_id = ? WHERE orderID = ?";
-        if ($stmt = mysqli_prepare($dbCon, $updateSql)) {
-            mysqli_stmt_bind_param($stmt, "ss", $staffID, $orderID);
+        // Update the tracking_update table
+        $updateSql = "UPDATE tracking_update SET date = NOW(), category = 'Assign Courier', staffID = ?, branchID = ? WHERE orderID = ?";
+        if ($stmtUpdate = mysqli_prepare($dbCon, $updateSql)) {
+            // Assuming branchID is available from session or other sources
+            $branchID = $_SESSION['branchID']; // Adjust as per your session setup
+            mysqli_stmt_bind_param($stmtUpdate, "sss", $staffID, $branchID, $orderID);
 
-            if (mysqli_stmt_execute($stmt)) {
-                // Insert into tracking_update table
-                $insertSql = "INSERT INTO tracking_update (date, category, staffID, branchID, orderID)
-                              VALUES (NOW(), 'Assign Courier', ?, ?, ?)";
-                if ($stmtInsert = mysqli_prepare($dbCon, $insertSql)) {
-                    // Assuming branchID and orderID are available from session or other sources
-                    $branchID = $_SESSION['branchID']; // Adjust as per your session setup
-                    mysqli_stmt_bind_param($stmtInsert, "sss", $staffID, $branchID, $orderID);
-
-                    if (mysqli_stmt_execute($stmtInsert)) {
-                        // Redirect back to order list or wherever appropriate
-                        header("Location: COrderList.php");
-                        exit();
-                    } else {
-                        echo "Error inserting record into tracking_update: " . mysqli_error($dbCon);
-                    }
-
-                    mysqli_stmt_close($stmtInsert);
-                } else {
-                    echo "Error preparing insert statement: " . mysqli_error($dbCon);
-                }
+            if (mysqli_stmt_execute($stmtUpdate)) {
+                // Redirect back to order list or wherever appropriate
+                header("Location: COrderList.php");
+                exit();
             } else {
-                echo "Error updating record in orders table: " . mysqli_error($dbCon);
+                echo "Error updating record in tracking_update: " . mysqli_error($dbCon);
             }
 
-            mysqli_stmt_close($stmt);
+            mysqli_stmt_close($stmtUpdate);
         } else {
             echo "Error preparing update statement: " . mysqli_error($dbCon);
         }
@@ -85,7 +70,7 @@
             justify-content: center;
             align-items: center;
             margin-top: 100px;
-            position:fixed;
+            position: fixed;
         }
         .form-container {
             position: relative;
@@ -97,7 +82,6 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             color: white;
             text-align: center;
-            
         }
         .button-close .btn-close {
             position: absolute;
