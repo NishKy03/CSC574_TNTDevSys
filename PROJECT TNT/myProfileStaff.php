@@ -269,15 +269,15 @@ $securityQuestions = [
                         </div>
                         <div class="form-group">
                             <label for="name">Name</label>
-                            <input type="text" id="name" name="staffName" value="<?php echo htmlspecialchars($staffName); ?>" class="editable" onkeypress="preventNumbers(event)">
+                            <input type="text" id="name" name="staffName" value="<?php echo htmlspecialchars($staffName ?? ''); ?>" class="editable" onkeypress="preventNumbers(event)">
                         </div>
                         <div class="form-group">
                             <label for="phone">Phone Number</label>
-                            <input type="text" id="phone" name="phone" value="<?php echo htmlspecialchars($phone); ?>" class="editable" onkeypress="preventAlphabets(event)" oninput="formatPhoneNumber(this)" maxlength="12">
+                            <input type="text" id="phone" name="phone" value="<?php echo htmlspecialchars($phone ?? ''); ?>" class="editable" onkeypress="preventAlphabets(event)" oninput="formatPhoneNumber(this)" maxlength="12">
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" class="editable">
+                            <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email ?? ''); ?>" class="editable">
                         </div>
                         <div class="form-group">
                             <label for="question">Security Question</label>
@@ -290,7 +290,7 @@ $securityQuestions = [
                         </div>
                         <div class="form-group">
                             <label for="answer">Security Answer</label>
-                            <input type="text" id="answer" name="answer" value="<?php echo htmlspecialchars($answer); ?>" class="editable">
+                            <input type="text" id="answer" name="answer" value="<?php echo htmlspecialchars($answer ?? ''); ?>" class="editable">
                         </div>
                         <button type="submit">UPDATE</button>
                     </div>
