@@ -1,5 +1,6 @@
 <?php
     include('CHeader.php');
+    $branchID = $_SESSION['branchID'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,45 +34,47 @@
     <body>
         <div class="container">
             <div class="chart-container">
-                <h2>Orders Delivered by Staff</h2>
-                <?php
-                    require_once "dbConnect.php";
-
-                    $sql = "SELECT t.staffID, COUNT(t.staffID) as total
-                            FROM TRACKING_UPDATE t JOIN STAFF s
-                            ON t.staffID = s.staffID
-                            WHERE category = 'Delivered'
-                            AND s.position = 'courier'
-                            AND s.branchID = ?
-                            GROUP BY t.staffID;";
-                    
-                    if ($stmt = mysqli_prepare($dbCon, $sql)) {
-                        // Bind variables to the prepared statement as parameters
-                        mysqli_stmt_bind_param($stmt, "d", $param_bID);
-            
-                        // Set parameters
-                        $param_bID = $_SESSION['branchID'];
-            
-                        // Attempt to execute the prepared statement
-                        if (mysqli_stmt_execute($stmt)) {
-                            $result = mysqli_stmt_get_result($stmt);
+                <h2>Total Orders Delivered by <?php echo $branchID;?> Staffs</h2>
+                    <?php
+                        // Include dbConnect file
+                        require_once "dbConnect.php";
+                        // Attempt select query execution
+                        $sql = "SELECT t.staffID, COUNT(t.staffID) as total
+                                FROM TRACKING_UPDATE t, STAFF s
+                                WHERE t.staffID = s.staffID
+                                AND t.category = 'Delivered' 
+                                AND s.branchID = ? 
+                                GROUP BY t.staffID";
+                        if ($stmt = mysqli_prepare($dbCon, $sql)) {
+                            // Bind variables to the prepared statement as parameters
+                            mysqli_stmt_bind_param($stmt, "s", $param_bID);
+                            
+                            // Set parameters
+                            $param_bID = $branchID;
+                            
+                            // Attempt to execute the prepared statement
+                            if (mysqli_stmt_execute($stmt)) {
+                                $result = mysqli_stmt_get_result($stmt);
+    
+                                $labels = [];
+                                $data = [];
+    
+                                if (mysqli_num_rows($result) > 0) {
+                                    while($row = mysqli_fetch_assoc($result)) {
+                                        $labels[] = $row["staffID"];
+                                        $data[] = $row["total"];
+                                    }
+                                }
+                            } else {
+                                echo "Something went wrong. Please try again later.";
+                            }
                         } else {
-                            echo "Something went wrong. Please try again later.";
+                            echo "ERROR: Could not able to execute $sql. " . mysqli_error($dbCon);
                         }
-                    }
 
-                    $labels = [];
-                    $data = [];
-
-                    if (mysqli_num_rows($result) > 0) {
-                        while($row = mysqli_fetch_assoc($result)) {
-                            $labels[] = $row["staffID"];
-                            $data[] = $row["total"];
-                        }
-                    }
-                    mysqli_free_result($result);
-                    mysqli_close($dbCon);
-                ?>
+                        // Close connection
+                        mysqli_close($dbCon);
+                    ?>
                 <canvas id="ordersChart" style="width:100%; max-width:800px; height:400px;"></canvas>
                 <script>
                     const xValues = <?php echo json_encode($labels); ?>;
