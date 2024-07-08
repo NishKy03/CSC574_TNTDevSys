@@ -107,7 +107,7 @@
         if (empty($SName_err) && empty($SPhone_err) && empty($SAddress_err) && empty($SCity_err) && empty($SState_err) && empty($SPostcode_err) && empty($RName_err) && empty($RPhone_err) && empty($RAddress_err) && empty($RCity_err) && empty($RState_err) && empty($RPostcode_err) && empty($Weight_err) && empty($Description_err) && empty($rateID_err)) {
             $sql1 = "INSERT INTO sender (senderName, senderPhoneNo, addressLine1, city, state, postcode) VALUES (?, ?, ?, ?, ?, ?)";
             $sql2 = "INSERT INTO recipient (name, phoneNo, addressLine1, city, state, postcode) VALUES (?, ?, ?, ?, ?, ?)";
-            $sql3 = "INSERT INTO orders (senderID, recipientID, parcelWeight, insurance, shipRateID, status, orderDate) VALUES (?, ?, ?, ?, ?, 'Out for Delivery',CURDATE())";
+            $sql3 = "INSERT INTO orders (senderID, recipientID, parcelWeight, insurance, shipRateID, status, orderDate) VALUES (?, ?, ?, ?, ?, 'Placed',CURDATE())";
 
             if ($stmt1 = mysqli_prepare($dbCon, $sql1)) {
                 mysqli_stmt_bind_param($stmt1, "sssssi", $SName, $SPhone, $SAddress, $SCity, $SState, $SPostcode);
@@ -138,9 +138,9 @@
 
                     $orderID = mysqli_insert_id($dbCon);
 
-                    $sql4 = "INSERT INTO tracking_update (orderID, date, category) VALUES ( ?, CURDATE(), 'Order placed')";
+                    $sql4 = "INSERT INTO tracking_update (branchID, orderID, date, category) VALUES ( ?, ?, CURDATE(), 'Arrival')";
                     if($stmt4 = mysqli_prepare($dbCon, $sql4)){
-                        mysqli_stmt_bind_param($stmt4, "i", $orderID);
+                        mysqli_stmt_bind_param($stmt4, "si",$staffBranch, $orderID);
                         if(mysqli_stmt_execute($stmt4)){
                             $message = "Order placed successfully."; 
                             $success = $message;
