@@ -682,7 +682,7 @@
         <div class="header">
             <a href="#default"><img src="images/tntlogo.png"></a>
             <div class="header-right">
-                <a class="opt" href="#about">Logout</a>
+                <a class="opt" href="../logout.php">Logout</a>
             </div>
         </div>
         <label class="hamburger-menu">
@@ -789,7 +789,7 @@
                     </div>
                     <div class="input-group">
                         <label for="description">Description</label>
-                        <input type="textarea" name="description" id="description" required>
+                        <input type="textarea" name="description" id="description" value="<?php echo isset($Description) ? $Description : ''?>" required>
                     </div>
                     <div class="input-group3">
                         <label for="rate">Shipping Rate</label>

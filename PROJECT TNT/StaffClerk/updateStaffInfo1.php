@@ -1,53 +1,56 @@
 <?php
-include("../dbConnect.php");
-
-
 session_start();
+if (!isset($_SESSION['staffID'])) {
+    echo '<div class="access-denied">Only Accessible by Staff</div>';
+    exit();
+}
+
+require_once '../dbConnect.php'; // Adjust the path as per your project structure
+
+// Check if staff position is 'courier'
+if ($_SESSION['position'] !== 'staff') {
+    echo '<div class="access-denied">Access Denied. Only accessible by courier staff.</div>';
+    exit();
+}
+
+$username = $_SESSION["staffName"]; // Use the correct session variable to display the username
+
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+	$staffID = $_POST['staffID'];
+	$staffName = $_POST['staffName'];
+	$staffPhoneNo = $_POST['staffPhoneNo'];
+	$position = $_POST['position'];
+	$branchID = $_POST['branchID'];
+
+	$sql = "UPDATE staff SET
+    staffName = '$staffName', staffPhone = '$staffPhoneNo', position = '$position', branchID = '$branchID'
+    WHERE staffID = $staffID";
 
 
-// if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-// 	header("location: ../Home/login.php");
-// 	exit;
-// }
+			if($dbCon->query($sql) === TRUE){
+				echo "<div class='alert alert-success'>Record upated successfully</div>";
+			} else{
+				echo "<div class='alert alert-danger'>Error updating reocrd: " . $dbCon->error > "</div>";
+			}
 
-// $username = $_SESSION["staffID"];
-// if($_SERVER["REQUEST_METHOD"] == "POST"){
-// 	$staffID = $_POST['staffID'];
-// 	$staffName = $_POST['staffName'];
-$staffName = "Danish";
-// 	$staffPhoneNo = $_POST['staffPhoneNo'];
-// 	$staffEmail = $_POST['staffEmail'];
-// 	$position = $_POST['position'];
-// 	$branchID = $_POST['branchID'];
+			$dbCon->close();
+} else{
+	if(isset($_GET['id'])){
+		$staffID = $_GET['id'];
+		$sql = "SELECT * FROM staff WHERE staffID = '$staffID'";
+		$result = $dbCon->query($sql);
 
-// 	$sql = "UPDATE staff SET
-// 			staffName = $staffName, staffPhoneNo = $staffPhoneNo, staffEmail = $staffEmail, position=$position, branchID = $branchID
-// 			WHERE staffID = $staffID";
-
-// 			if($conn->query($sql) === TRUE){
-// 				echo "<div class='alert alert-success'>Record upated successfully</div>";
-// 			} else{
-// 				echo "<div class='alert alert-danger'>Error updating reocrd: " . $conn->error > "</div>";
-// 			}
-
-// 			$conn->close();
-// } else{
-// 	if(isset($_GET['id'])){
-// 		$staffID = $_GET['id'];
-// 		$sql = "SELECT * FROM staff WHERE staffID = '$staffID'";
-// 		$result = $conn->query($sql);
-
-// 		if($result->num_rows>0){
-// 			$row = $result->fetch_assoc();
-// 		} else{
-// 			echo "<div class='alert alert-danger'>Staff did not found.</div>";
-// 			exit;
-// 		} 
-// 	} else {
-// 		echo "<div class='alert alert-danger'>Staff ID not provided. </div>";
-// 		exit;
-// 	}
-// }
+		if($result->num_rows>0){
+			$row = $result->fetch_assoc();
+		} else{
+			echo "<div class='alert alert-danger'>Staff did not found.</div>";
+			exit;
+		} 
+	} else {
+		echo "<div class='alert alert-danger'>Staff ID not provided. </div>";
+		exit;
+	}
+}
 ?>
 
 <!DOCTYPE html>
@@ -481,69 +484,11 @@ font-family: Poppins;
 </style>
 </head>
 <body>
-
-	<nav class="navbar bg-body-tertiary sticky-top">
-		<div class="container-fluid">
-			<div class="collapse" id="navbarToggleExternalContent" data-bs-theme="dark">
-				<div class="bg-dark p-4">
-					<h5 class="text-body-emphasis h4">Collapsed content</h5>
-					<span class="text-body-secondary" Toggleable via the brand.></span>
-				</div>
-			</div>
-			<div class="btn-group" role="group" aria-label="Basic outlined example">
-				<button class="navbar-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
-					<span class="navbar-toggler"><img style="height:20px; width:30px; dark" src="menubar.png"></span>
-				</button>
-				<a class="btn btn-tertiary" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
-					<img class="tntlogo" src="../images/tntlogo.png">
-				</a>
-			</div>
-			
-			
-			<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-				<div class="offcanvas-header">
-					<h5 class="offcanvas-title" id="offcanvasNavbarLabel">Welcome <?php echo $staffName?></h5>
-					<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-				</div>
-				<div class="offcanvas-body">
-					<ul class="navbar-nav justify-content-start flex-grow-1 pe-3">
-						<li class="nav-item">
-							<a class="nav-link active" aria-current="page" href="#">Profile</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="#">Orders</a>
-						</li>
-						<li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							Staff
-							</a>
-							<ul class="dropdown-menu">
-								<li><a class="dropdown-item" href="#">Register Staff</a></li>
-								<hr class="dropdown-divider">
-								<li><a class="dropdown-item" href="#">Staff List</a></li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-			</div>
-			<ul class="nav justify-content-end">
-				<li class="nav-item">
-					<a class="nav-link disabled" aria-disabled="true">Welcome <?php echo isset($row['staffName']) ? $row['staffName'] : "" ; ?></a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link active" aria-current="page" href="#">Home</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="#"><img style="height:30px; width:40px; dark" src="https://s3-alpha-sig.figma.com/img/7474/d914/25d81f8e0ad6f9ab3656fb0111aa2227?Expires=1720396800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=WOR-xsWA5ji0F~GkaPHW2Ti5VJ6ki56A1w2a-UD3ZEWVjnOovapEDuotwuhn5c9~QJLbGJWLTOTfTg~gx2isNuWX3WejRw5q4sC4NAQK-FbOd6QZGaznXBwj6Fds0G7BmgzWhS4PYR4mtsfI1DbOmGTVv5WIGZjlfP0UPXFEiPNYXYAja2PvcjvBQIgmHF15G-PwMqDqKvUOCipy8K45ak1w93K36REzQ6t-TGmA5tKQ-of8JQAv1iySwrRBl1fY9F-mc6S8I035NljJ~ZKg8qWU6NlricBJEpTvP3ccBUllD4V1xD5mr~cuNQRkWDeAUOyZ9iegsNmoKfER4g1oCw__"></a>
-				</li>
-			</ul>
-		</div>
-	</nav>
-	<br><br>
+	<?php include('../CnavIn.php') ?>
 	<div class="container">
 		<div class="update-form-container">
 		<h2>Update Staff Information</h2>
-		<form method="POST" action="upateStaffInfo1.php">
+		<form method="POST" action="updateStaffInfo1.php">
 			<input type="hidden" name="staffID" value="<?php echo isset($row['staffID']) ? $row['staffID']: ""; ?>">
 			
 			<div class="mb-3">
@@ -552,11 +497,7 @@ font-family: Poppins;
 			</div>
 			<div class="mb-3">
 				<label for="phoneNo" class="form-label">Phone No: </label>
-				<input type="text" class="form-control" id="staffPhoneNo" name="staffPhoneNo" value="<?php echo isset($row['staffPhoneNo']) ? $row['staffPhoneNo'] : "" ; ?>" required>
-			</div>
-			<div class="mb-3">
-				<label for="email" class="form-label">Email: </label>
-				<input type="text" class="form-control" id="email" name="email" value="<?php echo isset($row['staffEmail']) ? $row['staffEmail'] : "" ; ?>" required>
+				<input type="text" class="form-control" id="staffPhoneNo" name="staffPhoneNo" value="<?php echo isset($row['staffPhone']) ? $row['staffPhone'] : "" ; ?>" required>
 			</div>
 			<div class="mb-3">
 				<label for="position" class="form-label">Position: </label>
@@ -569,20 +510,20 @@ font-family: Poppins;
 				<label for="branchID" class="form-label">Branch ID: </label>
 				<select class="form-control" id="branchID" name="branchID" required>
 					<?php	
-						$conn = new mysqli("localhost","root","","tntdb");
-						if($conn->connect_error){
-							die("Connection Failed: " . $conn->connect_error);
+						$dbCon = new mysqli("localhost","root","","tntdb");
+						if($dbCon->connect_error){
+							die("Connection Failed: " . $dbCon->connect_error);
 						}
 
 						$sql = "SELECT branchID FROM branch";
-						$result = $conn -> query($sql);
+						$result = $dbCon -> query($sql);
 						
 						while($staff = $result->fetch_assoc()){
 							$selected = (isset($row['branchID']) && $row['branchID'] == $staff['branchID']) ? 'selected' : '';
 							echo "<option value = '" .htmlspecialchars($staff['branchID']) . "' $selected>" . htmlspecialchars($staff['branchID']) . "</option>";
 						}
 
-						$conn->close();
+						$dbCon->close();
 					?>
 				</select>
 			</div>

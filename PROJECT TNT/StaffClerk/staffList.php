@@ -1,13 +1,19 @@
 <?php
-include("../dbConfig.php");
-// session_start();
+session_start();
+if (!isset($_SESSION['staffID'])) {
+    echo '<div class="access-denied">Only Accessible by Staff</div>';
+    exit();
+}
 
-// if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION["userlevel"] !== '1') {
-//     header("location: login.php");
-//     exit;
-// }
+require_once '../dbConnect.php'; // Adjust the path as per your project structure
 
-// $username = $_SESSION["username"];
+// Check if staff position is 'courier'
+if ($_SESSION['position'] !== 'staff') {
+    echo '<div class="access-denied">Access Denied. Only accessible by courier staff.</div>';
+    exit();
+}
+
+$username = $_SESSION["staffName"]; // Use the correct session variable to display the username
 
 $page = isset($_GET['page']) ? $_GET['page'] : 1;
 $limit = 10;
@@ -15,7 +21,7 @@ $offset = ($page - 1) * $limit;
 
 // Query to get total number of records
 $countQuery = "SELECT COUNT(*) AS total FROM staff";
-$countResult = $conn->query($countQuery);
+$countResult = $dbCon->query($countQuery);
 $countRow = $countResult->fetch_assoc();
 $totalRecords = $countRow['total'];
 
@@ -24,7 +30,7 @@ $totalPages = ceil($totalRecords / $limit);
 
 // Retrieve staff data for the current page
 $sql = "SELECT * FROM staff LIMIT $limit OFFSET $offset";
-$result = $conn->query($sql);
+$result = $dbCon->query($sql);
 
 ?>
 
@@ -432,7 +438,7 @@ $result = $conn->query($sql);
             echo '<table>';
             echo '<tr><td>ID:</td><td>' . $row["staffID"] . '</td></tr>';
             echo '<tr><td>Name:</td><td>' . $row["staffName"] . '</td></tr>';
-            echo '<tr><td>Phone Number:</td><td>' . $row["staffPhoneNo"] . '</td></tr>';
+            echo '<tr><td>Phone Number:</td><td>' . $row["staffPhone"] . '</td></tr>';
             echo '<tr><td>Email:</td><td>' . $row["staffEmail"] . '</td></tr>';
             echo '<tr><td>Position:</td><td>' . $row["position"] . '</td></tr>';
             echo '</table>';
