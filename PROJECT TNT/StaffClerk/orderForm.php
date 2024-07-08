@@ -1,5 +1,22 @@
 <?php
-    include ("../dbConnect.php");
+    session_start();
+    if (!isset($_SESSION['staffID'])) {
+        echo '<div class="access-denied">Only Accessible by Staff</div>';
+        exit();
+    }
+
+    require_once '../dbConnect.php'; // Adjust the path as per your project structure
+
+    // Check if staff position is 'courier'
+    if ($_SESSION['position'] !== 'staff') {
+        echo '<div class="access-denied">Access Denied. Only accessible by courier staff.</div>';
+        exit();
+    }
+
+    $username = $_SESSION["staffName"]; // Use the correct session variable to display the username
+    
+    $staffIncharge = $_SESSION['staffID'];
+    $staffBranch = $_SESSION['branchID'];
 
     $message = "";
     $SID = $SName = $SPhone = $SAddress = $SCity = $SState = $SPostcode = $RID = $RName = $RPhone = $RAddress = $RCity = $RState = $RPostcode = $Weight = $Description = $Insurance = $rateID = "";
@@ -119,16 +136,17 @@
                     $message = "Parcel details added successfully.";
                     $success = $message;
 
-                    $sql4 = "INSERT INTO tracking_update (date, category) VALUES (CURDATE(), 'Order placed')";
-                    if ($stmt4 = mysqli_prepare($dbCon, $sql4)) {
-                        if (mysqli_stmt_execute($stmt4)) {
-                            $trackingID = mysqli_insert_id($dbCon);
-                            $message = "Tracking details added successfully.";
-                        } else {
+                    $orderID = mysqli_insert_id($dbCon);
+
+                    $sql4 = "INSERT INTO tracking_update (staffID, branchID, orderID, date, category) VALUES (?, ? , ?, CURDATE(), 'Order placed')";
+                    if($stmt4 = mysqli_prepare($dbCon, $sql4)){
+                        mysqli_stmt_bind_param($stmt4, "isi", $staffIncharge, $staffBranch, $orderID);
+                        if(mysqli_stmt_execute($stmt4)){
+                            $message = "Order placed successfully.";
+                        }else{
                             $message = "Error adding tracking details.";
                         }
                         mysqli_stmt_close($stmt4);
-                        
                     }
                 } else {
                     $message = "Error adding parcel details.";
