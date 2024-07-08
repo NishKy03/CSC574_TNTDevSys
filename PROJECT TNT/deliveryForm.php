@@ -27,7 +27,7 @@
         $staffID = $_POST['staffid'];
 
         // Update the tracking_update table
-        $updateSql = "UPDATE tracking_update SET date = NOW(), category = 'Assign Courier', staffID = ?, branchID = ? WHERE orderID = ?";
+        $updateSql = "UPDATE tracking_update SET date = NOW(), category = 'Departure', staffID = ?, branchID = ? WHERE orderID = ?";
         if ($stmtUpdate = mysqli_prepare($dbCon, $updateSql)) {
             // Assuming branchID is available from session or other sources
             
