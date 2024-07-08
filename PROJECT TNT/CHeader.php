@@ -178,7 +178,7 @@ if ($_SESSION['position'] !== 'staff') {
             transition: background-color 0.3s, color 0.3s;
         }
 
-        .menu li a {
+        .menu li a, .dropdown-btn{
             color: white;
             text-decoration: none;
             display: block;
@@ -186,7 +186,7 @@ if ($_SESSION['position'] !== 'staff') {
             border-radius: 10px;
         }
 
-        .menu li a:hover {
+        .menu li a:hover, .dropdown-btn:hover {
             background-color: #E1E7E0; /* Hover background color */
             color: #4B0606; /* Text color on hover */
             transform: translateY(-3px); /* Bounce effect on hover */
@@ -195,6 +195,24 @@ if ($_SESSION['position'] !== 'staff') {
 
         .menu li.active a {
             background-color: #b30000; /* Slightly lighter red */
+        }
+
+        .active {
+            background-color: green;
+            color: white;
+        }
+
+        /* Dropdown container (hidden by default). Optional: add a lighter background color and some left padding to change the design of the dropdown content */
+        .dropdown-container {
+            display: none;
+            background-color: #262626;
+            padding-left: 8px;
+        }
+
+        /* Optional: Style the caret down icon */
+        .fa-caret-down {
+            float: right;
+            padding-right: 8px;
         }
     </style>
 </head>
@@ -236,16 +254,19 @@ if ($_SESSION['position'] !== 'staff') {
         </div>
         <ul class="menu">
             <li><a href="CProfile.php">Profile</a></li>
-            <li><a href="COrderList.php">Orders List</a></li>
-            <li><a href="orderForm.php">Add Order</a></li>
+            <a class="dropdown-btn">Dropdown 
+                <i class="fa fa-caret-down"></i>
+            </a>
+            <div class="dropdown-container">
+                <ul>
+                <li><a href="COrderList.php">Orders List</a></li>
+                <li><a href="orderForm.php">Add Order</a></li>
+                </ul>
+            </div>
             <li><a href="staffList.php">Staff</a></li>
         </ul>
     </div>
     <!-- Main Content -->
-
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
@@ -254,6 +275,24 @@ if ($_SESSION['position'] !== 'staff') {
         document.getElementById('profile-picture-upload').addEventListener('change', function() {
             document.getElementById('submit-profile-picture').click();
         });
+
+        var dropdown = document.getElementsByClassName("dropdown-btn");
+        var i;
+
+        for (i = 0; i < dropdown.length; i++) {
+        dropdown[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var dropdownContent = this.nextElementSibling;
+            if (dropdownContent.style.display === "block") {
+            dropdownContent.style.display = "none";
+            } else {
+            dropdownContent.style.display = "block";
+            }
+        });
+        }
     </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
