@@ -1,5 +1,5 @@
 <?php
-require_once("../dbConnect.php");
+require_once("dbConnect.php");
 
 $message = "";
 $name = $phone = $email = $position = $password = $confirm_password = "";
@@ -206,7 +206,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </head>
     <body class="body-register">
            <?php 
-            include("../universalHeader.php");
+            include("CHeader.php");
            ?>
         <div class="main-content-register">
             <h2 class="text-center text-white">Register Staff</h2>
@@ -229,8 +229,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="form-group">
                     <label for="position" class="text-white">Position:</label>
                     <select class="form-control <?php echo (!empty($position_err)) ? 'is-invalid' : ''; ?>" id="position" name="position" required>
-                        <option value="Manager" <?php echo ($position == "Regular Staff") ? 'selected' : ''; ?>>Regular Staff</option>
-                        <option value="Cashier" <?php echo ($position == "Delivery Staff") ? 'selected' : ''; ?>>Delivery Staff</option>
+                        <option value="staff" <?php echo ($position == "staff") ? 'selected' : ''; ?>>Staff</option>
+                        <option value="courier" <?php echo ($position == "courier") ? 'selected' : ''; ?>>Courier</option>
                     </select>
                     <span class="invalid-feedback"><?php echo $position_err; ?></span>
                 </div>

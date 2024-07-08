@@ -80,7 +80,7 @@
 </head>
 <body>
     <nav class="navbar">
-        <a href="../index.php" class="logo-link">
+        <a href="index.php" class="logo-link">
             <div class="logo-container">
                 <div class="circle">T</div>
                 <div class="circle">N</div>

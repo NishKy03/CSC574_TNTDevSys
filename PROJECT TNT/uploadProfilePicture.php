@@ -46,8 +46,12 @@ if ($staffID) {
                 $stmt->close();
 
                 // Redirect to profile page or display success message
+                if($_SESSION['position'] == 'staff') {
+                    header('Location: CDashboard.php');
+                } else if($_SESSION['position'] == 'courier') {
                 header('Location: deliverylist.php');
                 exit();
+                }
             } else {
                 echo "Sorry, there was an error uploading your file.";
             }

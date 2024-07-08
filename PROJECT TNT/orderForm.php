@@ -1,5 +1,23 @@
 <?php
-    include ("../dbConnect.php");
+    session_start();
+    if (!isset($_SESSION['staffID'])) {
+        echo '<div class="access-denied">Only Accessible by Staff</div>';
+        echo "<script>window.location = 'login.php'<script>";
+        exit();
+    }
+
+    require_once 'dbConnect.php'; // Adjust the path as per your project structure
+
+    // Check if staff position is 'courier'
+    if ($_SESSION['position'] !== 'staff') {
+        echo '<div class="access-denied">Access Denied. Only accessible by courier staff.</div>';
+        exit();
+    }
+
+    $username = $_SESSION["staffName"]; // Use the correct session variable to display the username
+    
+    $staffIncharge = $_SESSION['staffID'];
+    $staffBranch = $_SESSION['branchID'];
 
     $message = "";
     $SID = $SName = $SPhone = $SAddress = $SCity = $SState = $SPostcode = $RID = $RName = $RPhone = $RAddress = $RCity = $RState = $RPostcode = $Weight = $Description = $Insurance = $rateID = "";
@@ -118,6 +136,19 @@
                 if (mysqli_stmt_execute($stmt3)) {
                     $message = "Parcel details added successfully.";
                     $success = $message;
+
+                    $orderID = mysqli_insert_id($dbCon);
+
+                    $sql4 = "INSERT INTO tracking_update (staffID, branchID, orderID, date, category) VALUES (?, ? , ?, CURDATE(), 'Order placed')";
+                    if($stmt4 = mysqli_prepare($dbCon, $sql4)){
+                        mysqli_stmt_bind_param($stmt4, "isi", $staffIncharge, $staffBranch, $orderID);
+                        if(mysqli_stmt_execute($stmt4)){
+                            $message = "Order placed successfully.";
+                        }else{
+                            $message = "Error adding tracking details.";
+                        }
+                        mysqli_stmt_close($stmt4);
+                    }
                 } else {
                     $message = "Error adding parcel details.";
                 }
@@ -679,29 +710,7 @@
 </script>
     </head>
     <body>
-        <div class="header">
-            <a href="#default"><img src="images/tntlogo.png"></a>
-            <div class="header-right">
-                <a class="opt" href="../logout.php">Logout</a>
-            </div>
-        </div>
-        <label class="hamburger-menu">
-            <input type="checkbox" />
-        </label>
-        <aside class="sidebar">
-            <div class="profile">
-                <h3>Hi,</h3>
-                <h3><?php echo $_SESSION['staffID']; ?></h3>
-                <img src="images/picture.png" alt="Profile Picture">
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="CProfile.php">Profile</a></li>
-                    <li><a href="orders.php">Orders</a></li>
-                    <li><a href="StaffClerk/staffList.php">Staff</a></li>
-                </ul>
-            </nav>
-        </aside>
+        <?php include("CHeader.php")?>
         <div class="container">
         <div class="section">
             <div class="progressbar-wrap">

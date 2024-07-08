@@ -14,7 +14,7 @@ if ($staffID) {
     // Fetch staffName and profile picture path from database
     $selectQuery = "SELECT staffName, profilePicture FROM Staff WHERE staffID = ?";
     $stmt = $dbCon->prepare($selectQuery);
-    $stmt->bind_param('i', $staffID);
+    $stmt->bind_param('d', $staffID);
     $stmt->execute();
     $stmt->bind_result($staffNameFromDB, $profilePicture);
     $stmt->fetch();
@@ -31,9 +31,8 @@ if ($staffID) {
     $staffName = 'Guest';
 }
 
-// Check if staff position is 'courier'
 if ($_SESSION['position'] !== 'staff') {
-    echo '<div class="access-denied">Access Denied. Only accessible by courier staff.</div>';
+    echo '<div class="access-denied">Access Denied. Only accessible by regular staff.</div>';
     exit();
 }
 ?>
@@ -43,14 +42,14 @@ if ($_SESSION['position'] !== 'staff') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../header.css">
+    <link rel="stylesheet" href="header.css">
     <script src="sidebar.js" defer></script>
     <style>
         body {
             margin: 0;
             padding: 0;
             font-family: 'Roboto', sans-serif; /* Premium font */
-            background-color: #f8f9fa; /* Bootstrap default background color */
+            background-color: #ECE0D1; /* Bootstrap default background color */
         }
 
         header {
@@ -238,7 +237,7 @@ if ($_SESSION['position'] !== 'staff') {
         <ul class="menu">
             <li><a href="CProfile.php">Profile</a></li>
             <li><a href="COrderList.php">Orders</a></li>
-            <li><a href="StaffClerk/staffList.php">Staff</a></li>
+            <li><a href="staffList.php">Staff</a></li>
         </ul>
     </div>
     <!-- Main Content -->
