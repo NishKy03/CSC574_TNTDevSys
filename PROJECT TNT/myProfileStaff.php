@@ -104,6 +104,9 @@ $securityQuestions = [
     <link rel="stylesheet" href="../header.css">
     <title>Profile - TNT</title>
     <style>
+    html{
+        overflow:hidden;
+    }
     body {
         font-family: 'Poppins', sans-serif;
         margin: 0;

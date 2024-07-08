@@ -136,13 +136,13 @@
             <h2>Contact Us</h2>
             <form action="process_contact_form.php" method="post">
                 <div class="form-group">
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name">
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
                 </div>
                 <div class="form-group">
-                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
                 </div>
                 <div class="form-group">
-                    <textarea class="form-control" id="desc" name="desc" placeholder="Enter your description" rows="5"></textarea>
+                    <textarea class="form-control" id="desc" name="desc" placeholder="Enter your description" rows="5" required></textarea>
                 </div>
                 <div class="button-submit">
                     <button type="submit" class="btn btn-primary btn-lg btn-block">SUBMIT</button>
@@ -154,6 +154,8 @@
     // Check for error message from PHP script
     if (isset($_GET['message']) && $_GET['message'] == 'error') {
         echo '<script>alert("Failed to send message. Please try again later.");</script>';
+    } elseif (isset($_GET['message']) && $_GET['message'] == 'sent') {
+        echo '<script>alert("Message sent successfully!");</script>';
     }
     ?>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

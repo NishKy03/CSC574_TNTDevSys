@@ -2,6 +2,7 @@
 session_start();
 if (!isset($_SESSION['staffID'])) {
     echo '<div class="access-denied">Only Accessible by Staff</div>';
+	echo "<script>window.location = 'login.php'<script>";
     exit();
 }
 
@@ -28,7 +29,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 
 			if($dbCon->query($sql) === TRUE){
-				echo "<div class='alert alert-success'>Record upated successfully</div>";
+				echo "<div class='alert alert-success'>Record upated successfully</div><script>window.location.href=\'updateStaffInfo1.php?id=' . $staffID . '\''</script>";
+	
 			} else{
 				echo "<div class='alert alert-danger'>Error updating reocrd: " . $dbCon->error > "</div>";
 			}
@@ -474,13 +476,29 @@ font-family: Poppins;
 }
 
 .update-form-container{
-	background:#CEA66080;
+	background: rgba(75, 6, 6, 0.5);
 	height: 600px;
 	width:1200px;
 	padding: 2%;
 	margin:6%;
 	border-radius: 6%;
 }
+
+		.button-confirm button {
+            width: 30%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #b45858;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 25px;
+            font-weight: bold;
+        }
+        .button-confirm button:hover {
+            background-color: #45a049;
+        }
 </style>
 </head>
 <body>
@@ -502,8 +520,8 @@ font-family: Poppins;
 			<div class="mb-3">
 				<label for="position" class="form-label">Position: </label>
 				<select class="form-control" id="position" name="position" required>
-					<option value="Regular Staff">Regular Staff</option>
-					<option value="Delivery Staff">Delivery Staff</option>
+					<option value="staff">Staff</option>
+					<option value="courier">Courier</option>
 				</select>
 			</div>
 			<div class="mb-3">
@@ -528,7 +546,9 @@ font-family: Poppins;
 				</select>
 			</div>
 			<br>
-			<button type="submit" class="btn btn-primary">Update Staff</button>
+			<div class="button-confirm">
+                <button type="submit">SUBMIT</button>
+            </div>
 		</form>
 		</div>	
 	</div>

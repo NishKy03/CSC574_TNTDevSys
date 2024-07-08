@@ -2,6 +2,7 @@
 session_start();
 if (!isset($_SESSION['staffID'])) {
     echo '<div class="access-denied">Only Accessible by Staff</div>';
+	echo "<script>window.location = 'login.php'<script>";
     exit();
 }
 
@@ -364,64 +365,7 @@ $result = $dbCon->query($sql);
 </head>
 <body>
 
-<nav class="navbar bg-body-tertiary sticky-top">
-		<div class="container-fluid">
-			<div class="collapse" id="navbarToggleExternalContent" data-bs-theme="dark">
-				<div class="bg-dark p-4">
-					<h5 class="text-body-emphasis h4">Collapsed content</h5>
-					<span class="text-body-secondary" Toggleable via the brand.></span>
-				</div>
-			</div>
-			<div class="btn-group" role="group" aria-label="Basic outlined example">
-				<button class="navbar-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
-					<span class="navbar-toggler"><img style="height:20px; width:30px; dark" src="menubar.png"></span>
-				</button>
-				<a class="btn btn-tertiary" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
-					<img class="tntlogo" src="../images/tntlogo.png">
-				</a>
-			</div>
-			
-			
-			<div class="offcanvas offcanvas-start" style="background: #4B0606;" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-				<div class="offcanvas-header">
-					<h5 class="offcanvas-title" id="offcanvasNavbarLabel">Welcome <?php echo $staffName?></h5>
-					<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-				</div>
-				<div class="offcanvas-body">
-					<ul class="navbar-nav justify-content-start flex-grow-1 pe-3">
-						<li class="nav-item">
-							<a class="nav-link" aria-current="page" href="#">Profile</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="#">Orders</a>
-						</li>
-						<li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle active" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							Staff
-							</a>
-							<ul class="dropdown-menu">
-								<li><a class="dropdown-item" href="RegisterStaff.php">Register Staff</a></li>
-								<hr class="dropdown-divider">
-								<li><a class="dropdown-item active" href="#">Staff List</a></li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-			</div>
-			<ul class="nav justify-content-end">
-				<li class="nav-item">
-					<a class="nav-link disabled" aria-disabled="true">Welcome <?php echo isset($row['staffName']) ? $row['staffName'] : "" ; ?></a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link active" aria-current="page" href="#">Home</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="#"><img style="height:30px; width:40px; dark" src="https://s3-alpha-sig.figma.com/img/7474/d914/25d81f8e0ad6f9ab3656fb0111aa2227?Expires=1720396800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=WOR-xsWA5ji0F~GkaPHW2Ti5VJ6ki56A1w2a-UD3ZEWVjnOovapEDuotwuhn5c9~QJLbGJWLTOTfTg~gx2isNuWX3WejRw5q4sC4NAQK-FbOd6QZGaznXBwj6Fds0G7BmgzWhS4PYR4mtsfI1DbOmGTVv5WIGZjlfP0UPXFEiPNYXYAja2PvcjvBQIgmHF15G-PwMqDqKvUOCipy8K45ak1w93K36REzQ6t-TGmA5tKQ-of8JQAv1iySwrRBl1fY9F-mc6S8I035NljJ~ZKg8qWU6NlricBJEpTvP3ccBUllD4V1xD5mr~cuNQRkWDeAUOyZ9iegsNmoKfER4g1oCw__"></a>
-				</li>
-			</ul>
-		</div>
-	</nav>
-	<br><br>
+ <?php include("../CHeader.php")?>
 
 	<div class="container mt-5">
     <h2>Staff Lists</h2>
