@@ -1,11 +1,14 @@
 <?php
-    //session_start();
-    //$_SESSION['staffID'] = 2000002;
-    include('CnavIn.php');
+    include('CHeader.php');
+    if (!isset($_SESSION['staffID'])) {
+        // Redirect to login page if not logged in
+        header("Location: login.php");
+        exit();
+    }
 ?>
 <?php
 // Include dbConnect file
-require_once "dbConfig.php";
+require_once "dbConnect.php";
 
 // Define variables and initialize with empty values
 $c_pw = $c_name = $c_hpno = $c_email = "";
@@ -57,7 +60,7 @@ if (isset($_POST["id"]) && !empty(trim($_POST["id"]))) {
     if (empty($name_err) && empty($hpno_err) && empty($email_err)) {
         // Prepare an update statement
         $sql = "UPDATE staff SET password = ?, staffName = ?, staffPhone = ?, staffEmail = ? WHERE staffID = ?";
-        if ($stmt = mysqli_prepare($conn, $sql)) {
+        if ($stmt = mysqli_prepare($dbCon, $sql)) {
             // Bind variables to the prepared statement as parameters
             mysqli_stmt_bind_param($stmt, "ssssd", $param_pw, $param_name, $param_hpno, $param_email, $param_id);
 
@@ -83,7 +86,7 @@ if (isset($_POST["id"]) && !empty(trim($_POST["id"]))) {
     }
 
     // Close connection
-    mysqli_close($conn);
+    mysqli_close($dbCon);
 } else {
     if (isset($_SESSION['staffID']) && !empty($_SESSION['staffID'])) {
         // Get URL parameter
@@ -91,9 +94,9 @@ if (isset($_POST["id"]) && !empty(trim($_POST["id"]))) {
 
         // Prepare a select statement
         $sql = "SELECT staffID, password, staffName, staffPhone, staffEmail FROM staff WHERE staffID = ?";
-        if ($stmt = mysqli_prepare($conn, $sql)) {
+        if ($stmt = mysqli_prepare($dbCon, $sql)) {
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "s", $param_id);
+            mysqli_stmt_bind_param($stmt, "d", $param_id);
             
             // Set parameters
             $param_id = $c_id;
@@ -114,7 +117,7 @@ if (isset($_POST["id"]) && !empty(trim($_POST["id"]))) {
                     $c_email = $row["staffEmail"];
                 } else {
                     // URL doesn't contain valid id parameter. Redirect to error page
-                    //header("location: errorA.php");
+                    header("location: CProfile.php");
                     exit();
                 }
             } else {
@@ -131,7 +134,7 @@ if (isset($_POST["id"]) && !empty(trim($_POST["id"]))) {
     }
 
     // Close connection
-    mysqli_close($conn);
+    mysqli_close($dbCon);
 }
 ?>
 <!DOCTYPE html>
@@ -155,33 +158,34 @@ if (isset($_POST["id"]) && !empty(trim($_POST["id"]))) {
             align-items: center;
             height: 100%;
         }
-        .profile-container {
+        .myprofile-container {
             background: #CEA660;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 80%;
             max-width: 600px;
+            margin-top: 100px;
         }
-        .profile-header {
+        .myprofile-header {
             display: flex;
             align-items: center;
             margin-bottom: 0;
-            margin-right: 30%;
-            margin-left: 40%;
+            padding-right: auto;
+            padding-left: 36%;
         }
-        .profile-header h1 {
+        .myprofile-header h1 {
             margin: 0;
         }
-        .profile-form {
+        .myprofile-form {
             display: flex;
             flex-direction: column;
         }
-        .profile-form label {
+        .myprofile-form label {
             margin-top: 10px;
             font-weight: bold;
         }
-        .profile-form input {
+        .myprofile-form input {
             padding: 10px;
             margin-top: 5px;
             border: 1px solid #ccc;
@@ -190,7 +194,7 @@ if (isset($_POST["id"]) && !empty(trim($_POST["id"]))) {
             box-sizing: border-box;
             font-family: "Poppins", sans-serif;
         }
-        .profile-form button {
+        .myprofile-form button {
             margin-top: 20px;
             padding: 10px;
             border: none;
@@ -200,7 +204,7 @@ if (isset($_POST["id"]) && !empty(trim($_POST["id"]))) {
             font-size: 16px;
             cursor: pointer;
         }
-        .profile-form button:hover {
+        .myprofile-form button:hover {
             background: #45a2b9;
         }
         span {
@@ -217,12 +221,12 @@ if (isset($_POST["id"]) && !empty(trim($_POST["id"]))) {
     </script>
 </head>
 <body>
-    <div class="container">
-        <div class="profile-container">
-            <div class="profile-header">
+<div class="container">
+        <div class="myprofile-container">
+            <div class="myprofile-header">
             <h1>PROFILE</h1>
             </div>
-            <div class="profile-form">
+            <div class="myprofile-form">
                 <form action="<?php echo htmlspecialchars(basename($_SERVER['REQUEST_URI'])); ?>" method="post" onSubmit="return drawAlert();">
                 <label for="id">ID</label>
                 <input type="text" id="id" name="id" value="<?php echo $c_id; ?>" readonly>
@@ -243,7 +247,7 @@ if (isset($_POST["id"]) && !empty(trim($_POST["id"]))) {
                 <input type="email" id="email" name="email" value="<?php echo $c_email; ?>">
                 <span><?php echo $email_err."<br>"; ?></span>
                 
-                <input type="submit" value="Update">
+                <br><input type="submit" value="Update">
                 </form>
             </div>
         </div>

@@ -1,7 +1,5 @@
 <?php
-    include('CnavIn.php');
-    //session_start();
-    //$_SESSION['branchID'] = 'KTN01';
+    include('CHeader.php');
 ?>
 <!DOCTYPE html>
 <html>
@@ -72,7 +70,7 @@
                     </tr>
                     <?php
                         // Include dbConnect file
-                        require_once "dbConfig.php";
+                        require_once "dbConnect.php";
                         // Attempt select query execution
                         $sql = "SELECT o.orderID, o.orderDate, r.state, t.category, t.staffID
                                 FROM recipient r, orders o, tracking_update t, staff s
@@ -84,7 +82,7 @@
                                                 GROUP BY orderID)
                                 AND s.position = 'Delivery Staff'
                                 AND t.branchID = ?;";
-                        if ($stmt = mysqli_prepare($conn, $sql)) {
+                        if ($stmt = mysqli_prepare($dbCon, $sql)) {
                             // Bind variables to the prepared statement as parameters
                             mysqli_stmt_bind_param($stmt, "s", $param_bID);
                             
@@ -119,7 +117,7 @@
                             }
 
                             // Close connection
-                            mysqli_close($conn);
+                            mysqli_close($dbCon);
                         }
                     ?>
                 </table>

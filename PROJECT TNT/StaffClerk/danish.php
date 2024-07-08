@@ -117,7 +117,6 @@
                 mysqli_stmt_bind_param($stmt3, "iidii", $senderID, $recipientID, $Weight, $Insurance, $rateID);
                 if (mysqli_stmt_execute($stmt3)) {
                     $message = "Parcel details added successfully.";
-                    $success = $message;
                 } else {
                     $message = "Error adding parcel details.";
                 }
@@ -128,17 +127,7 @@
         }
     }
 
-    if (!empty($message)) {
-        if(!empty($success)){
-            echo "<script>
-            alert('$success');
-            window.location.href = 'paymentForm.html';
-            </script>";
-        }else{
-            echo "<script>alert('$message');</script>";
-        }
-       
-    }
+    echo $message;
 ?>
 
 <!DOCTYPE html>
@@ -675,8 +664,6 @@
             box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--primary-color);
         }
         </style>
-       
-</script>
     </head>
     <body>
         <div class="header">
@@ -714,7 +701,7 @@
                 </div>
             </div>
             
-            <form id="orderForm" class="form" method="POST" action="orderForm.php">
+            <form class="form" method="POST">
                 <!-- <h1 class="text-center">Booking Form</h1> -->
 
                 <div class="form-step form-step-active">
@@ -722,27 +709,26 @@
                     <div class="input-group">
                         <label for="SName">Name</label>
                         <input name="SName" id="SName" type="text" value="<?php echo isset($SName) ? $SName : ''?>">
-                     
                     </div>
                     <div class="input-group">
                         <label for="phoneno">Phone Number</label>
-                        <input type="text" name="SPhone" id="SPhone" value="<?php echo isset($SPhone) ? $SPhone : ''?>" >
+                        <input type="text" name="SPhone" id="SPhone" value="<?php echo isset($SPhone) ? $SPhone : ''?>">
                     </div>
                     <div class="input-group">
                         <label for="SAddress">Address</label>
-                        <input type="text" name="SAddress" id="SAddress" value="<?php echo isset($SAddress) ? $SAddress : ''?>" >
+                        <input type="text" name="SAddress" id="SAddress" value="<?php echo isset($SAddress) ? $SAddress : ''?>">
                     </div>
                     <div class="input-group2">
                         <label for="SCity">City</label>
-                        <input type="text" name="SCity" id="SCity"  value="<?php echo isset($SCity) ? $SCity : ''?>" >
+                        <input type="text" name="SCity" id="SCity"  value="<?php echo isset($SCity) ? $SCity : ''?>">
                     </div>
                     <div class="input-group3">
                         <label for="state">State</label>
-                        <input name="SState" id="SState" type="text" value="<?php echo isset($SState) ? $SState : ''?>" >
+                        <input name="SState" id="SState" type="text" value="<?php echo isset($SState) ? $SState : ''?>">
                     </div>
                     <div class="input-group">
                         <label for="SPostcode">Postcode</label>
-                        <input type="text" name="SPostcode" id="SPostcode"  value="<?php echo isset($SPostcode) ? $SPostcode : ''?>" >
+                        <input type="text" name="SPostcode" id="SPostcode"  value="<?php echo isset($SPostcode) ? $SPostcode : ''?>">
                     </div>
        
                     <div class="">
@@ -754,15 +740,15 @@
                     <h1>Recipient Details</h1>
                     <div class="input-group">
                         <label for="recipient">Name</label>
-                        <input type="text" name="RName" id="RName" value="<?php echo isset($RName) ? $RName : ''?>" >
+                        <input type="text" name="RName" id="RName" value="<?php echo isset($RName) ? $RName : ''?>">
                     </div>
                     <div class="input-group">
                         <label for="phoneno">Phone Number</label>
-                        <input type="text" name="RPhone" id="RPhone" value="<?php echo isset($RPhone) ? $RPhone : ''?>" >
+                        <input type="text" name="RPhone" id="RPhone" value="<?php echo isset($RPhone) ? $RPhone : ''?>">
                     </div>
                     <div class="input-group">
                         <label for="address">Address</label>
-                        <input type="text" name="RAddress" id="RAddress" value="<?php echo isset($RAddress) ? $RAddress : ''?>" >
+                        <input type="text" name="RAddress" id="RAddress" value="<?php echo isset($RAddress) ? $RAddress : ''?>">
                     </div>
                     <div class="input-group2">
                         <label for="city">City</label>
@@ -774,7 +760,7 @@
                     </div>
                     <div class="input-group">
                         <label for="postcode">Postcode</label>
-                        <input type="text" name="RPostcode" id="postcode" value="<?php echo isset($RPostcode) ? $RPostcode : ''?>" >
+                        <input type="text" name="RPostcode" id="postcode" value="<?php echo isset($RPostcode) ? $RPostcode : ''?>">
                     </div>
                     <div class="btns-group">
                         <a href="#" class="btn btn-prev">Previous</a>
@@ -785,15 +771,15 @@
                 <div class="form-step">
                     <div class="input-group">
                         <label for="weight">Weight (kg)</label>
-                        <input type="text" name="weight" id="weight" value="<?php echo isset($Weight) ? $Weight : ''?>" required>
+                        <input type="text" name="weight" id="weight" value="<?php echo isset($Weight) ? $Weight : ''?>">
                     </div>
                     <div class="input-group">
                         <label for="description">Description</label>
-                        <input type="textarea" name="description" id="description" required>
+                        <input type="textarea" name="description" id="description">
                     </div>
                     <div class="input-group3">
                         <label for="rate">Shipping Rate</label>
-                        <select name="shipRateID" id="shipRateID" required>
+                        <select name="shipRateID" id="shipRateID">
                             <option value="" disabled selected>Select shipping rate</option>
                         <?php
 							$sql = "SELECT * FROM shipping_rate";
