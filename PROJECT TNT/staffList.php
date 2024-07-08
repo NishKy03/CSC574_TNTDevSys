@@ -6,30 +6,20 @@ if (!isset($_SESSION['staffID'])) {
     exit();
 }
 
-require_once 'dbConnect.php'; // Adjust the path as per your project structure
+require_once 'dbConnect.php';
 
-// Check if staff position is 'courier'
-if ($_SESSION['position'] !== 'staff') {
-    echo '<div class="access-denied">Access Denied. Only accessible by courier staff.</div>';
-    exit();
-}
-
-$username = $_SESSION["staffName"]; // Use the correct session variable to display the username
-
+$username = $_SESSION["staffName"];
 $page = isset($_GET['page']) ? $_GET['page'] : 1;
 $limit = 8;
 $offset = ($page - 1) * $limit;
 
-// Query to get total number of records
 $countQuery = "SELECT COUNT(*) AS total FROM staff";
 $countResult = $dbCon->query($countQuery);
 $countRow = $countResult->fetch_assoc();
 $totalRecords = $countRow['total'];
 
-// Calculate total pages
 $totalPages = ceil($totalRecords / $limit);
 
-// Retrieve staff data for the current page
 $sql = "SELECT * FROM staff LIMIT $limit OFFSET $offset";
 $result = $dbCon->query($sql);
 ?>
@@ -50,9 +40,9 @@ $result = $dbCon->query($sql);
         }
 
         .container {
-            width: 80%; /* Adjusted width for the container */
-			margin-top:7%;
-			margin-bottom:2%;
+            width: 80%;
+            margin-top: 7%;
+            margin-bottom: 2%;
             padding: 20px;
             background-color: #F5ECD0;
             border-radius: 10px;
@@ -93,7 +83,7 @@ $result = $dbCon->query($sql);
         }
 
         table td {
-            background-color: #fff; /* Change background color for table cells */
+            background-color: #fff;
         }
 
         table th {
@@ -129,6 +119,17 @@ $result = $dbCon->query($sql);
         .pagination li a:hover:not(.active) {
             background-color: #ddd;
         }
+
+        .btn-tertiary {
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .btn-tertiary:hover {
+            transform: scale(1.2);
+        }
     </style>
 </head>
 <body>
@@ -159,8 +160,8 @@ $result = $dbCon->query($sql);
                             <td><?php echo $row["staffEmail"]; ?></td>
                             <td><?php echo $row["position"]; ?></td>
                             <td>
-                                <button class="btn btn-tertiary me-2" onclick="location.href='updateStaffInfo.php?id=<?php echo $row["staffID"]; ?>'"><img src="images/edit.png"></button>
-                                <button class="btn btn-tertiary me-2" onclick="location.href='deleteStaff.php?id=<?php echo $row["staffID"]; ?>'"><img src="images/delete.png"></button>
+                                <button class="btn btn-tertiary me-2" onclick="location.href='updateStaffInfo.php?id=<?php echo $row["staffID"]; ?>'"><img src="images/edit.png" alt="Edit" title="Edit"></button>
+                                <button class="btn btn-tertiary me-2" onclick="confirmDelete(<?php echo $row["staffID"]; ?>)"><img src="images/delete.png" alt="Delete" title="Delete"></button>
                             </td>
                         </tr>
                     <?php endwhile; ?>
@@ -186,5 +187,13 @@ $result = $dbCon->query($sql);
             </ul>
         </nav>
     </div>
+
+    <script>
+        function confirmDelete(staffID) {
+            if (confirm("Are you sure you want to delete this staff member?")) {
+                window.location.href = 'deleteStaff.php?id=' + staffID;
+            }
+        }
+    </script>
 </body>
 </html>

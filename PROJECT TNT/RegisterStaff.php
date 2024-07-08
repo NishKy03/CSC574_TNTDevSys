@@ -23,6 +23,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $name_err = "Please enter a name.";
     } else {
         $name = trim($_POST["name"]);
+        // Check if name contains only alphabets and '@'
+        if (!preg_match("/^[A-Za-z@ ]+$/", $name)) {
+            $name_err = "Name can only contain alphabets and '@'.";
+        }
     }
 
     // Validate phone
@@ -30,6 +34,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $phone_err = "Please enter a phone number.";
     } else {
         $phone = trim($_POST["phoneNumber"]);
+        // Check if phone number format is correct ###-#######
+        if (!preg_match("/^\d{3}-\d{7}$/", $phone)) {
+            $phone_err = "Phone number must be in the format ###-#######.";
+        }
     }
 
     // Validate email
@@ -78,7 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $param_position = $position;
 
             if (mysqli_stmt_execute($stmt)) {
-                echo "<script>alert('Successfully created a new staff');</script>";
+                echo "<script>alert('Data has been created.');</script>";
                 echo "<script>location.href='staffList.php';</script>";
             } else {
                 echo "Something went wrong. Please try again later.";
@@ -86,174 +94,100 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         mysqli_stmt_close($stmt);
     }
-    mysqli_close($conn);
+    mysqli_close($dbCon);
 }
 ?>
-
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="initial-scale=1, width=device-width">
-        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-        <style>
-            .body-register {
-                margin: 0;
-                line-height: normal;
-                font-family: 'Poppins', sans-serif;
-                background-color: #ece0d1;
-            }
+    <style>
+        .body-register {
+            margin: 0;
+            line-height: normal;
+            font-family: 'Poppins', sans-serif;
+            background-color: #ece0d1;
+        }
 
-            .sidebar {
-                background-color: #4b0606;
-                height: 100vh;
-            }
+        .main-content-register {
+            background-color: rgba(75, 6, 6, 0.5);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 8%;
+            width: 1000px;
+            margin-left: 27%;
+        }
 
-            .sidebar .profile-section img {
-                border-radius: 50%;
-            }
+        .form-group label {
+            font-weight: bold;
+            color: white;
+        }
 
-            .sidebar .nav-link {
-                font-size: 1.5rem;
-                color: white;
-            }
+        .form-control {
+            border-radius: 20px;
+            font-size: 1.2rem;
+            padding: 10px;
+        }
 
-            .sidebar .nav-link.active {
-                background-color: #7a5961;
-            }
-
-            .main-content-register {
-                background-color: rgba(75, 6, 6, 0.5);
-                border-radius: 20px;
-                padding: 30px;
-                margin: 8%;
-                width: 1000px;
-                margin-left: 27%;
-                
-            }
-
-            .header {
-                background-color: #4b0606;
-                padding: 10px;
-            }
-
-            .header .company-logo {
-                height: 98px;
-            }
-
-            .header .menu-icon {
-                height: 34px;
-            }
-
-            .form-group label {
-                font-weight: bold;
-            }
-
-            .form-control {
-                border-radius: 20px;
-                font-size: 1.2rem;
-                padding: 10px;
-            }
-
-            .btn-register {
-                background-color: #b45858;
-                border-radius: 10px;
-                font-size: 1.5rem;
-                font-weight: bold;
-                padding: 15px 30px;
-            }
-
-            .nav-item {
-                margin-top: 20px;
-            }
-
-            .tntlogo{
-                width: 100px;
-                height: 50px;
-
-            }
-
-            .container-fluid{
-                
-                background: #4B0606;
-            }
-            .navbar {
-                padding: 0; /* Ensure navbar itself has no padding */
-            }
-
-            .navbar-button{
-                background-color: transparent;
-                border:none;
-                color: white;
-            }
-
-            .update-form-container{
-                background:#CEA66080;
-                height: 600px;
-                width:1200px;
-                padding: 2%;
-                margin:6%;
-                border-radius: 6%;
-            }
-        </style>
-    </head>
-    <body class="body-register">
-           <?php 
-            include("CHeader.php");
-           ?>
-        <div class="main-content-register">
-            <h2 class="text-center text-white">Register Staff</h2>
-            <form action="RegisterStaff.php" method="POST">
-                <div class="form-group">
-                    <label for="name" class="text-white">Name:</label>
-                    <input type="text" class="form-control <?php echo (!empty($name_err)) ? 'is-invalid' : ''; ?>" id="name" name="name" value="<?php echo $name; ?>" required>
-                    <span class="invalid-feedback"><?php echo $name_err; ?></span>
-                </div>
-                <div class="form-group">
-                    <label for="phone-number" class="text-white">Phone Number:</label>
-                    <input type="tel" class="form-control <?php echo (!empty($phone_err)) ? 'is-invalid' : ''; ?>" id="phoneNumber" name="phoneNumber" value="<?php echo $phone; ?>" required>
-                    <span class="invalid-feedback"><?php echo $phone_err; ?></span>
-                </div>
-                <div class="form-group">
-                    <label for="email" class="text-white">Email:</label>
-                    <input type="email" class="form-control <?php echo (!empty($email_err)) ? 'is-invalid' : ''; ?>" id="email" name="email" value="<?php echo $email; ?>" required>
-                    <span class="invalid-feedback"><?php echo $email_err; ?></span>
-                </div>
-                <div class="form-group">
-                    <label for="position" class="text-white">Position:</label>
-                    <select class="form-control <?php echo (!empty($position_err)) ? 'is-invalid' : ''; ?>" id="position" name="position" required>
-                        <option value="staff" <?php echo ($position == "staff") ? 'selected' : ''; ?>>Staff</option>
-                        <option value="courier" <?php echo ($position == "courier") ? 'selected' : ''; ?>>Courier</option>
-                    </select>
-                    <span class="invalid-feedback"><?php echo $position_err; ?></span>
-                </div>
-                <div class="form-group">
-                    <label for="password" class="text-white">Password:</label>
-                    <input type="password" class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>" id="password" name="password" required>
-                    <span class="invalid-feedback"><?php echo $password_err; ?></span>
-                </div>
-                <div class="form-group">
-                    <label for="confirm_password" class="text-white">Confirm Password:</label>
-                    <input type="password" class="form-control <?php echo (!empty($confirm_password_err)) ? 'is-invalid' : ''; ?>" id="confirm_password" name="confirm_password" required>
-                    <span class="invalid-feedback"><?php echo $confirm_password_err; ?></span>
-                </div>
-                <div class="text-center">
-                    <button type="submit" class="btn btn-warning">Register</button>
-                </div>
-            </form>
-        </div>
-
-    </body>
+        .btn-register {
+            background-color: #b45858;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 15px 30px;
+        }
+    </style>
+</head>
+<body class="body-register">
+    <div class="main-content-register">
+        <h2 class="text-center text-white">Register Staff</h2>
+        <form action="RegisterStaff.php" method="POST">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" class="form-control <?php echo (!empty($name_err)) ? 'is-invalid' : ''; ?>" id="name" name="name" value="<?php echo $name; ?>" required>
+                <span class="invalid-feedback"><?php echo $name_err; ?></span>
+            </div>
+            <div class="form-group">
+                <label for="phoneNumber">Phone Number:</label>
+                <input type="tel" class="form-control <?php echo (!empty($phone_err)) ? 'is-invalid' : ''; ?>" id="phoneNumber" name="phoneNumber" value="<?php echo $phone; ?>" required pattern="\d{3}-\d{7}">
+                <span class="invalid-feedback"><?php echo $phone_err; ?></span>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" class="form-control <?php echo (!empty($email_err)) ? 'is-invalid' : ''; ?>" id="email" name="email" value="<?php echo $email; ?>" required>
+                <span class="invalid-feedback"><?php echo $email_err; ?></span>
+            </div>
+            <div class="form-group">
+                <label for="position">Position:</label>
+                <select class="form-control <?php echo (!empty($position_err)) ? 'is-invalid' : ''; ?>" id="position" name="position" required>
+                    <option value="staff" <?php echo ($position == "staff") ? 'selected' : ''; ?>>Staff</option>
+                    <option value="courier" <?php echo ($position == "courier") ? 'selected' : ''; ?>>Courier</option>
+                </select>
+                <span class="invalid-feedback"><?php echo $position_err; ?></span>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>" id="password" name="password" required>
+                <span class="invalid-feedback"><?php echo $password_err; ?></span>
+            </div>
+            <div class="form-group">
+            <label for="confirm_password">Confirm Password:</label>
+                <input type="password" class="form-control <?php echo (!empty($confirm_password_err)) ? 'is-invalid' : ''; ?>" id="confirm_password" name="confirm_password" required>
+                <span class="invalid-feedback"><?php echo $confirm_password_err; ?></span>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-warning">Register</button>
+            </div>
+        </form>
+    </div>
+</body>
 </html>
-
-
-
-
-
