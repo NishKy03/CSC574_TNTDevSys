@@ -44,9 +44,12 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             flex: 1;
             text-align: center;
+            transition: transform 0.3s;
+            cursor: pointer;
         }
-        .chart-container {
-            flex: 2;
+        .chart-container:hover, .revenue-container:hover, .info-container:hover {
+            transform: scale(1.05);
+            text-decoration: none;
         }
         .info-container h2 {
             margin-bottom: 20px;
@@ -70,7 +73,7 @@
 <body>
 <div class="container">
     <div class="row">
-        <div class="info-container">
+        <a href="staffList.php" class="info-container">
             <h2>Total Staff in Branch</h2>
             <?php
             // Query for total staff in branch
@@ -89,8 +92,8 @@
                 echo "ERROR: Could not execute query. " . mysqli_error($dbCon);
             }
             ?>
-        </div>
-        <div class="info-container">
+        </a>
+        <a href="message.php" class="info-container">
             <h2>Total Message Received</h2>
             <?php
             // Query for total orders delivered
@@ -109,7 +112,7 @@
                 echo "ERROR: Could not execute query. " . mysqli_error($dbCon);
             }
             ?>
-        </div>
+        </a>
     </div>
     <div class="row">
         <div class="chart-container">
