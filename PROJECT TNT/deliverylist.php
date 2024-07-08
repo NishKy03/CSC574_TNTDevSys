@@ -83,8 +83,9 @@ if (isset($_POST['done'])) {
 
         .main-content {
             width: 80%;
-            margin-top: 20px;
+            margin-top:7%;
         }
+       
 
         table {
             border-collapse: collapse;
