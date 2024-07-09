@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($stmt = mysqli_prepare($dbCon, $sql2)) {
         // Bind variables to the prepared statement as parameters
         if ($category === "Delivery" && !empty($staffID)) {
-            mysqli_stmt_bind_param($stmt, "issss", $nextUpdateID, $category, $branchID, $staffID, $orderID);
+            mysqli_stmt_bind_param($stmt, "issss", $nextUpdateID, $category, $staffID, $branchID, $orderID);
         } else {
             mysqli_stmt_bind_param($stmt, "isss", $nextUpdateID, $category, $branchID, $orderID);
         }
