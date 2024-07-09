@@ -11,6 +11,7 @@
     // Check if staff position is 'staff'
     if ($_SESSION['position'] !== 'staff') {
         echo '<div class="access-denied">Access Denied. Only accessible by regular staff.</div>';
+        echo "<script>window.location = 'login.php';</script>";
         exit();
     }
 
