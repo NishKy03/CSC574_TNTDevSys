@@ -116,7 +116,7 @@ include 'universalHeader.php';
             
             // SQL to fetch order details based on orderID
             $sql = "
-                SELECT o.orderID, tu.date, o.status, s.senderName 
+                SELECT o.orderID, tu.date, tu.category, s.senderName 
                 FROM tracking_update tu
                 JOIN orders o ON tu.orderID = o.orderID
                 JOIN sender s ON o.senderID = s.senderID
