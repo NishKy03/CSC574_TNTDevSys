@@ -144,7 +144,7 @@ include 'universalHeader.php';
                     echo "<tr>
                             <td>".$row['orderID']."</td>
                             <td>".$row['date']."</td>
-                            <td>".$row['status']."</td>
+                            <td>".$row['category']."</td>
                             <td>".$row['senderName']."</td>
                         </tr>";
                 }
