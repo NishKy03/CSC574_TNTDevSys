@@ -1,6 +1,6 @@
 <?php
 require_once("dbConnect.php");
-
+include("CHeader.php");
 $message = "";
 $name = $phone = $email = $position = $password = $confirm_password = "";
 $name_err = $phone_err = $email_err = $position_err = $password_err = $confirm_password_err = "";
@@ -87,7 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if (mysqli_stmt_execute($stmt)) {
                 echo "<script>alert('Data has been created.');</script>";
-                echo "<script>location.href='staffList.php';</script>";
+                echo "<script>windowlocation.href='staffList.php';</script>";
             } else {
                 echo "<script>alert(Something went wrong. Please try again later.);</script>";
             }
