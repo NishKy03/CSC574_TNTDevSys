@@ -1,6 +1,8 @@
 <?php
-require_once("dbConnect.php");
 include("CHeader.php");
+require_once("dbConnect.php");
+
+
 $message = "";
 $name = $phone = $email = $position = $password = $confirm_password = "";
 $name_err = $phone_err = $email_err = $position_err = $password_err = $confirm_password_err = "";
