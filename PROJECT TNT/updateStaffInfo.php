@@ -9,6 +9,7 @@ if (!isset($_SESSION['staffID'])) {
 require_once 'dbConnect.php'; // Adjust the path as per your project structure
 
 // Check if staff position is 'courier'
+// Check if staff position is 'courier'
 if ($_SESSION['position'] !== 'staff') {
     echo '<div class="access-denied">Access Denied. Only accessible by courier staff.</div>';
     exit();
