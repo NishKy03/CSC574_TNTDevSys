@@ -8,15 +8,15 @@ $name = $phone = $email = $position = $password = $confirm_password = "";
 $name_err = $phone_err = $email_err = $position_err = $password_err = $confirm_password_err = "";
 
 // Fetch the next staffID
-$nextStaffID = 2000001; // Default if there are no staff records
-$sql = "SELECT MAX(staffID) AS maxStaffID FROM STAFF";
-$result = mysqli_query($dbCon, $sql);
-if ($result) {
-    $row = mysqli_fetch_assoc($result);
-    if ($row['maxStaffID']) {
-        $nextStaffID = $row['maxStaffID'] + 1;
-    }
-}
+// $nextStaffID = 2000001; // Default if there are no staff records
+// $sql = "SELECT MAX(staffID) AS maxStaffID FROM STAFF";
+// $result = mysqli_query($dbCon, $sql);
+// if ($result) {
+//     $row = mysqli_fetch_assoc($result);
+//     if ($row['maxStaffID']) {
+//         $nextStaffID = $row['maxStaffID'] + 1;
+//     }
+// }
 
 // Process form data when submitt
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -77,10 +77,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Check input errors before inserting in database
     if (empty($name_err) && empty($phone_err) && empty($email_err) && empty($position_err) && empty($password_err) && empty($confirm_password_err)) {
-        $sql = "INSERT INTO STAFF (staffID, password, staffName, staffPhone, staffEmail, position) VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO STAFF (password, staffName, staffPhone, staffEmail, position) VALUES ( ?, ?, ?, ?, ?)";
         if ($stmt = mysqli_prepare($dbCon, $sql)) {
-            mysqli_stmt_bind_param($stmt, "isssss", $param_staffID, $param_password, $param_name, $param_phone, $param_email, $param_position);
-            $param_staffID = $nextStaffID;
+            mysqli_stmt_bind_param($stmt, "sssss", $param_password, $param_name, $param_phone, $param_email, $param_position);
             $param_password = $password; // Encrypt the password
             $param_name = $name;
             $param_phone = $phone;
@@ -89,14 +88,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if (mysqli_stmt_execute($stmt)) {
                 echo "<script>alert('Data has been created.');</script>";
-                echo "<script>windowlocation.href='staffList.php';</script>";
+                echo "<script>window.location.href='staffList.php';</script>";
             } else {
                 echo "<script>alert(Something went wrong. Please try again later.);</script>";
             }
+        } else {
+            echo "<script>alert('Something went wrong. Please try again later.');</script>";
         }
-        mysqli_stmt_close($stmt);
+      
+    } else{
+        echo "<script>alert('Please fill in all fields.');</script>";
     }
-    mysqli_close($dbCon);
 }
 ?>
 <!DOCTYPE html>
