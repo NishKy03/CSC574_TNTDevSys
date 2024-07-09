@@ -4,8 +4,13 @@ session_start();
 
 // Check if staffID is set in session
 if (!isset($_SESSION['staffID'])) {
-    // Redirect to login page if not logged in
-    header("Location: login.php");
+    echo '<div class="access-denied">Access Denied. Only accessible by courier staff.</div>';
+    // JavaScript to redirect to login page after 2 seconds
+    echo '<script type="text/javascript">
+            setTimeout(function() {
+                window.location.href = "login.php"; // Change "login.php" to the URL of your login page
+            }, 2000);
+          </script>';
     exit();
 }
 
