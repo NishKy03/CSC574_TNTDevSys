@@ -832,6 +832,7 @@
             </form>
         </div>
     </div>
+                        <!--try je-->
     <script type="text/javascript">
         $(document).ready(function(){
             // Side bar toggle
