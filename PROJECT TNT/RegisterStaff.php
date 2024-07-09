@@ -153,12 +153,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <form action="RegisterStaff.php" method="POST">
             <div class="form-group">
                 <label for="name">Name:</label>
-                <input type="text" class="form-control <?php echo (!empty($name_err)) ? 'is-invalid' : ''; ?>" id="name" name="name" value="<?php echo $name; ?>" required>
+                <input type="text" class="form-control <?php echo (!empty($name_err)) ? 'is-invalid' : ''; ?>" id="name" name="name" value="<?php echo $name; ?>" pattern="[A-Za-z@ ]+" title="Name can only contain alphabets and '@'." required>
                 <span class="invalid-feedback"><?php echo $name_err; ?></span>
             </div>
             <div class="form-group">
                 <label for="phoneNumber">Phone Number:</label>
-                <input type="tel" class="form-control <?php echo (!empty($phone_err)) ? 'is-invalid' : ''; ?>" id="phoneNumber" name="phoneNumber" value="<?php echo $phone; ?>" required pattern="\d{3}-\d{7}">
+                <input type="tel" class="form-control <?php echo (!empty($phone_err)) ? 'is-invalid' : ''; ?>" id="phoneNumber" name="phoneNumber" value="<?php echo $phone; ?>" required pattern="\d{3}-\d{7}" title="Phone number must be in the format ###-#######">
                 <span class="invalid-feedback"><?php echo $phone_err; ?></span>
             </div>
             <div class="form-group">
@@ -189,5 +189,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </form>
     </div>
+    <script>
+        document.getElementById('phoneNumber').addEventListener('input', function (e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,7})/);
+            e.target.value = x[1] + (x[2] ? '-' + x[2] : '');
+        });
+    </script>
 </body>
 </html>
