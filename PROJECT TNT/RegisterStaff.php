@@ -16,7 +16,7 @@ if ($result) {
     }
 }
 
-// Process form data when submitted
+// Process form data when submitt
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validate name
     if (empty(trim($_POST["name"]))) {
