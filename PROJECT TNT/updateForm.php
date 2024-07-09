@@ -113,12 +113,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             background-color: #ece0d1;
         }
         .container {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                padding: 20px;
-                margin-top: 10%;
-            }
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 100px;
+            position: fixed;
+        }
         .form-container {
             position: relative;
             border: none;
