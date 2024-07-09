@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body, html {
             height: 100%;
@@ -162,12 +164,14 @@
         </div>
     </div>
     <?php
-    // Check for error message from PHP script
-    if (isset($_GET['message']) && $_GET['message'] == 'error') {
-        echo '<script>alert("Failed to send message. Please try again later.");</script>';
-    } elseif (isset($_GET['message']) && $_GET['message'] == 'sent') {
-        echo '<script>alert("Message sent successfully!");</script>';
-    }
+        // Check for error message from PHP script
+        if (isset($_GET['message'])) {
+            if ($_GET['message'] == 'error') {
+                echo '<script>Swal.fire("Failed!", "Failed to send message. Please try again later.", "error");</script>';
+            } elseif ($_GET['message'] == 'sent') {
+                echo '<script>Swal.fire("Success!", "Message sent successfully!", "success");</script>';
+            }
+        }
     ?>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
