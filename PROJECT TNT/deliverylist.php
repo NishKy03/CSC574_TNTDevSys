@@ -1,7 +1,13 @@
 <?php
 session_start();
 if (!isset($_SESSION['staffID'])) {
-    echo '<div class="access-denied">Only Accessible by Staff</div>';
+    echo '<div class="access-denied">Access Denied. Only accessible by courier staff.</div>';
+    // JavaScript to redirect to login page after 2 seconds
+    echo '<script type="text/javascript">
+            setTimeout(function() {
+                window.location.href = "login.php"; // Change "login.php" to the URL of your login page
+            }, 2000);
+          </script>';
     exit();
 }
 
