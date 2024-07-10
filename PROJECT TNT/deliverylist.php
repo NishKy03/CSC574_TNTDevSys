@@ -24,6 +24,12 @@ $filter = isset($_GET['status']) ? $_GET['status'] : 'all';
 $filterQuery = '';
 
 switch ($filter) {
+    case 'placed':
+        $filterQuery = " AND ORDERS.status = 'Placed'";
+        break;
+        case 'in_transit':
+            $filterQuery = " AND ORDERS.status = 'In Transit'";
+            break;
     case 'out_for_delivery':
         $filterQuery = " AND ORDERS.status = 'Out for Delivery'";
         break;
@@ -186,9 +192,12 @@ if (isset($_POST['done'])) {
                     <select name="status" id="status" onchange="this.form.submit()" class="form-control">
                         <option value="all" <?php if ($filter === 'all')
                             echo 'selected'; ?>>All</option>
+                        <option value="placed" <?php if ($filter === 'placed')
+                            echo 'selected'; ?>>Placed</option>
+                        <option value="in_transit" <?php if ($filter === 'in_transit')
+                            echo 'selected'; ?>>In Transit</option>
                         <option value="out_for_delivery" <?php if ($filter === 'out_for_delivery')
-                            echo 'selected'; ?>>Out
-                            for Delivery</option>
+                            echo 'selected'; ?>>Out for Delivery</option>
                         <option value="delivered" <?php if ($filter === 'delivered')
                             echo 'selected'; ?>>Delivered
                         </option>
@@ -226,7 +235,7 @@ if (isset($_POST['done'])) {
                         echo "<td>" . htmlspecialchars($row['addressLine1']) . ", " . htmlspecialchars($row['city']) . ", " . htmlspecialchars($row['state']) . ", " . htmlspecialchars($row['postcode']) . "</td>";
                         echo "<td>" . htmlspecialchars($row['status']) . "</td>";
                         echo "<td>";
-                        if ($row['status'] === 'Out for Delivery' || $row['status'] === 'In Progress') {
+                        if ($row['status'] === 'Out for Delivery') {
                             echo "<form method='post'>";
                             echo "<input type='hidden' name='orderID' value='" . htmlspecialchars($row['orderID']) . "'>";
                             echo "<input type='submit' name='done' value='Done' class='btn btn-primary'>";
