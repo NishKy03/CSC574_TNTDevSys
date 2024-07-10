@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $sql2 = "INSERT INTO tracking_update (updateID, date, category, branchID, orderID) VALUES (?, CURDATE(), ?, ?, ?)";
         $orderStatusUpdate = "UPDATE orders SET status = 'In Transit' WHERE orderID = ?";
     } else {
-        $sql2 = "INSERT INTO tracking_update (updateID, date, category, branchID, orderID) VALUES (?, CURDATE(), ?, ?, ?, ?)";
+        $sql2 = "INSERT INTO tracking_update (updateID, date, category, branchID, orderID) VALUES (?, CURDATE(), ?, ?, ?)";
         $orderStatusUpdate = null; // No status update for other categories
     }
 
@@ -56,15 +56,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Set session variable to indicate success
             $_SESSION['update_success'] = true;
 
-            // Redirect to the orders list page after successful update
-            header("location: COrderList.php");
+            // Close statement
+            mysqli_stmt_close($stmt);
+
+            // Output a script block to handle the alert and redirection
+            echo '<script>
+                alert("Successfully updated order");
+                
+                    window.location.href = "COrderList.php";
+               
+                </script>';
             exit();
         } else {
             echo "Oops! Something went wrong. Please try again later.";
         }
-
-        // Close statement
-        mysqli_stmt_close($stmt);
     }
 } else {
     // Fetch existing order details for display
@@ -113,12 +118,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             background-color: #ece0d1;
         }
         .container {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                padding: 20px;
-                margin-top: 10%
-            }
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin-top: 10%;
+        }
 
         .form-container {
             position: relative;
@@ -201,7 +206,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <h2>Update Order</h2>
             <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-            <label>Order ID</label>
+                <label>Order ID</label>
                 <input type="text" name="orderID" value="<?php echo $orderID; ?>" class="non-editable" readonly>
                 <label for="category">Category</label>
                 <select id="category" name="category" onchange="showSecondDropdown()">
@@ -230,29 +235,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </select>
                 </div>
                 <div class="button-confirm">
-                    <button type="submit">SUBMIT</button>
+                    <button type="submit">Update</button>
                 </div>
             </form>
         </div>
     </div>
     <script>
-        function showSecondDropdown() {
-            var firstDropdown = document.getElementById('category');
-            var secondDropdownContainer = document.getElementById('staff');
-            
-            if (firstDropdown.value === 'Delivery') {
-                secondDropdownContainer.style.display = 'block';
-            } else {
-                secondDropdownContainer.style.display = 'none';
+        document.addEventListener("DOMContentLoaded", function() {
+            var closeButton = document.querySelector(".btn-close");
+            closeButton.addEventListener("click", function() {
+                window.history.back();
+            });
+
+            // Function to toggle staff dropdown visibility
+            function showSecondDropdown() {
+                var category = document.getElementById("category").value;
+                var staffDropdown = document.getElementById("staff");
+
+                if (category === "Delivery") {
+                    staffDropdown.style.display = "block";
+                } else {
+                    staffDropdown.style.display = "none";
+                }
             }
-        }
-t
-        <?php
-            if (isset($_SESSION['update_success']) && $_SESSION['update_success']) {
-                echo "alert('Successfully updated order');";
-                unset($_SESSION['update_success']); // unset the session variable after displaying alert
-            }
-        ?>
+
+            // Attach event listener to the category dropdown
+            var categoryDropdown = document.getElementById("category");
+            categoryDropdown.addEventListener("change", showSecondDropdown);
+        });
     </script>
 </body>
 </html>
