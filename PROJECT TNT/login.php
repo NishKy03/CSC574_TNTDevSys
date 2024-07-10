@@ -186,7 +186,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <script>
     // Handle close button click
     document.querySelector('.close-btn').addEventListener('click', function() {
-        window.location.href = 'homepage.php';
+        window.location.href = 'index.php';
     });
 
     // Add pulse effect to links on hover
