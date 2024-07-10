@@ -527,22 +527,22 @@
                 <h1>Sender Details</h1>
                     <div class="input-group">
                         <label for="SName">Name</label>
-                        <input name="SName" id="SName" type="text" value="<?php echo isset($SName) ? $SName : ''?>" required>
+                        <input name="SName" id="SName" type="text" value="<?php echo isset($SName) ? $SName : ''?>" required placeholder="Enter Sender's Name">
                         <span id="SNameError" class="error"><?php echo $SName_err?></span>
                     </div>
                     <div class="input-group">
                         <label for="phoneno">Phone Number</label>
-                        <input type="text" name="SPhone" id="SPhone" value="<?php echo isset($SPhone) ? $SPhone : ''?>" required>
+                        <input type="text" name="SPhone" id="SPhone" value="<?php echo isset($SPhone) ? $SPhone : ''?>" required placeholder="Enter Sender's Phone No.">
                         <span id="SPhoneError" class="error"><?php echo $SPhone_err?></span>
                     </div>
                     <div class="input-group">
                         <label for="SAddress">Address</label>
-                        <input type="text" name="SAddress" id="SAddress" value="<?php echo isset($SAddress) ? $SAddress : ''?>" required>
+                        <input type="text" name="SAddress" id="SAddress" value="<?php echo isset($SAddress) ? $SAddress : ''?>" required placeholder="Enter Sender's Address">
                         <span id="SAddressError" class="error"><?php echo $SAddress_err?></span>
                     </div>
                     <div class="input-group2">
                         <label for="SCity">City</label>
-                        <input type="text" name="SCity" id="SCity"  value="<?php echo isset($SCity) ? $SCity : ''?>" required>
+                        <input type="text" name="SCity" id="SCity"  value="<?php echo isset($SCity) ? $SCity : ''?>" required placeholder="Enter Sender's City">
                         <span id="SCityError" class="error"><?php echo $SCity_err?></span>
                     </div>
                     <div class="input-group3">
@@ -562,7 +562,7 @@
                     </div>
                     <div class="input-group">
                         <label for="SPostcode">Postcode</label>
-                        <input type="text" name="SPostcode" id="SPostcode"  value="<?php echo isset($SPostcode) ? $SPostcode : ''?>" required>
+                        <input type="text" name="SPostcode" id="SPostcode"  value="<?php echo isset($SPostcode) ? $SPostcode : ''?>" required placeholder="Enter Sender's Postcode">
                         <span id="SPostcodeError" class="error"><?php echo $SPostcode_err?></span>
                     </div>
                     <hr>
@@ -571,22 +571,22 @@
                     <h1>Recipient Details</h1>
                     <div class="input-group">
                         <label for="recipient">Name</label>
-                        <input type="text" name="RName" id="RName" value="<?php echo isset($RName) ? $RName : ''?>" required>
+                        <input type="text" name="RName" id="RName" value="<?php echo isset($RName) ? $RName : ''?>" required placeholder="Enter Recipient's Name">
                         <span id="RNameError" class="error"><?php echo $RName_err?></span>
                     </div>
                     <div class="input-group">
                         <label for="phoneno">Phone Number</label>
-                        <input type="text" name="RPhone" id="RPhone" value="<?php echo isset($RPhone) ? $RPhone : ''?>" required>
+                        <input type="text" name="RPhone" id="RPhone" value="<?php echo isset($RPhone) ? $RPhone : ''?>" required placeholder="Enter Recipient's Phone No.">
                         <span id="RPhoneError" class="error"><?php echo $RPhone_err?></span>
                     </div>
                     <div class="input-group">
                         <label for="address">Address</label>
-                        <input type="text" name="RAddress" id="RAddress" value="<?php echo isset($RAddress) ? $RAddress : ''?>" required>
+                        <input type="text" name="RAddress" id="RAddress" value="<?php echo isset($RAddress) ? $RAddress : ''?>" required placeholder="Enter Recipient's Address">
                         <span id="RAddressError" class="error"><?php echo $RAddress_err?></span>
                     </div>
                     <div class="input-group2">
                         <label for="city">City</label>
-                        <input type="text" name="RCity" id="RCity" value="<?php echo isset($RCity) ? $RCity : ''?>" required>
+                        <input type="text" name="RCity" id="RCity" value="<?php echo isset($RCity) ? $RCity : ''?>" required placeholder="Enter Recipient's City">
                         <span id="RCityError" class="error"><?php echo $RCity_err?></span>
                     </div>
                     <div class="input-group3">
@@ -606,7 +606,7 @@
                     </div>
                     <div class="input-group">
                         <label for="postcode">Postcode</label>
-                        <input type="text" name="RPostcode" id="RPostcode" value="<?php echo isset($RPostcode) ? $RPostcode : ''?>" required>
+                        <input type="text" name="RPostcode" id="RPostcode" value="<?php echo isset($RPostcode) ? $RPostcode : ''?>" required placeholder="Enter Recipient's Postcode">
                         <span id="RPostcodeError" class="error"><?php echo $SPostcode_err?></span>
                     </div>
                     
@@ -614,12 +614,12 @@
                     <h1>Parcel Details</h1>
                     <div class="input-group">
                         <label for="weight">Weight (kg)</label>
-                        <input type="text" name="weight" id="weight" value="<?php echo isset($Weight) ? $Weight : ''?>" required>
+                        <input type="text" name="weight" id="weight" value="<?php echo isset($Weight) ? $Weight : ''?>" required placeholder="Enter Item's Weight">
                         <span id="weightError" class="error"><?php echo $Weight_err?></span>
                     </div>
                     <div class="input-group">
                         <label for="description">Description</label>
-                        <input type="textarea" name="description" id="description" value="<?php echo isset($Description) ? $Description : ''?>" required>
+                        <input type="textarea" name="description" id="description" value="<?php echo isset($Description) ? $Description : ''?>" required placeholder="Enter Item's Details">
                         <span id="descriptionError" class="error"><?php echo $Description_err?></span>
                     </div>
                     <div class="input-group3">
