@@ -200,7 +200,7 @@
             text-decoration: underline;
         }
 
-        .form-container .non-editable {
+        .form-container input.non-editable {
             background-color: transparent;
             color: #fff;
         }
