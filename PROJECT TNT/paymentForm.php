@@ -39,10 +39,10 @@
     $row = $result->fetch_assoc();
     $baseFee = $row['baseFee'];
     $addFee = $row['addFee'];
-    $shippingFee = ($Weight * $addFee);
+    $shippingFee = (($Weight + $insuranceChg) * $addFee);
     $insuranceChg = ($insurance * $Weight);
 
-    $totalAmount = $baseFee + $shippingFee + $insuranceChg;
+    $totalAmount = $baseFee + $shippingFee;
 
     $sql2 = "UPDATE orders SET totalAmount = ?, shippingFee = ?, insuranceChg = ? WHERE orderID = ?";
     $stmt2 = $dbCon->prepare($sql2);
@@ -68,7 +68,7 @@
         exit();
     }
     else{
-        echo "<script>alert('Payment Unsuccessful!')</script>";
+        echo "window.location = 'paymentForm.php';</script>";
     
     }
 ?>
@@ -203,6 +203,23 @@
             background-color: transparent;
             color: #fff;
         }
+
+        #btns{
+            width: 100px;
+            height: 50px;
+            background-color: #b45858;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        #btns:hover{
+            background-color: #b39333;
+        }
     </style>
 </head>
 <body>
@@ -219,7 +236,7 @@
             <label for="totalAmount">Shipping Fee</label>
             <input type="text" id="totalAmount" name="totalAmount" value="<?php echo isset($shippingFee) ? 'RM '.$shippingFee : ''?>" class="non-editable" readonly>
             <label for="totalAmount">Total Amount</label>
-            <input type="text" id="totalAmount" name="totalAmount" value="<?php echo isset($totalAmount) ? 'RM '.$totalAmount : ''?>" class="non-editable" readonly>
+            <input type="text" id="totalAmount" name="totalAmount" value="<?php echo isset($totalAmount) ? 'RM '.$totalAmount . ' ( +RM '. $baseFee . ' Base Fee)' : ''?>" class="non-editable" readonly>
             <label for="methodPay">Payment Method</label>
             <select id="methodPay" name="methodPay">
                 <option value="onlineBanking">Online Banking</option>
@@ -227,7 +244,7 @@
                 <option value="maybank2u">Maybank2u</option>
             </select>
             <div class="button-confirm">
-                <button type="submit" name="submit">SUBMIT</button>
+                <button type="submit" name="submit" id="btns">SUBMIT</button>
             </div>
         </form>
     </div>

@@ -20,8 +20,8 @@
     $staffBranch = $_SESSION['branchID'];
 
     $message = "";
-    $SID = $SName = $SPhone = $SAddress = $SCity = $SState = $SPostcode = $RID = $RName = $RPhone = $RAddress = $RCity = $RState = $RPostcode = $Weight = $Description = $Insurance = $rateID = "";
-    $SName_err = $SPhone_err = $SAddress_err = $SCity_err = $SState_err = $SPostcode_err = $RName_err = $RPhone_err = $RAddress_err = $RCity_err = $RState_err = $RPostcode_err = $Weight_err = $Description_err = $Insurance_err = $rateID_err = "";
+    $SID = $SName = $SPhone = $SAddress = $SCity = $SState = $SPostcode = $RID = $RName = $RPhone = $RAddress = $RCity = $RState = $RPostcode = $Weight = $Description = $Insurance = $rateID = $shipRateID = "";
+    $SName_err = $SPhone_err = $SAddress_err = $SCity_err = $SState_err = $SPostcode_err = $RName_err = $RPhone_err = $RAddress_err = $RCity_err = $RState_err = $RPostcode_err = $Weight_err = $Description_err = $Insurance_err = $rateID_err = $shipRateID_err =  "";
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             //Sender Details
@@ -54,8 +54,9 @@
                     $SCity_err = "City must contain only letters and spaces.";
                 }
             }
-            if (empty(trim($_POST["SState"]))) {
-                $SState_err = "Please enter the sender's state.";
+            if (!isset($_POST["SState"]) || trim($_POST["SState"]) === '') {
+                $SState_err = "<br>Please select the sender's <br>state. It cannot be left empty.";
+                echo "<script>alert(".$SState_err.");</script>";
             } else {
                 $SState = trim($_POST["SState"]);
                 if (!preg_match("/^[a-zA-Z\s]+$/", $SState)) {
@@ -100,8 +101,9 @@
                     $RCity_err = "City must contain only letters and spaces.";
                 }
             }
-            if (empty(trim($_POST["RState"]))) {
-                $RState_err = "Please enter the recipient's state.";
+            if (!isset($_POST["RState"]) || trim($_POST["RState"]) === '') {
+                $RState_err = "<br>Please select the  recipient's <br>state. It cannot be left empty.";
+                echo "<script>alert(".$RState_err.");</script>";
             } else {
                 $RState = trim($_POST["RState"]);
                 if (!preg_match("/^[a-zA-Z\s]+$/", $RState)) {
@@ -133,13 +135,14 @@
             } else {
                 $Description = trim($_POST["description"]);
             }
+
             $Insurance = isset($_POST["insurance"]) ? 1.0 : 0.0;
             if (isset($_POST["shipRateID"]) && !empty(trim($_POST["shipRateID"]))) {
                 $rateID = trim($_POST["shipRateID"]);
             } else {
                 $rateID_err = "Please select a shipping rate.";
             }
-        
+            
 
         if (empty($SName_err) && empty($SPhone_err) && empty($SAddress_err) && empty($SCity_err) && empty($SState_err) && empty($SPostcode_err) && empty($RName_err) && empty($RPhone_err) && empty($RAddress_err) && empty($RCity_err) && empty($RState_err) && empty($RPostcode_err) && empty($Weight_err) && empty($Description_err) && empty($rateID_err)) {
             $sql1 = "INSERT INTO sender (senderName, senderPhoneNo, addressLine1, city, state, postcode) VALUES (?, ?, ?, ?, ?, ?)";
@@ -543,8 +546,18 @@
                         <span id="SCityError" class="error"><?php echo $SCity_err?></span>
                     </div>
                     <div class="input-group3">
-                        <label for="state">State</label>
-                        <input name="SState" id="SState" type="text" value="<?php echo isset($SState) ? $SState : ''?>" required>
+                        <label for="state">State</label><br>
+                        <select name="SState" id="SState">
+                            <option value="" disabled selected>Select state</option>
+                            <?php
+                                $stateSQL = "SELECT * FROM branch";
+                                $stateResult = mysqli_query($dbCon, $stateSQL);
+                                while($row = mysqli_fetch_array($stateResult)){
+                                    $state = $row['state'];
+                                    echo "<option value='$state'>$state</option>";
+                                }
+                            ?>
+                        </select>
                         <span id="SStateError" class="error"><?php echo $SState_err?></span>
                     </div>
                     <div class="input-group">
@@ -577,8 +590,18 @@
                         <span id="RCityError" class="error"><?php echo $RCity_err?></span>
                     </div>
                     <div class="input-group3">
-                        <label for="state">State</label>
-                        <input type="text" name="RState" id="RState" value="<?php echo isset($RState) ? $RState : ''?>" required>
+                        <label for="state">State</label><br>
+                        <select name="RState" id="RState">
+                            <option value="" disbaled selected>Select State</option>
+                            <?php
+                                $stateSQL = "SELECT * FROM branch";
+                                $stateResult = mysqli_query($dbCon, $stateSQL);
+                                while($row = mysqli_fetch_array($stateResult)){
+                                    $state = $row['state'];
+                                    echo "<option value='$state'>$state</option>";
+                                }
+                            ?>
+                        </select>
                         <span id="RStateError" class="error"><?php echo $RState_err?></span>
                     </div>
                     <div class="input-group">
