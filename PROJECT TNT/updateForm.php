@@ -3,7 +3,7 @@ include('CHeader.php');
 require_once "dbConnect.php";
 
 // Initialize variables
-$orderID = $category = $branchID = $staffID ="";
+$orderID = $category = $branchID = $staffID = "";
 
 // Processing form data when form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -12,7 +12,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $category = $_POST["category"];
     $branchID = $_POST["branchID"];
     $staffID = isset($_POST["staffID"]) ? $_POST["staffID"] : null;
-   
 
     $nextUpdateID = 7000001;
     $sql1 = "SELECT MAX(updateID) AS maxUpdateID FROM tracking_update";
@@ -202,8 +201,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <h2>Update Order</h2>
             <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-                <label id="orderID">Order ID</label>
-                    <input type="text" id="orderID" value="<?php echo $orderID; ?>" class="non-editable" readonly>
+            <label>Order ID</label>
+                <input type="text" name="orderID" value="<?php echo $orderID; ?>" class="non-editable" readonly>
                 <label for="category">Category</label>
                 <select id="category" name="category" onchange="showSecondDropdown()">
                     <option value="Arrival">Arrival</option>

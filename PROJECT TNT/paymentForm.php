@@ -203,6 +203,7 @@
         .form-container input.non-editable {
             background-color: transparent;
             color: #fff;
+            border:none;
         }
 
         #btns{
