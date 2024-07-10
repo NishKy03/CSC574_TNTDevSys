@@ -189,6 +189,11 @@
         .form-container a:hover {
             text-decoration: underline;
         }
+
+        .form-container .non-editable {
+            background-color: transparent;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -201,7 +206,7 @@
             </div>
             <h2>PAYMENT</h2>
             <label for="totalAmount">Total Amount</label>
-            <input type="text" id="totalAmount" name="totalAmount" value="<?php echo isset($totalAmount) ? $totalAmount : ''?>">
+            <input type="text" id="totalAmount" name="totalAmount" value="<?php echo isset($totalAmount) ? $totalAmount : ''?>" class="non-editable" readonly>
             <label for="methodPay">Payment Method</label>
             <select id="methodPay" name="methodPay">
                 <option value="onlineBanking">Online Banking</option>
