@@ -39,10 +39,11 @@
     $row = $result->fetch_assoc();
     $baseFee = $row['baseFee'];
     $addFee = $row['addFee'];
-    $shippingFee = (($Weight + $insuranceChg) * $addFee);
     $insuranceChg = ($insurance * $Weight);
+    $shippingFee = ($Weight * $addFee);
+   
 
-    $totalAmount = $baseFee + $shippingFee;
+    $totalAmount = $baseFee + $shippingFee + $insuranceChg;
 
     $sql2 = "UPDATE orders SET totalAmount = ?, shippingFee = ?, insuranceChg = ? WHERE orderID = ?";
     $stmt2 = $dbCon->prepare($sql2);
