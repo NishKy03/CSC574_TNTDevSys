@@ -175,41 +175,44 @@
                     <tbody>
                     <?php
                         // Attempt select query execution
-                        $sql = "SELECT o.orderID, DATE_FORMAT(o.orderDate, \"%d-%m-%Y\") AS orderDate, s.senderName, s.state AS senderState, r.name, r.state, DATE_FORMAT(t.date, \"%d-%m-%Y\") AS date, t.category, t.branchID, t.staffID, f.staffName
-                                FROM recipient r, orders o, sender s, tracking_update t, staff f
-                                WHERE r.recipientID = o.recipientID
-                                AND s.senderID = o.senderID
-                                AND o.orderID = t.orderID
-                                AND t.staffID = f.staffID
-                                AND t.updateID IN (SELECT MAX(updateID) FROM tracking_update GROUP BY orderID) ". $filterQuery;
+                        $sql = "SELECT o.orderID, DATE_FORMAT(o.orderDate, \"%d-%m-%Y\") AS orderDate,
+                                s.senderName, s.state AS senderState, r.name, r.state, DATE_FORMAT(t.date, \"%d-%m-%Y\") AS date,
+                                t.category, t.branchID, t.staffID, f.staffName
+                                FROM recipient r
+                                JOIN orders o ON r.recipientID = o.recipientID
+                                JOIN sender s ON s.senderID = o.senderID
+                                JOIN tracking_update t ON o.orderID = t.orderID
+                                LEFT JOIN staff f ON t.staffID = f.staffID
+                                WHERE t.updateID IN (SELECT MAX(updateID)
+                                FROM tracking_update GROUP BY orderID) ". $filterQuery;
 
-                        $rsOrders = mysqli_query($dbCon, $sql);
+                        if(($rsOrders = mysqli_query($dbCon, $sql))) {
 
-                        while ($row = mysqli_fetch_assoc($rsOrders)) {
-                            echo "<tr>";
-                            $orderID = $row['orderID'];
-                            echo "<td>" . $orderID . "</td>";
-                            echo "<td style = \"white-space: nowrap;\">" . $row['orderDate'] . "</td>";
-                            echo "<td>". $row["senderName"] ."</td>";
-                            echo "<td>" . $row['senderState'] . "</td>";
-                            echo "<td>" . $row['name'] . "</td>";
-                            echo "<td>" . $row['state'] . "</td>";
-                            echo "<td style = \"white-space: nowrap;\">" . $row['date'] . "</td>";
-                            echo "<td>" . $row['category'] . "</td>";
-                            echo "<td>" . $row['branchID'] . "</td>";
-                            if ($row['staffID']) {
-                                echo "<td>" . $row['staffID'] . " - " . $row['staffName'] . "</td>\n";
-                            } else {
-                                echo "<td>Unassigned</td>\n";
+                            while ($row = mysqli_fetch_assoc($rsOrders)) {
+                                echo "<tr>";
+                                $orderID = $row['orderID'];
+                                echo "<td>" . $orderID . "</td>";
+                                echo "<td style = \"white-space: nowrap;\">" . $row['orderDate'] . "</td>";
+                                echo "<td>". $row["senderName"] ."</td>";
+                                echo "<td>" . $row['senderState'] . "</td>";
+                                echo "<td>" . $row['name'] . "</td>";
+                                echo "<td>" . $row['state'] . "</td>";
+                                echo "<td style = \"white-space: nowrap;\">" . $row['date'] . "</td>";
+                                echo "<td>" . $row['category'] . "</td>";
+                                echo "<td>" . $row['branchID'] . "</td>";
+                                if ($row['staffID']) {
+                                    echo "<td>" . $row['staffID'] . " - " . $row['staffName'] . "</td>\n";
+                                } else {
+                                    echo "<td>Unassigned</td>\n";
+                                }
+                                echo "<td class='action-buttons'>";
+                                echo "<a href='printOrderStatement.php?orderID=" . $orderID . "' target='_blank' onclick='window.open(this.href, \"popup\", \"width=600,height=400\"); return false;'>Print Statement</a>";
+                                echo "<a href='printOrderWaybill.php?orderID=" . $orderID . "' target='_blank' onclick='window.open(this.href, \"popup\", \"width=600,height=400\"); return false;'>Print Waybill</a>";
+                                echo "<a href='updateForm.php?orderID=" . $orderID . "' title='Update'>Update</a>";
+                                echo "</td>";
+                                echo "</tr>";
                             }
-                            echo "<td class='action-buttons'>";
-                            echo "<a href='printOrderStatement.php?orderID=" . $orderID . "' target='_blank' onclick='window.open(this.href, \"popup\", \"width=600,height=400\"); return false;'>Print Statement</a>";
-                            echo "<a href='printOrderWaybill.php?orderID=" . $orderID . "' target='_blank' onclick='window.open(this.href, \"popup\", \"width=600,height=400\"); return false;'>Print Waybill</a>";
-                            echo "<a href='updateForm.php?orderID=" . $orderID . "' title='Update'>Update</a>";
-                            echo "</td>";
-                            echo "</tr>";
                         }
-
                         // Close connection
                         mysqli_close($dbCon);
                     ?>
