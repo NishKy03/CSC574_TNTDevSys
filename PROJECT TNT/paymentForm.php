@@ -19,7 +19,7 @@
     $shipRateID = isset($_GET['shipRateID']) ? $_GET['shipRateID'] : null;
 
     if ($orderID === null || $shipRateID === null) {
-        die("Missing required parameters.");
+        die("orderID and shipRateID are required.");
     }
 
     $sqlselect = "SELECT * FROM orders WHERE orderID = ?";
@@ -39,14 +39,19 @@
     $row = $result->fetch_assoc();
     $baseFee = $row['baseFee'];
     $addFee = $row['addFee'];
+    $shippingFee = ($Weight * $addFee);
+    $insuranceChg = ($insurance * $Weight);
 
-    $totalAmount = $baseFee + ($Weight * $addFee) + ($insurance * $Weight);
+    $totalAmount = $baseFee + $shippingFee + $insuranceChg;
 
-    $sql2 = "UPDATE orders SET totalAmount = ? WHERE orderID = ?";
+    $sql2 = "UPDATE orders SET totalAmount = ?, shippingFee = ?, insuranceChg = ? WHERE orderID = ?";
     $stmt2 = $dbCon->prepare($sql2);
-    $stmt2->bind_param("di", $totalAmount, $orderID);
+    $stmt2->bind_param("dddi", $totalAmount,$shippingFee,$insuranceChg, $orderID);
     if($stmt2->execute()){
     $message = "Record updated successfully";
+    } else{
+        $message = "Error updating orders record: ";
+        echo "<script>alert('$message')</script>";
     }
     $stmt2->close();
 
@@ -61,6 +66,10 @@
         echo "<script>alert('Payment Successful!')</script>";
         header("Location: COrderList.php");
         exit();
+    }
+    else{
+        echo "<script>alert('Payment Unsuccessful!')</script>";
+    
     }
 ?>
 <!DOCTYPE html>
@@ -205,8 +214,12 @@
                 <button class="btn-close">&times;</button>
             </div>
             <h2>PAYMENT</h2>
+            <label for="totalAmount">Insurance Charge</label>
+            <input type="text" id="totalAmount" name="totalAmount" value="<?php echo isset($insuranceChg) ? 'RM '.$insuranceChg : ''?>" class="non-editable" readonly>
+            <label for="totalAmount">Shipping Fee</label>
+            <input type="text" id="totalAmount" name="totalAmount" value="<?php echo isset($shippingFee) ? 'RM '.$shippingFee : ''?>" class="non-editable" readonly>
             <label for="totalAmount">Total Amount</label>
-            <input type="text" id="totalAmount" name="totalAmount" value="<?php echo isset($totalAmount) ? $totalAmount : ''?>" class="non-editable" readonly>
+            <input type="text" id="totalAmount" name="totalAmount" value="<?php echo isset($totalAmount) ? 'RM '.$totalAmount : ''?>" class="non-editable" readonly>
             <label for="methodPay">Payment Method</label>
             <select id="methodPay" name="methodPay">
                 <option value="onlineBanking">Online Banking</option>
