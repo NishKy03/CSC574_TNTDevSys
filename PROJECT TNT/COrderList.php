@@ -1,6 +1,37 @@
 <?php
     include('CHeader.php');
 ?>
+<?php
+    if (!isset($_SESSION['staffID'])) {
+        echo '<div class="access-denied">Access Denied. Only accessible by regular staff.</div>';
+        // JavaScript to redirect to login page after 2 seconds
+        echo '<script type="text/javascript">
+                setTimeout(function() {
+                    window.location.href = "login.php"; // Change "login.php" to the URL of your login page
+                }, 2000);
+            </script>';
+        exit();
+    }
+
+    require_once 'dbConnect.php'; // Adjust the path as per your project structure
+
+    // Check if staff position is 'staff'
+    if ($_SESSION['position'] !== 'staff') {
+        echo '<div class="access-denied">Access Denied. Only accessible by regular staff.</div>';
+        exit();
+    }
+
+    $sql1 = "SELECT branchID, CONCAT(branchID, ' - ', name) as branchName FROM branch ORDER BY branchID";
+    $rsBranch = mysqli_query($dbCon, $sql1);
+
+    // Handle status filter selection
+    $filter = isset($_GET['branchID']) ? $_GET['branchID'] : 'all';
+    $filterQuery = '';
+
+    if ($filter !== 'all') {
+        $filterQuery = " AND t.branchID = '".$filter."'";
+    }
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -20,12 +51,13 @@
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                padding: 20px;
+                padding: 10px;
+                margin-left: 8%;
             }
 
             .content {
                 width: 100%;
-                max-width: 1200px;
+                max-width: 1300px;
                 margin-top: 100px;
                 box-sizing: border-box;
             }
@@ -85,79 +117,97 @@
             .action-buttons button:hover, .action-buttons a:hover {
                 background: #45a3b8;
             }
+
+            /* Style for the filter dropdown */
+            .filter select {
+                padding: 8px;
+                font-size: 16px;
+                border-radius: 5px;
+                border: 1px solid #ccc;
+                width: 200px;
+                margin-right: 20px;
+                margin-bottom: 10px;
+            }
+
+            .filter label {
+                font-size: 16px;
+                font-weight: bold;
+                margin-right: 10px;
+            }
         </style>
     </head>
     <body>
         <div class="container">
             <div class="content">
                 <h1>ORDERS (Branch ID: <?php echo $_SESSION['branchID']?>)</h1>
+                <div class="filter">
+                    <form method="get">
+                        <label for="branchID">Filter by Branch:</label>
+                        <select name="branchID" id="branchID" onchange="this.form.submit()" class="form-control">
+                            <option value="all" <?php if ($filter === 'all') echo 'selected'; ?>>All</option>
+                            <?php 
+                                while ($row = mysqli_fetch_assoc($rsBranch)) {
+                                    $branchID = $row['branchID'];
+                                    ?>
+                                    <option value="<?php echo $branchID ?>" <?php if ($filter === $branchID) echo 'selected'; ?> >
+                                        <?php echo $row['branchName']; ?>
+                                    </option>
+                            <?php } ?>
+                        </select>
+                    </form>
+                </div>
                 <table class="order-table">
                     <thead>
                         <tr>
                             <th>Order ID</th>
-                            <th>Branch ID</th>
                             <th>Order Date</th>
-                            <th>State (Recipient)</th>
+                            <th>Sender Name</th>
+                            <th>Sender State</th>
+                            <th>Recipient Name</th>
+                            <th>Recipient State</th>
+                            <th>Update Date</th>
                             <th>Status</th>
+                            <th>Branch ID</th>
                             <th>Delivery Staff ID & Name</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                     <?php
-                        // Include dbConnect file
-                        require_once "dbConnect.php";
                         // Attempt select query execution
-                        $sql = "SELECT o.orderID, t.branchID, o.orderDate, r.state, t.category, t.staffID, s.staffName
-                                FROM recipient r
-                                JOIN orders o ON r.recipientID = o.recipientID
-                                LEFT JOIN tracking_update t ON o.orderID = t.orderID
-                                LEFT JOIN staff s ON t.staffID = s.staffID
-                                WHERE t.updateID IN (SELECT MAX(updateID) FROM tracking_update GROUP BY orderID)
-                                AND t.branchID = ?;";
-                        if ($stmt = mysqli_prepare($dbCon, $sql)) {
-                            // Bind variables to the prepared statement as parameters
-                            mysqli_stmt_bind_param($stmt, "s", $param_bID);
-                            
-                            // Set parameters
-                            $param_bID = $_SESSION['branchID'];
-                            
-                            // Attempt to execute the prepared statement
-                            if (mysqli_stmt_execute($stmt)) {
-                                $result = mysqli_stmt_get_result($stmt);
-                                if (mysqli_num_rows($result) > 0) {
-                                    while ($row = mysqli_fetch_array($result)) {
-                                        echo "<tr>";
-                                        $orderID = $row['orderID'];
-                                        echo "<td>" . $orderID . "</td>";
-                                        echo "<td>". $row["branchID"] ."</td>";
-                                        echo "<td>" . $row['orderDate'] . "</td>";
-                                        echo "<td>" . $row['state'] . "</td>";
-                                        echo "<td>" . $row['category'] . "</td>\n";
-                                        if ($row['staffID']) {
-                                            echo "<td>" . $row['staffID'] . " - " . $row['staffName'] . "</td>\n";
-                                        } else {
-                                            echo "<td>Unassigned</td>\n";
-                                        }
-                                        echo "<td class='action-buttons'>";
-                                        echo "<a href='printOrderStatement.php?orderID=" . $orderID . "' target='_blank' onclick='window.open(this.href, \"popup\", \"width=600,height=400\"); return false;'>Print Statement</a>";
-                                        echo "<a href='printOrderWaybill.php?orderID=" . $orderID . "' target='_blank' onclick='window.open(this.href, \"popup\", \"width=600,height=400\"); return false;'>Print Waybill</a>";
-                                        echo "<a href='updateForm.php?orderID=" . $orderID . "' title='Update'>Update</a>";
-                                        echo "</td>";
-                                        echo "</tr>";
-                                    };
+                        $sql = "SELECT o.orderID, DATE_FORMAT(o.orderDate, \"%d-%m-%Y\") AS orderDate, s.senderName, s.state AS senderState, r.name, r.state, DATE_FORMAT(t.date, \"%d-%m-%Y\") AS date, t.category, t.branchID, t.staffID, f.staffName
+                                FROM recipient r, orders o, sender s, tracking_update t, staff f
+                                WHERE r.recipientID = o.recipientID
+                                AND s.senderID = o.senderID
+                                AND o.orderID = t.orderID
+                                AND t.staffID = f.staffID
+                                AND t.updateID IN (SELECT MAX(updateID) FROM tracking_update GROUP BY orderID) ". $filterQuery;
 
-                                    // Free result set
-                                    mysqli_free_result($result);
-                                } else {
-                                    echo "<tr><td colspan='7'><em>No records were found.</em></td></tr>";
-                                }
+                        $rsOrders = mysqli_query($dbCon, $sql);
+
+                        while ($row = mysqli_fetch_assoc($rsOrders)) {
+                            echo "<tr>";
+                            $orderID = $row['orderID'];
+                            echo "<td>" . $orderID . "</td>";
+                            echo "<td style = \"white-space: nowrap;\">" . $row['orderDate'] . "</td>";
+                            echo "<td>". $row["senderName"] ."</td>";
+                            echo "<td>" . $row['senderState'] . "</td>";
+                            echo "<td>" . $row['name'] . "</td>";
+                            echo "<td>" . $row['state'] . "</td>";
+                            echo "<td style = \"white-space: nowrap;\">" . $row['date'] . "</td>";
+                            echo "<td>" . $row['category'] . "</td>";
+                            echo "<td>" . $row['branchID'] . "</td>";
+                            if ($row['staffID']) {
+                                echo "<td>" . $row['staffID'] . " - " . $row['staffName'] . "</td>\n";
                             } else {
-                                echo "<tr><td colspan='7'>ERROR: Could not execute $sql. " . mysqli_error($dbCon) . "</td></tr>";
+                                echo "<td>Unassigned</td>\n";
                             }
-
-                            // Close statement
-                            mysqli_stmt_close($stmt);
+                            echo "<td class='action-buttons'>";
+                            echo "<a href='printOrderStatement.php?orderID=" . $orderID . "' target='_blank' onclick='window.open(this.href, \"popup\", \"width=600,height=400\"); return false;'>Print Statement</a>";
+                            echo "<a href='printOrderWaybill.php?orderID=" . $orderID . "' target='_blank' onclick='window.open(this.href, \"popup\", \"width=600,height=400\"); return false;'>Print Waybill</a>";
+                            echo "<a href='updateForm.php?orderID=" . $orderID . "' title='Update'>Update</a>";
+                            echo "</td>";
+                            echo "</tr>";
                         }
 
                         // Close connection

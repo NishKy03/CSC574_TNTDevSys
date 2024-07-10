@@ -71,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_GET["orderID"]) && !empty(trim($_GET["orderID"]))) {
         $orderID = trim($_GET["orderID"]);
 
-        // Prepare a select statement to fetch staff based on branch
+        // Prepare a select statement to get branch
         $sql1 = "SELECT branchID, CONCAT(branchID, ' - ', name) as branchName FROM branch ORDER BY branchID";
         $rsBranch = mysqli_query($dbCon, $sql1);
 
@@ -239,8 +239,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 secondDropdownContainer.style.display = 'none';
             }
         }
-
-        // Check if session variable is set and display alert
+t
         <?php
             if (isset($_SESSION['update_success']) && $_SESSION['update_success']) {
                 echo "alert('Successfully updated order');";

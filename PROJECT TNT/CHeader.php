@@ -199,14 +199,14 @@ if ($_SESSION['position'] !== 'staff') {
         }
 
         .active {
-            background-color: green;
-            color: white;
+            background-color: #E1E7E0;
+            color: #4B0606;
         }
 
         /* Dropdown container (hidden by default). Optional: add a lighter background color and some left padding to change the design of the dropdown content */
         .dropdown-container {
             display: none;
-            background-color: #262626;
+            background-color: #4b0606;
             padding-left: 8px;
         }
 
