@@ -1,35 +1,31 @@
 <?php
-include 'dbConnect.php';
+require_once "dbConnect.php";
 
-// Handle form submission
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $orderID = $_POST['orderID'];
-    
-    // SQL to fetch order details based on orderID
-    $sql = "
-        SELECT o.orderID, tu.date, o.status, s.senderName 
-        FROM tracking_update tu
-        JOIN orders o ON tu.orderID = o.orderID
-        JOIN sender s ON o.senderID = s.senderID
-        WHERE o.orderID = ?";
+// Fetch staff based on branchID
+if (isset($_GET["branchID"]) && !empty(trim($_GET["branchID"]))) {
+    $branchID = trim($_GET["branchID"]);
 
-    if ($stmt = $dbCon->prepare($sql)) {
-        $stmt->bind_param("s", $orderID);
-        $stmt->execute();
-        $result = $stmt->get_result();
+    $sql = "SELECT staffID, staffName FROM staff WHERE branchID = ?";
+    if ($stmt = mysqli_prepare($dbCon, $sql)) {
+        mysqli_stmt_bind_param($stmt, "s", $branchID);
 
-        if ($result->num_rows > 0) {
-            // Redirect to tracking.php with orderID as a parameter
-            header("Location: tracking.php?orderID=$orderID");
-            exit();
+        if (mysqli_stmt_execute($stmt)) {
+            $result = mysqli_stmt_get_result($stmt);
+            if (mysqli_num_rows($result) > 0) {
+                while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+                    echo '<option value="' . $row["staffID"] . '">' . $row["staffID"] . ' - ' . $row["staffName"] . '</option>';
+                }
+            } else {
+                echo '<option value="">No staff found</option>';
+            }
         } else {
-            echo "<script>alert('No records found for the provided order ID.'); window.location='tracking.php';</script>";
+            echo "Oops! Something went wrong. Please try again later.";
         }
-
-        $stmt->close();
-    } else {
-        echo "<script>alert('Error preparing the statement.'); window.location='tracking.php';</script>";
+        mysqli_stmt_close($stmt);
     }
+} else {
+    echo '<option value="">Invalid branch ID</option>';
 }
 
-$dbCon->close();
+mysqli_close($dbCon);
+?>
