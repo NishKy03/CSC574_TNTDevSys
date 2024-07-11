@@ -29,7 +29,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 
 			if($dbCon->query($sql) === TRUE){
-				echo "<div class='alert alert-success'>Record upated successfully</div><script>window.location.href=\'updateStaffInfo.php?id=' . $staffID . '\''</script>";
+				echo "<script>alert('Update Record Successful'); window.location.href='staffList.php'</script>";
 	
 			} else{
 				echo "<div class='alert alert-danger'>Error updating reocrd: " . $dbCon->error > "</div>";

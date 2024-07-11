@@ -62,9 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Output a script block to handle the alert and redirection
             echo '<script>
                 alert("Successfully updated order");
-                
-                    window.location.href = "COrderList.php";
-               
+                window.location.href = "COrderList.php";
                 </script>';
             exit();
         } else {
@@ -79,23 +77,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Prepare a select statement to get branch
         $sql1 = "SELECT branchID, CONCAT(branchID, ' - ', name) as branchName FROM branch ORDER BY branchID";
         $rsBranch = mysqli_query($dbCon, $sql1);
-
-        // Prepare a select statement to fetch staff for delivery category
-        $sql2 = "SELECT staffID, CONCAT(staffID, ' - ', staffName) as staffName FROM staff WHERE position = 'courier' AND branchID = ?";
-        if ($stmt = mysqli_prepare($dbCon, $sql2)) {
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "s", $branchID);
-
-            // Set parameter
-            $branchID = $_SESSION['branchID'];
-
-            // Attempt to execute the prepared statement
-            if (mysqli_stmt_execute($stmt)) {
-                $rsStaff = mysqli_stmt_get_result($stmt);
-            } else {
-                echo "Oops! Something went wrong. Please try again later.";
-            }
-        }
     } else {
         // Redirect to error page if orderID is not provided
         header("location: error.php");
@@ -103,6 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -110,7 +92,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Order</title>
     <style>
-        /* Styles remain the same */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -215,7 +196,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <option value="Delivery">Delivery</option>
                 </select>
                 <label for="branchID">Branch ID</label>
-                <select id="branchID" name="branchID">
+                <select id="branchID" name="branchID" onchange="fetchStaff()">
                     <?php 
                         while ($row = mysqli_fetch_assoc($rsBranch)) { ?>
                         <option value="<?php echo $row['branchID']; ?>">
@@ -226,12 +207,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div id="staff" style="display: none;">
                     <label for="staffID">Staff ID</label>
                     <select id="staffID" name="staffID">
-                        <?php 
-                            while ($row = mysqli_fetch_assoc($rsStaff)) { ?>
-                            <option value="<?php echo $row['staffID']; ?>">
-                                <?php echo $row['staffName']; ?>
-                            </option>
-                        <?php } ?>
+                        <!-- Options will be populated by AJAX -->
                     </select>
                 </div>
                 <div class="button-confirm">
@@ -262,6 +238,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Attach event listener to the category dropdown
             var categoryDropdown = document.getElementById("category");
             categoryDropdown.addEventListener("change", showSecondDropdown);
+
+            // AJAX request to fetch staff based on branchID
+            function fetchStaff() {
+                var branchID = document.getElementById("branchID").value;
+                var category = document.getElementById("category").value;
+
+                if (category === "Delivery") {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("GET", "fetchOrderDetails.php?branchID=" + branchID, true);
+                    xhr.onreadystatechange = function() {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                            var staffDropdown = document.getElementById("staffID");
+                            staffDropdown.innerHTML = xhr.responseText;
+                        }
+                    };
+                    xhr.send();
+                }
+            }
+
+            // Attach event listener to the branch dropdown
+            var branchDropdown = document.getElementById("branchID");
+            branchDropdown.addEventListener("change", fetchStaff);
         });
     </script>
 </body>
