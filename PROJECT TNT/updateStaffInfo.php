@@ -528,7 +528,7 @@ font-family: Poppins;
 				<label for="branchID" class="form-label">Branch ID: </label>
 				<select class="form-control" id="branchID" name="branchID" required>
 					<?php	
-						$dbCon = new mysqli("localhost","root","","tntdb");
+						$dbCon = new mysqli("localhost","root","","courierdb");
 						if($dbCon->connect_error){
 							die("Connection Failed: " . $dbCon->connect_error);
 						}
