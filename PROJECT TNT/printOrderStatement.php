@@ -84,7 +84,11 @@
             <tr><td class="top-b"><?php echo $sPostcode; ?></td></tr>
             <tr>
                 <td class="all-b"><?php echo $orderDate; ?></td>
-                <td class="all-b" rowspan="2" style="word-wrap: break-word; text-align: left;">Total = RM <?php echo $amount; ?></td>
+                <td class="all-b" rowspan="2" style="word-wrap: break-word; text-align: left;">
+                    Shipping Fee = RM <?php echo ($shippingFee + $baseFee); ?><br>
+                    Insurance Charge = RM <?php echo $insuranceChg; ?><br>
+                    Total = RM <?php echo $amount; ?>
+                </td>
             </tr>
             <tr><td class="all-b"><?php echo $weight; ?> KG</td></tr>
         </table>

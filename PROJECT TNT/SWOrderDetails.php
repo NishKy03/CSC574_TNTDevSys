@@ -4,10 +4,11 @@ if (isset($_GET["orderID"]) && !empty(trim($_GET["orderID"]))) {
     require_once "dbConnect.php";
     
     // Prepare a select statement
-    $sql = "SELECT o.orderID, r.name AS rName, r.phoneNo AS rPhoneNo, r.addressLine1 AS rAddress, r.postcode AS rPostcode, r.city AS rCity, r.state AS rState, s.senderName, s.senderPhoneNo, s.addressLine1 AS sAddress, s.postcode As sPostcode, s.city AS sCity, s.state AS sState, o.orderDate, o.parcelWeight, o.totalAmount, o.insurance
-            FROM orders o, recipient r, sender s
+    $sql = "SELECT o.orderID, r.name AS rName, r.phoneNo AS rPhoneNo, r.addressLine1 AS rAddress, r.postcode AS rPostcode, r.city AS rCity, r.state AS rState, s.senderName, s.senderPhoneNo, s.addressLine1 AS sAddress, s.postcode As sPostcode, s.city AS sCity, s.state AS sState, o.orderDate, o.parcelWeight, o.totalAmount, o.insurance, o.insuranceChg, o.shippingFee, t.baseFee
+            FROM orders o, recipient r, sender s, shipping_rate t
             WHERE o.senderID = s.senderID
             AND o.recipientID = r.recipientID
+            AND o.shipRateID = t.shipRateID
             AND o.orderID = ?";
     
     if ($stmt = mysqli_prepare($dbCon, $sql)) {
@@ -41,6 +42,9 @@ if (isset($_GET["orderID"]) && !empty(trim($_GET["orderID"]))) {
                 $weight = $row['parcelWeight'];
                 $amount = $row['totalAmount'];
                 $insurance = $row['insurance'];
+                $insuranceChg = $row['insuranceChg'];
+                $shippingFee = $row['shippingFee'];
+                $baseFee = $row['baseFee'];
             } else {
                 exit();
             }

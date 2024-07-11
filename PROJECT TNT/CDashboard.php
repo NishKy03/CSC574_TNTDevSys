@@ -122,7 +122,7 @@
             $sql1 = "SELECT t.staffID, COUNT(t.staffID) as total
                      FROM tracking_update t
                      JOIN staff s ON t.staffID = s.staffID
-                     WHERE t.category = 'Delivered' 
+                     WHERE t.category = 'Delivery' 
                      AND s.branchID = ?
                      GROUP BY t.staffID";
             if ($stmt1 = mysqli_prepare($dbCon, $sql1)) {
