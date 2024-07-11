@@ -29,7 +29,7 @@
                 $SName_err = "Please enter the sender's name.";
             } else {
                 $SName = trim($_POST["SName"]);
-                if (!preg_match("/^[a-zA-Z\s]+$/", $SName)) {
+                if (!preg_match("/^[a-zA-Z\s@'.\/]+$/", $SName)) {
                     $SName_err = "Name must contain only letters and spaces.";
                 }
             }
@@ -76,7 +76,7 @@
                 $RName_err = "Please enter the recipient's name.";
             } else {
                 $RName = trim($_POST["RName"]);
-                if (!preg_match("/^[a-zA-Z\s]+$/", $RName)) {
+                if (!preg_match("/^[a-zA-Z\s@'.\/]+$/", $RName)) {
                     $RName_err = "Name must contain only letters and spaces.";
                 }
             }
@@ -661,7 +661,7 @@
 
             // Validate Sender Name
             var SName = document.getElementById('SName').value.trim();
-            if (!SName.match(/^[A-Za-z\s]{1,255}$/)) {
+            if (!SName.match(/^[A-Za-z\s@'.\/]{1,255}$/)) {
                 document.getElementById('SNameError').innerHTML = 'Please enter a valid name (only letters and spaces, max 50 characters).';
                 isValid = false;
             } else {
@@ -715,7 +715,7 @@
 
             // Validate Recipient Name
             var RName = document.getElementById('RName').value.trim();
-            if (!RName.match(/^[A-Za-z\s]{1,255}$/)) {
+            if (!RName.match(/^[A-Za-z\s@'.\/]{1,255}$/)) {
                 document.getElementById('RNameError').innerHTML = 'Please enter a valid name (only letters and spaces, max 50 characters).';
                 isValid = false;
             } else {
@@ -806,7 +806,7 @@
         // Real-time validation on input change
         document.getElementById('SName').addEventListener('input', function() {
             var SName = this.value.trim();
-            if (!SName.match(/^[A-Za-z\s]{1,255}$/)) {
+            if (!SName.match(/^[A-Za-z\s@'.\/]{1,255}$/)) {
                 document.getElementById('SNameError').innerHTML = 'Please enter a valid name (only letters and spaces).';
             } else {
                 document.getElementById('SNameError').innerHTML = '';
@@ -860,7 +860,7 @@
 
         document.getElementById('RName').addEventListener('input', function() {
             var RName = this.value.trim();
-            if (!RName.match(/^[A-Za-z\s]{1,255}$/)) {
+            if (!RName.match(/^[A-Za-z\s@'.\/]{1,255}$/)) {
                 document.getElementById('RNameError').innerHTML = 'Please enter a valid name (only letters and spaces).';
             } else {
                 document.getElementById('RNameError').innerHTML = '';
