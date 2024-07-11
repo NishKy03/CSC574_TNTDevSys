@@ -148,6 +148,7 @@ $result = $dbCon->query($sql);
                         <th>Phone Number</th>
                         <th>Email</th>
                         <th>Position</th>
+                        <th>Branch ID</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -159,6 +160,7 @@ $result = $dbCon->query($sql);
                             <td><?php echo $row["staffPhone"]; ?></td>
                             <td><?php echo $row["staffEmail"]; ?></td>
                             <td><?php echo $row["position"]; ?></td>
+                            <td><?php echo $row["branchID"]; ?></td>
                             <td>
                                 <button class="btn btn-tertiary me-2" onclick="location.href='updateStaffInfo.php?id=<?php echo $row["staffID"]; ?>'"><img src="images/edit.png" alt="Edit" title="Edit"></button>
                                 <button class="btn btn-tertiary me-2" onclick="confirmDelete(<?php echo $row["staffID"]; ?>)"><img src="images/delete.png" alt="Delete" title="Delete"></button>
