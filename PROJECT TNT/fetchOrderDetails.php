@@ -1,11 +1,11 @@
 <?php
 require_once "dbConnect.php";
 
-// Fetch staff based on branchID
+// Fetch staff based on branchID and position='courier'
 if (isset($_GET["branchID"]) && !empty(trim($_GET["branchID"]))) {
     $branchID = trim($_GET["branchID"]);
 
-    $sql = "SELECT staffID, staffName FROM staff WHERE branchID = ?";
+    $sql = "SELECT staffID, staffName FROM staff WHERE branchID = ? AND position = 'courier'";
     if ($stmt = mysqli_prepare($dbCon, $sql)) {
         mysqli_stmt_bind_param($stmt, "s", $branchID);
 
