@@ -1,2 +1,2 @@
-# CSC574_TNTDevSys
-Group project CSC574 TNT Delivery System
+TNT DELIVERY SYSTEM
+Group project TNT Delivery System
